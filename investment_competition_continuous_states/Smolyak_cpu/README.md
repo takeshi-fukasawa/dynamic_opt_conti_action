@@ -1,0 +1,2 @@
+# Anisotropic-Smolyak-method-MATLAB-
+MATLAB software that solves a multi-country model using the anisotropic version of the Smolyak method, as described in the article  "Smolyak method for solving dynamic economic models: Lagrange interpolation,  anisotropic grid and adaptive domain" by Kenneth L. Judd, Lilia Maliar,  Serguei Maliar and Rafael Valero (2014), Journal of Economic Dynamics and Control, 44, 92–123.
