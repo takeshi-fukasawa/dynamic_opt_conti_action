@@ -1,8 +1,9 @@
 function [out,other_vars]=update_func(input_cell,...
    Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,k1,gam,c0,...
    beta,n_nodes,weight_nodes,vf_coef,D,kdamp,n_grid,opts,spectral_spec)
-  %% Based on AreXXX Maliar XXXX (2016)
-  %% Modified by Takeshi Fukasawa in March 2024
+  
+  % Based on AMMT (2016)
+  % Modified by Takeshi Fukasawa in March 2024
 
   global V X0_temp
 

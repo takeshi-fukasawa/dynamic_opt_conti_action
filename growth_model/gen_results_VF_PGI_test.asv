@@ -1,0 +1,41 @@
+clear
+%%diary METHODSLOG.log
+
+global V k1 iter_info lambda_param alpha0_param
+addpath('C:/Users/fukas/Dropbox/git/spectral')
+
+spectral_spec=0;
+D=4;
+
+results=[];
+lambda_param=0.0001;
+alpha0_param=0.001;
+
+for i = 1:
+        [out_i,other_output]=Main_7_Methods(8,spectral_spec,D);
+        results=[results;...
+            [i*ones(size(out_i,1),1),out_i]];
+end
+
+for i = 1:
+        [out_i,other_output]=Main_7_Methods(8,spectral_spec,D);
+        results_spectral=[results_spectral;...
+            [i*ones(size(out_i,1),1),out_i]];
+end
+
+
+if spectral_spec==0
+    tag='';
+elseif spectral_spec==1
+    tag='_spectral';
+elseif spectral_spec==2
+    tag='_SQUAREM';
+end
+
+%filename=append('growth_model_algorithm_comparison',...
+%    tag,'.csv');
+
+filename=append('growth_model_algorithm_comparison_summary',...
+    tag,'.csv');
+
+%writematrix(round(results_summary,3),filename)

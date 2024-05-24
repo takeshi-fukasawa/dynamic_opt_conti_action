@@ -13,6 +13,8 @@ function [out,other_output]=growth_main(Method,spectral_spec,D)
 %
 % First version: December 12, 2012 
 % This version:  October 31, 2016
+% Modified by Takeshi Fukasawa in May 2024
+
 % ------------------------------------------------------------------------
 % The software uses the following files: 
 % ------------------------------------------------------------------------
@@ -58,6 +60,7 @@ fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
 % "7" - conventional Euler equation method (EE)
 
 global iter_info iter_info0 V k1
+global alpha0_param
 
 D_init=D;
 D_min=D;
@@ -159,9 +162,12 @@ k1   =  k0*(1-delta)+A*z0.*k0.^alpha-c0;  % Initial guess for capital
 
 spec_default.norm_spec=10;%% unit free
 spec_default.TOL=1e-6;
+spec_default.alpha_0=alpha0_param;
+
+spec_default.alpha_0
+
 spec=spec_default;
 spec.ITER_MAX=1000;
-
  
     [output_spectral,other_vars,iter_info_V]=...
         spectral_func(@VF_Bellman_update_func,spec,{V},...
@@ -203,9 +209,6 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         spec.SQUAREM_spec=1;
     end
     
-    if Method==8
-        spec.alpha_0=0.001;%%%% normalize the scale of alpha_0
-    end
     if Method==3 %% EGM
         spec.common_alpha_spec=1; % Important
     end

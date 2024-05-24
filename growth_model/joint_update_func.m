@@ -2,16 +2,17 @@ function [out,other_vars]=joint_update_func(V,var2,...
    Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,k1_temp,gam,c0,...
    beta,n_nodes,weight_nodes,vf_coef,D,kdamp,n_grid,opts,spectral_spec)
 
-   %% Written by Takeshi Fukasawa in March 2024, based on the code of AreXXX Maliar XXXX (2016)
-           
-
-   if Method==8
-       k1=var2;
+   % Written by Takeshi Fukasawa in March 2024, based on the code of AMMT (2016)
+   
+   global lambda_param
+   
+   if Method==8 %% VF-PGI update
+       k1=var2;%initial action
        vf_coef=X0\V; % Coefficients for value function
                 
        for i = 1:n_grid    % For each grid point 
            difference_i=FOC_VFI(k1(i,1),k0(i,1),z0(i,1),A,alpha,gam,delta,beta,z1(i,:),n_nodes,weight_nodes,vf_coef,D);
-           k1_new(i,1)=k1(i,1)+1*difference_i;
+           k1_new(i,1)=k1(i,1)+lambda_param*difference_i;
        end
       
        c0 = (1-delta)*k0+A*z0.*k0.^alpha-k1;% Find consumption from budget constraint
@@ -25,7 +26,7 @@ function [out,other_vars]=joint_update_func(V,var2,...
        out={V_new,k1_new};
    
        %%%%%%%%%%%%%%%%%%
-   elseif Method==3 
+   elseif Method==3  %% EGM update
             k0=var2;
             grid(:,1) = k0;        % Grid points for current capital 
             
