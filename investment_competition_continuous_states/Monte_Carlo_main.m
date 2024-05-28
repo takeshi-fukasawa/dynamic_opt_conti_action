@@ -3,7 +3,7 @@ clear all
 
 global elas beta_param delta_param update_spec tune_param gpu_spec
 global spec_precompute w_exo x_exo sd_exo
-global diff
+global diff lambda_param
 
 DEBUG=0;
 addpath('./Smolyak_cpu')
@@ -12,6 +12,7 @@ addpath('./Smolyak_cpu')
 addpath('C:/Users/fukas/Dropbox/git/spectral')
 
 %----(0) Parameters ------------------------
+lambda_param=1;
 
 gpu_spec=0;
 spec_precompute=1;

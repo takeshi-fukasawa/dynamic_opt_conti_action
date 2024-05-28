@@ -1,5 +1,5 @@
 function I_updated=I_update_func(I_initial,k_t,V_t1_diff,stoch_inv_cost,theta,update_spec,I_min,I_max)
-global beta_param
+global beta_param lambda_param
 
 if update_spec=="new"
     I_opt_plus=(beta_param*V_t1_diff-theta(1)-stoch_inv_cost)./(2*theta(2)./k_t);
@@ -22,8 +22,7 @@ elseif update_spec=="gradient" % update_spec=="new"
         diff=diff.*(1-(I_initial==I_max & diff>0));
     end
 
-    tune_param=1;
-    I_updated=I_initial+tune_param*diff;
+    I_updated=I_initial+lambda_param*diff;
 end
 
     if isempty(I_min)==0
