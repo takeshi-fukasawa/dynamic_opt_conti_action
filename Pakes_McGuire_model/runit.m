@@ -5,7 +5,7 @@ clear all
 %%% Spectral algorithm code path
 addpath('C:/Users/fukas/Dropbox/git/spectral')
 
-global diff diff_temp isentry entered
+global diff diff_temp isentry entered lambda_param
 
 spec.ITER_MAX=300;
 %spec.ITER_MAX=10;
@@ -15,6 +15,8 @@ spec.x_min_cell={[],0};
 spec.DEBUG=1;
 spectral_spec=1;
 
+lambda_param=0.01;
+
 %spec.common_alpha_spec=0;
 
 if spectral_spec==0
@@ -23,7 +25,7 @@ end
 
 % Model Parameters
 
-c.MAX_FIRMS = 1;
+c.MAX_FIRMS = 2;
 c.START_FIRMS = 1;
 c.EQL_TYPE = 'COMPETITION'; % COMPETITION|MONOPOLY|PLANNER
 
@@ -43,7 +45,7 @@ c.DELTA = 0.7;
 c.SCRAP_VAL = 0.1;
 c.INV_MULT = 3;
 c.INV_COST = 1;
-c.QUAD_INV_COST=1.0;%%%%%%%
+c.QUAD_INV_COST=0.0;%%%%%%%
 c.MC = 5;
 c.MKT_SIZE = 5;
 c.KMAX = 19;
@@ -70,7 +72,7 @@ profit(c);
 
 
 % Solve dynamic equilibrium:
-no_entry_exit_spec=0;%%%%
+no_entry_exit_spec=1;%%%%
 
 method=2;
 [newvalue_grad,newx_grad,iter_info_grad,other_vars]=...

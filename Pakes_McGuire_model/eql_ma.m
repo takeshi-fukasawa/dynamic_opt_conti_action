@@ -349,7 +349,7 @@ function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,isentry,method,no_entr
   global a beta entry_k nfirms phi profit INV_COST QUAD_INV_COST
   global diff diff_temp entered 
   global encfirm etable1 etable2 multfac1 multfac2
-  global delta kmax mask two_n
+  global delta kmax mask two_n lambda_param
 
   locw = qdecode(w);
   locwx = locw;
@@ -436,31 +436,39 @@ function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,isentry,method,no_entr
             diff(j)=0;
         end
 
-        nx(j)=ox(j)+0.01*diff(j);
+        nx(j)=ox(j)+lambda_param*diff(j);
     end
     
     % Now calculate the value from staying in
     % Ask: given this optimal investment level, will there be exit?
 
 
-    nval(j) = profit(w,j) - INV_COST.*nx(j)-QUAD_INV_COST.*nx(j).^2 + beta*(v1*p + v2*(1-p));
+    %%% Compute nval based on updated x (nx)
+    %%nval(j) = profit(w,j) - INV_COST.*nx(j)-QUAD_INV_COST.*nx(j).^2 + beta*(v1*p + v2*(1-p));
 
-    %%%%%%%%%%%%%%%%%%
-    %%nval(j) = profit(w,j) - INV_COST.*ox(j)-QUAD_INV_COST.*ox(j).^2 + beta*(v1*p + v2*(1-p));
+    %%% Compute nval based on initial x (ox)
+    nval(j) = profit(w,j) - INV_COST.*ox(j)-QUAD_INV_COST.*ox(j).^2 + beta*(v1*p + v2*(1-p));
 
-    if nval(j) <= phi;
+    if nval(j) <= phi & no_entry_exit_spec==0
       nval(j) = phi;
       nx(j) = 0;
     end
-    if (j < nfirms) & (nval(j) == phi);
+
+    if (j < nfirms) & (nval(j) == phi) & no_entry_exit_spec==0
       nval(j+1:nfirms) = ones(nfirms-j,1) * phi;
       break;
     end
+
     %%%%ox(j) = nx(j); %% Sequential update%%%%
-    locwx(j) = (nval(j) > phi)*locw(j);
-    locwe(j) = locwx(j);
-    j=j+1;
+
+    if no_entry_exit_spec==0
+        locwx(j) = (nval(j) > phi)*locw(j);
+    else
+        locwx(j) = locw(j);
+        locwe(j) = locwx(j);
+        j=j+1;
     end
+  end% while
 
   out1 = nx';
   out2 = nval';
