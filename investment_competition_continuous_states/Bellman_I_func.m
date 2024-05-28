@@ -58,8 +58,8 @@ if update_spec=="new"|update_spec=="gradient"
 else %% PM algorithm
     [I_t_updated,basis_t1,feval_Newton]=Newton_func(I_t,k_t,exo_t1,basis_exo_t1,stoch_inv_cost,...
     coef_approx_V,state_min,state_max,Smol_elem,mu_max,d,ind,w_inv,theta,I_min,I_max);
-    %[inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t,stoch_inv_cost,theta);
-    [inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t_updated,stoch_inv_cost,theta);
+    [inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t,stoch_inv_cost,theta);
+    %%%[inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t_updated,stoch_inv_cost,theta);
 end
 
 % basis_t1:n_pts*n_coef*n_node_inv*N; depends on firm j !!!

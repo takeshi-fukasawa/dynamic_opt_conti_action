@@ -6,7 +6,7 @@ I_min=[];I_max=[];
 if 1==1
     spec=[];
     if update_spec=="PM"
-        %spec.dampening_param={0.1,0.1};
+        %spec.dampening_param={1.0,1.0};
     elseif update_spec=="gradient"
        spec.opt_max_spec=[0,0];
    end

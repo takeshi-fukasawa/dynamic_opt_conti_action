@@ -25,11 +25,11 @@ for i = 1:6
 end
 
 %% Spectral algorithm
-alpha0_param0=0.00000001;
+alpha0_param0=0.000000001;
 lambda_param0=1;
 spectral_spec=1;
 
-for i = 1:9
+for i = 1:10
     alpha0_param=alpha0_param0*10^(i-1);
     lambda_param=lambda_param0;
         [out_i,other_output]=Main_7_Methods(8,spectral_spec,D);

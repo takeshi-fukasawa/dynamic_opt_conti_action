@@ -10,7 +10,7 @@ global diff diff_temp isentry entered
 spec.ITER_MAX=300;
 %spec.ITER_MAX=10;
 
-spec.TOL=1e-6;
+spec.TOL=1e-8;
 spec.x_min_cell={[],0};
 spec.DEBUG=1;
 spectral_spec=1;
@@ -23,7 +23,7 @@ end
 
 % Model Parameters
 
-c.MAX_FIRMS = 3;
+c.MAX_FIRMS = 1;
 c.START_FIRMS = 1;
 c.EQL_TYPE = 'COMPETITION'; % COMPETITION|MONOPOLY|PLANNER
 
@@ -107,5 +107,5 @@ end
 
 filename=append('results/PakesMcGuire_model_algorithm_comparison_summary',...
     tag,'_',string(c.MAX_FIRMS),'_',string(c.BETA),'.csv');
-writematrix(round(results,2),filename)
+%writematrix(round(results,2),filename)
 

@@ -102,5 +102,5 @@ table=round([iter_info_PM.t_cpu,iter_info_PM.feval,iter_info_PM.FLAG_ERROR;...
     iter_info_new.t_cpu,iter_info_new.feval,iter_info_new.FLAG_ERROR],3)
 
 
-writematrix([table;table_spectral],append("results/results_",string(N),".csv"))
+%writematrix([table;table_spectral],append("results/results_",string(N),".csv"))
 
