@@ -163,17 +163,23 @@ k1   =  k0*(1-delta)+A*z0.*k0.^alpha-c0;  % Initial guess for capital
 
 spec_default.norm_spec=10;%% unit free
 spec_default.TOL=1e-6;
+spec_default.ITER_MAX=2000;
 spec_default.alpha_0=alpha0_param;
 spec_default.common_alpha_spec=common_alpha_spec;
 
 spec=spec_default;
-spec.ITER_MAX=1000;
+spec.ITER_MAX=2000;
  
     [output_spectral,other_vars,iter_info_V]=...
         spectral_func(@VF_Bellman_update_func,spec,{V},...
             X0,c0,k1,z1,gam,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
 
     V=output_spectral{1};
+
+    if max(abs(V))>10^10
+       iter_info_V.FLAG_ERROR=1;
+    end
+
     vf_coef = X0\V;     % Coefficients for value function
 
 %%% Initial values %%%
@@ -273,6 +279,10 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     end
 
 
+    if max(abs(k1))>10^10 || iter_info.feval==iter_info.ITER_MAX
+       iter_info.FLAG_ERROR=1;
+    end
+    
     % After the solution is computed by any method, we construct the value 
     % value function for the constructed policy rules
     
@@ -284,6 +294,10 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
 
     V=output_spectral{1};
     vf_coef = X0\V;     % Coefficients for value function
+
+    if max(abs(V))>10^10
+       iter_info_V.FLAG_ERROR=1;
+    end
 
     CPU(D) = toc(tStart);                      % Store running time
     VK(1:1+D+D*(D+1)/2,D) = vf_coef;   % Store the solution coefficients 
@@ -309,7 +323,7 @@ for D = D_min:D_max % For polynomial degrees from 2 to 5...
             % Display the results
     
     out(D-1,:)=[D,Degree(D),CPU(D),Mean_Residuals(D),Max_Residuals(D),...
-        feval(D),feval_V(D)];
+        feval(D),feval_V(D),1-iter_info.FLAG_ERROR];
 
     other_output.iter_info=iter_info;
     other_output.iter_info_V=iter_info_V;
