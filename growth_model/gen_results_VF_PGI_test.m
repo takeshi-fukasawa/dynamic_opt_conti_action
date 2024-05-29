@@ -4,6 +4,7 @@ clear
 global V k1 iter_info lambda_param alpha0_param
 global common_alpha_spec
 
+%%% Path of Spectral function
 addpath('C:/Users/fukas/Dropbox/git/spectral')
 
 
