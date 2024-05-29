@@ -7,7 +7,7 @@ function [out,other_vars]=update_func(input_cell,...
 
   global V X0_temp
 
-if Method<=3
+if Method<=3 & Method>=1
     V=input_cell;
 elseif Method==4 | Method==5 | Method==7
     k1=input_cell;
@@ -225,7 +225,7 @@ end
         end               
         
 %%%%%%%%
-if Method<=3
+if Method<=3 & Method>=1
     out={V_new};
 elseif Method==4 | Method==5 | Method==7
     out={k1_new};

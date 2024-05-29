@@ -6,7 +6,7 @@ function [out,other_vars]=joint_update_func(V,var2,...
    
    global lambda_param
    
-   if Method==8 %% VF-PGI update
+   if Method==0 %% VF-PGI update
        k1=var2;%initial action
        vf_coef=X0\V; % Coefficients for value function
                 

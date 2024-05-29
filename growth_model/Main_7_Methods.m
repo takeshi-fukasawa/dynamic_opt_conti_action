@@ -61,6 +61,7 @@ fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
 
 global iter_info iter_info0 V k1
 global alpha0_param
+global common_alpha_spec
 
 D_init=D;
 D_min=D;
@@ -163,8 +164,7 @@ k1   =  k0*(1-delta)+A*z0.*k0.^alpha-c0;  % Initial guess for capital
 spec_default.norm_spec=10;%% unit free
 spec_default.TOL=1e-6;
 spec_default.alpha_0=alpha0_param;
-
-spec_default.alpha_0
+spec_default.common_alpha_spec=common_alpha_spec;
 
 spec=spec_default;
 spec.ITER_MAX=1000;
@@ -213,19 +213,19 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         spec.common_alpha_spec=1; % Important
     end
 
-    if Method<=2
+    if Method<=2 & Method>=1
         input={V};
     elseif Method==4 | Method==5 | Method==7
         input={k1};
     elseif Method==6
         input={Vder0};
-    elseif Method==8
+    elseif Method==0
         input={V,k1};
     elseif Method==3
         input={V,k0};
     end
 
-    if Method<=7 & Method~=3
+    if Method<=7 & Method>=1 & Method~=3
         fun=@update_func;
     else
         fun=@joint_update_func;
@@ -238,7 +238,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     iter_info.feval
     
 
-    if Method<=2
+    if Method<=2 & Method>=1
         V=output_spectral{1};
         vf_coef = X0\V;     % Coefficients for value function 
         k1=other_vars.k1;
@@ -253,7 +253,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         vf_coef = X0\Vder0;     % Coefficients for value function
         k1=other_vars.k1;
 
-    elseif Method==8
+    elseif Method==0
         V=output_spectral{1};
         k1=output_spectral{2};
         vf_coef=X0\V;
