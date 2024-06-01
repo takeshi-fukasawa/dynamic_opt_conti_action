@@ -65,6 +65,7 @@ for t=1:T
     resid_V=V_t_updated-V_t;
     resid_mat(t,:)=[resid_I,resid_V];
 
+
 end % loop wrt t
 
 
