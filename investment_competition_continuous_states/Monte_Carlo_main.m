@@ -65,7 +65,7 @@ V_t_grid_initial0=V_t_grid_initial+...
 %    0.1*randn(n_grid,N,n_node_inv);
 
 %% Pakes McGuire(1994) algorithm
-if 1==0
+if 1==1
 update_spec="PM";
 tic
 run iteration.m

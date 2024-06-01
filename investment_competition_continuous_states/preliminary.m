@@ -28,21 +28,27 @@ mu_max=max(mu_vec);
 Smol_elem_iso=Smolyak_Elem_Isotrop(d,mu_max);
 Smol_elem_ani=Smolyak_Elem_Anisotrop(Smol_elem_iso,mu_vec);
 Smol_elem=Smol_elem_ani;
+numb_terms=size(Smol_elem,1);
+
+n_state=size(state_min,2);
+
+%% Construct ind for state variables
+row_no_precompute=reshape(repmat(1:n_state,numb_terms,1),[],1);%(numb_terms*(d=N))*1; 1,1,1,...2,2,2,...,d,d,d,...d
+col_no_precompute=reshape(Smol_elem(:,1:end),[],1); %(numb_terms*N)*1; 1~m_i_max
+sz_no_precompute=[N+2 numb_terms];
+ind_no_precompute=sub2ind(sz_no_precompute,row_no_precompute,col_no_precompute); % (numb_terms*N)*1;
 
 if spec_precompute==1
     %% Construct ind for kstk
-    numb_terms=size(Smol_elem,1);
     row=reshape(repmat(1:N,numb_terms,1),[],1);%(numb_terms*(d=N))*1; 1,1,1,...2,2,2,...,d,d,d,...d
     col=reshape(Smol_elem(:,1:N),[],1); %(numb_terms*N)*1; 1~m_i_max
     sz=[N numb_terms];
     ind=sub2ind(sz,row,col); % (numb_terms*N)*1;
-else    
-    %% Construct ind for state variables
-    numb_terms=size(Smol_elem,1);
-    row=reshape(repmat(1:N+2,numb_terms,1),[],1);%(numb_terms*(d=N))*1; 1,1,1,...2,2,2,...,d,d,d,...d
-    col=reshape(Smol_elem(:,1:end),[],1); %(numb_terms*N)*1; 1~m_i_max
-    sz=[N+2 numb_terms];
-    ind=sub2ind(sz,row,col); % (numb_terms*N)*1;
+else
+    row=row_no_precompute;
+    col=col_no_precompute;
+    sz=sz_no_precompute;
+    ind=ind_no_precompute;
 end
 
 %% Construct ind for exo

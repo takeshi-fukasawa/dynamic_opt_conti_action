@@ -6,7 +6,7 @@ function [V_diff,basis,V_diff2]=V_diff_func(k,exo,basis_exo,coef_approx_V,...
 % k: n_pts*N*n_node_inv
 % exo: n_pts*2
 % basis_exo: n_pts*n_coef; basis at time t+1
-% coef_approx_V: n_coef*N
+% coef_approx_V: n_coef*n_var
 % w_inv: n_node_inv*1
 
 %% Output:
