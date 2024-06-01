@@ -26,9 +26,10 @@ coef_approx_V=inv_multiply_t*V_t;
 [n_coef,N]=size(coef_approx_V);
 
 theta=parameters(1:4);
-sd_inv=parameters(end);
-stoch_inv_cost=sqrt(2)*repmat(sd_inv,1,N,1).*reshape(x_inv,1,1,n_node_inv);%1*N*n_node_inv
+%sd_inv=parameters(end);
+%stoch_inv_cost=sqrt(2)*repmat(sd_inv,1,N,1).*reshape(x_inv,1,1,n_node_inv);%1*N*n_node_inv
 
+stoch_inv_cost=zeros(1,N,n_node_inv);
 
 
 %% --------------- (1) Calculate FOC (investment choice problem) -----------------
@@ -42,7 +43,7 @@ if update_spec=="new"|update_spec=="gradient"
     else
          [V_t1_diff,basis_t1]=...
             V_diff_func((1-delta_param)*reshape(k_t,n_pts,N,1)+I_t,...
-        exo_t1,basis_exo_t1,coef_approx_V,state_min,state_max,Smol_elem,mu_max,d,ind,w_inv);
+        exo_t1,coef_approx_V,state_min,state_max,Smol_elem,mu_max,d,ind,w_inv);
     end
 
     [inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t,stoch_inv_cost,theta);
@@ -75,7 +76,7 @@ E_inv_cost=reshape(sum(inv_cost.*reshape(w_inv,1,1,n_node_inv),3),n_pts,N);
 V_t_updated=pi_func(k_t,exo_t)-E_inv_cost+beta_param*EV;%n_pts*N
 
 if 1==0
-    V_t_updated=V_t_updated-V_t_updated(1,:);%%% Relative value func
+    V_t_updated=V_t_updated-V_t_updated(1,:);%%% Relative value function iteration (cf. Bray 2019)
 end
 
 out={I_t_updated,V_t_updated};

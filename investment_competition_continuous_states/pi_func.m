@@ -16,7 +16,7 @@ function [pi,mc,P,Q,q]=pi_func(k_grid,exo_grid)
 global elas
 [M,N]=size(k_grid);
 
-coef_year_fixed=exo_grid(:,1);
+
 log_demand_resid=exo_grid(:,2);
 
 mc=mc_func(k_grid,exo_grid,0);

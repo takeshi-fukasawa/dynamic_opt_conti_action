@@ -144,6 +144,7 @@ end
 % phi: numb_pts * d * m_i_max
 % phi(:,ind): %numb_pts* (numb_terms*d)
 
+
 Smol_bases_single=reshape(phi(:,ind),numb_pts,numb_terms,d);%numb_pts*numb_terms*d
 
 Smol_bases=reshape(prod(Smol_bases_single,3),numb_pts,numb_terms);% numb_pts*numb_terms

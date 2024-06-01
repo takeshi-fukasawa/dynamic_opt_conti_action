@@ -38,21 +38,20 @@ for j=1:N
             V_diff_func_precompute(k_t1,...
             exo_t1,basis_exo_t1,...
             coef_approx_V(:,j,:),state_min,state_max,Smol_elem,mu_max,d,ind,w_inv);
+                
+        else
+            [V_t1_diff_j,basis_t1_j,V_t1_diff2_j]=...
+            V_diff_func(k_t1,...
+            exo_t1,...
+            coef_approx_V(:,j,:),state_min,state_max,Smol_elem,mu_max,d,ind,w_inv);
         
+        end
             %%%%%%%%%%%%%%%%%%%
             V_t1_diff_j=V_t1_diff_j(:,j,:);
             basis_t1_j=basis_t1_j(:,:,:,j);
             V_t1_diff2_j=V_t1_diff2_j(:,j,:);
             %%%%%%%%%%%%%%%%%%%
-        
-        else
-            [V_t1_diff_j,basis_t1_j,V_t1_diff2_j]=...
-            V_diff_func(k_t1,...
-            exo_t1,basis_exo_t1,...
-            coef_approx_V(:,j,:),state_min,state_max,Smol_elem,mu_max,d,ind,w_inv);
-        
-        end
-        
+
         [inv_cost_j,inv_cost_diff_j,inv_cost_diff2_j]=...
             inv_cost_func(k_t(:,j,:),I_t_j_old,stoch_inv_cost(:,j,:),theta);
         diff=beta_param*V_t1_diff_j-inv_cost_diff_j;%n_pts*N*n_node_inv

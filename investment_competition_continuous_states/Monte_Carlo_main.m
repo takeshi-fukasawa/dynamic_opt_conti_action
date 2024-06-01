@@ -15,7 +15,7 @@ addpath('C:/Users/fukas/Dropbox/git/spectral')
 lambda_param=1;
 
 gpu_spec=0;
-spec_precompute=1;
+spec_precompute=0;
 n_sim=1;
 N=2;d=N+2;
 TOL=10^(-8);
@@ -67,7 +67,7 @@ V_t_grid_initial0=V_t_grid_initial+...
 %    0.1*randn(n_grid,N,n_node_inv);
 
 %% Pakes McGuire(1994) algorithm
-if 1==1
+if 1==0
 update_spec="PM";
 tic
 run iteration.m
