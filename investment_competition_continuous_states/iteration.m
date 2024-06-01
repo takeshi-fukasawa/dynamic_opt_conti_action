@@ -52,6 +52,10 @@ end
 I_sol=output{1};
 V_sol=output{2};
 
+[resid_mat,k_path,exo_shock_path]=...
+precision_check_func(I_sol,V_sol,k_center,exo_center,ind_no_precompute,AR_coef,sd_exo,theta,...
+w_inv,state_min,state_max,Smol_elem,mu_max,inv_multiply_t_grid);
+
 %%%%%%%%%% Spectral algorithm %%%%%
 spec.update_spec=[];
 [output,other_vars,iter_info_spectral]=spectral_func(...
@@ -64,30 +68,42 @@ spec.update_spec=[];
 I_sol_spectral=output{1};
 V_sol_spectral=output{2};
 
+[resid_mat_spectral,k_path_spectral,exo_shock_path_spectral]=...
+precision_check_func(I_sol,V_sol,k_center,exo_center,ind_no_precompute,AR_coef,sd_exo,theta,...
+w_inv,state_min,state_max,Smol_elem,mu_max,inv_multiply_t_grid);
+
 if update_spec=="new"
     iter_info_new=iter_info;
     I_t_new=I_sol;
     V_t_new=V_sol;
+    resid_mat_new=resid_mat;
 
     iter_info_new_spectral=iter_info_spectral;
     I_t_new_spectral=I_sol_spectral;
     V_t_new_spectral=V_sol_spectral;
-    
+    resid_mat_new_spectral=resid_mat_spectral;
+
 elseif update_spec=="PM"
     iter_info_PM=iter_info;
     I_t_PM=I_sol;
     V_t_PM=V_sol;
+    resid_mat_PM=resid_mat;
+
     iter_info_PM_spectral=iter_info_spectral;
     I_t_PM_spectral=I_sol_spectral;
     V_t_PM_spetctral=V_sol_spectral;
+    resid_mat_PM_spectral=resid_mat_spectral;
     
 elseif update_spec=="gradient"
     iter_info_gradient=iter_info;
     I_t_gradient=I_sol;
     V_t_gradient=V_sol;
+    resid_mat_gradient=resid_mat;
 
     iter_info_gradient_spectral=iter_info_spectral;
     I_t_gradient_spectral=I_sol_spectral;
     V_t_gradient_spectral=V_sol_spectral;
+    resid_mat_gradient_spectral=resid_mat_spectral;
+
 end
 

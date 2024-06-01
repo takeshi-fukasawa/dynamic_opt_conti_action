@@ -18,9 +18,7 @@ gpu_spec=0;
 spec_precompute=1;
 n_sim=1;
 N=2;d=N+2;
-mu_max_val=2;
-mu_max=mu_max_val;%%%%
-mu_max_exo=mu_max_val;%%%%
+mu_max=2;
 delta_param=0.08;%0.08;
 beta_param=0.9;
 elas=1.5;
@@ -38,9 +36,9 @@ adj_cost=0.3;
 theta=[0.2;adj_cost;0.2;adj_cost];
 
 AR_coef=0.9*ones(1,2);
-sd_exo=[0.01,0.01]*10;
+sd_exo=[0.01,0.01]*1;
 sd_inv=0;%1e-4;
-magnify_rate_kstk=1.6;
+magnify_rate_kstk=1.8;
 magnify_rate_exo=1.1;
 k_center=ones(1,N);
 exo_center=[4,2];%%%%
@@ -92,13 +90,17 @@ max(I_t_PM./I_t_new)
 max(V_t_PM./V_t_new)
 
 
-table_spectral=round([iter_info_PM_spectral.t_cpu,iter_info_PM_spectral.feval,iter_info_PM_spectral.FLAG_ERROR;...
-    iter_info_gradient_spectral.t_cpu,iter_info_gradient_spectral.feval,iter_info_gradient_spectral.FLAG_ERROR;...
-    iter_info_new_spectral.t_cpu,iter_info_new_spectral.feval,iter_info_new_spectral.FLAG_ERROR],3)
+table_spectral=round([...
+iter_results_output_func(iter_info_gradient_spectral,resid_mat_gradient_spectral);...
+iter_results_output_func(iter_info_PM_spectral,resid_mat_PM_spectral);...
+iter_results_output_func(iter_info_new_spectral,resid_mat_new_spectral)],3);
 
-table=round([iter_info_PM.t_cpu,iter_info_PM.feval,iter_info_PM.FLAG_ERROR;...
-    iter_info_gradient.t_cpu,iter_info_gradient.feval,iter_info_gradient.FLAG_ERROR;...
-    iter_info_new.t_cpu,iter_info_new.feval,iter_info_new.FLAG_ERROR],3)
+
+table=round([...
+iter_results_output_func(iter_info_gradient,resid_mat_gradient);...
+iter_results_output_func(iter_info_PM,resid_mat_PM);...
+iter_results_output_func(iter_info_new,resid_mat_new)],3);
+
 
 
 %writematrix([table;table_spectral],append("results/results_",string(N),".csv"))

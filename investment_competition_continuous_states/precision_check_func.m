@@ -1,24 +1,32 @@
 %%% Check the precision of the solution
+function [resid_mat,k_mat,exo_shock_mat]=...
+precision_check_func(I_sol,V_sol,k_center,exo_center,ind_no_precompute,AR_coef,sd_exo,theta,...
+w_inv,state_min,state_max,Smol_elem,mu_max,inv_multiply_t_grid)
+
+global beta_param delta_param
+
 
 %% Coefficients for approximation
 
-coef_approx_V=inv_multiply_t_grid*output{2};
-coef_approx_I=inv_multiply_t_grid*output{1};
+coef_approx_I=inv_multiply_t_grid*I_sol;
+coef_approx_V=inv_multiply_t_grid*V_sol;
 [n_coef,N]=size(coef_approx_V);
-n_node_inv=1;
+n_exo=size(exo_center,2);
+n_state=N+n_exo;
+n_node_inv=size(w_inv(:),1);
 
 %% Forward simulation
-T=100;%%%%
+T=1000;%%%%
 
 k_mat=NaN(T+1,N);%t=0,...,T
 I_mat=NaN(T,N);%t=1,...,T
 
-exo_shock_mat=NaN(T+1,2);%t=0,...,T
+exo_shock_mat=NaN(T+1,n_exo);%t=0,...,T
 
 resid_mat=NaN(T,2*N);%t=0,...,T
 
 k_mat(1,:)=k_center*0.99;%%%%
-exo_shock_mat(1,:)=exo_center*1.00;%%%%%
+exo_shock_mat(1,:)=exo_center*1.01;%%%%%
 
 
 random_val=randn(T,2);
@@ -29,23 +37,27 @@ for t=1:T
     state_t=[k_t,exo_t];%1*(N+2)
 
     % basis: 1*n_coef
-    [basis]=...
-        base_func(state_t,state_min,state_max,Smol_elem,mu_max,N+2,ind_no_precompute);
+    [basis_t]=...
+        base_func(state_t,state_min,state_max,Smol_elem,mu_max,n_state,ind_no_precompute);
     
-    I_t=sum(reshape(basis,n_coef,1).*reshape(coef_approx_I,n_coef,N),1);%1*N
+    I_t=sum(reshape(basis_t,n_coef,1).*reshape(coef_approx_I,n_coef,N),1);%1*N
     I_mat(t,:)=I_t;
 
     k_t1=(1-delta_param).*k_t+I_t;%1*N
     k_mat(t+1,:)=k_t1;
 
-    exo_shock_mat(t+1,:)=AR_coef.*(exo_shock_mat(t,:)-exo_center(1,:))+exo_center(1,:)+sd_exo.*random_val(t,:);
+    exo_t1_mean=AR_coef.*(exo_shock_mat(t,:)-exo_center(1,:))+exo_center(1,:);%1*n_exo exo_shock_mat(t+1,:)=exo_t1_mean+sd_exo.*random_val(t,:);
+
+    exo_shock_mat(t+1,:)=exo_t1_mean+sd_exo.*random_val(t,:);
 
     
     %%% Accuracy test
-    V_t=sum(reshape(basis,n_coef,1).*reshape(coef_approx_V,n_coef,N),1);%1*N
+    V_t=sum(reshape(basis_t,n_coef,1).*reshape(coef_approx_V,n_coef,N),1);%1*N
 
-    [V_t1_diff,basis_t1_mean]=V_t1_diff_func(k_t,exo_t,coef_approx_V,...
+    [V_t1_diff,basis_t1_mean]=V_t1_diff_func(k_t1,exo_t1_mean,coef_approx_V,...
         state_min,state_max,Smol_elem,mu_max,ind_no_precompute,w_inv);
+   
+    stoch_inv_cost=zeros(1,N,n_node_inv);
     [inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t,stoch_inv_cost,theta);
     
     resid_I=-inv_cost_diff+beta_param*V_t1_diff;%1*N
@@ -68,3 +80,4 @@ for t=1:T
 end % loop wrt t
 
 
+end % end function

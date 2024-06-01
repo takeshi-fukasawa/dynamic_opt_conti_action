@@ -1,7 +1,7 @@
 rng('default')
 
 
-mu_vec=[mu_max*ones(N,1);mu_max_exo*ones(2,1)];
+mu_vec=mu_max*ones(N+2,1);
 
 
 %% Stochastic investment cost
@@ -103,7 +103,7 @@ k_t_grid=k_grid;%%M*N
 exo_t_grid=exo_grid;%%M*2
 exo_t1_grid=AR_coef.*(exo_t_grid-exo_center)+exo_center;%%M*2
 
-%------- Exogenous variables ------%
+%% Precompute basis_exo_t1
 [x_temp,w_temp]=gausshermi(n_node_exo);
 w=w_temp/sqrt(pi);
 
@@ -116,6 +116,6 @@ weight=prod(weight_mat,1);%1*ns
 w_exo=weight./sum(weight,2);%1*ns;necessary??
 
 
-basis_exo_t1_grid=precompute_basis_exo_func(exo_t1_grid,n_node_exo,sd_exo,Smol_elem,state_max,state_min,N,mu_max_exo,ind_exo);
+basis_exo_t1_grid=precompute_basis_exo_func(exo_t1_grid,n_node_exo,sd_exo,Smol_elem,state_max,state_min,N,mu_max,ind_exo);
 
 parameters=[theta;sd_inv];
