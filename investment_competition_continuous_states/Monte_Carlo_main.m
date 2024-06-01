@@ -71,7 +71,7 @@ end%%%%%
 
 
 %% New algorithm
-update_spec="new";
+update_spec="analytical";
 tic
 run iteration.m
 
@@ -84,22 +84,22 @@ run iteration.m
 end
 
 
-%max(V_t_grid_initial0./V_t_new_algorithm)
-%max(I_t_grid_initial0-I_t_new_algorithm)
-max(I_t_PM./I_t_new)
-max(V_t_PM./V_t_new)
+%max(V_t_grid_initial0./V_t_analytical_algorithm)
+%max(I_t_grid_initial0-I_t_analytical_algorithm)
+max(I_t_PM./I_t_analytical)
+max(V_t_PM./V_t_analytical)
 
 
 table_spectral=round([...
 iter_results_output_func(iter_info_gradient_spectral,resid_mat_gradient_spectral);...
 iter_results_output_func(iter_info_PM_spectral,resid_mat_PM_spectral);...
-iter_results_output_func(iter_info_new_spectral,resid_mat_new_spectral)],3);
+iter_results_output_func(iter_info_analytical_spectral,resid_mat_analytical_spectral)],3);
 
 
 table=round([...
 iter_results_output_func(iter_info_gradient,resid_mat_gradient);...
 iter_results_output_func(iter_info_PM,resid_mat_PM);...
-iter_results_output_func(iter_info_new,resid_mat_new)],3);
+iter_results_output_func(iter_info_analytical,resid_mat_analytical)],3);
 
 
 

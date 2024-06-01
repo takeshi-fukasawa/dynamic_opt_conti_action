@@ -20,11 +20,11 @@ I_init_val=I_t_grid_initial0;
 V_init_val=V_t_grid_initial0;
 
 if update_spec=="gradient"
-    %I_init_val=I_t_new_spectral;
-    %V_init_val=V_t_new_spectral;
+    %I_init_val=I_t_analytical_spectral;
+    %V_init_val=V_t_analytical_spectral;
 
-    %I_init_val=-0.001+I_t_new_spectral.*exp(0.015*rand(size(I_t_new_spectral)));
-    %V_init_val=0.1+V_t_new_spectral.*exp(0.01*rand(size(I_t_new_spectral)));
+    %I_init_val=-0.001+I_t_analytical_spectral.*exp(0.015*rand(size(I_t_analytical_spectral)));
+    %V_init_val=0.1+V_t_analytical_spectral.*exp(0.01*rand(size(I_t_analytical_spectral)));
 
 end
 
@@ -72,16 +72,16 @@ V_sol_spectral=output{2};
 precision_check_func(I_sol,V_sol,k_center,exo_center,ind_no_precompute,AR_coef,sd_exo,theta,...
 w_inv,state_min,state_max,Smol_elem,mu_max,inv_multiply_t_grid);
 
-if update_spec=="new"
-    iter_info_new=iter_info;
-    I_t_new=I_sol;
-    V_t_new=V_sol;
-    resid_mat_new=resid_mat;
+if update_spec=="analytical"
+    iter_info_analytical=iter_info;
+    I_t_analytical=I_sol;
+    V_t_analytical=V_sol;
+    resid_mat_analytical=resid_mat;
 
-    iter_info_new_spectral=iter_info_spectral;
-    I_t_new_spectral=I_sol_spectral;
-    V_t_new_spectral=V_sol_spectral;
-    resid_mat_new_spectral=resid_mat_spectral;
+    iter_info_analytical_spectral=iter_info_spectral;
+    I_t_analytical_spectral=I_sol_spectral;
+    V_t_analytical_spectral=V_sol_spectral;
+    resid_mat_analytical_spectral=resid_mat_spectral;
 
 elseif update_spec=="PM"
     iter_info_PM=iter_info;

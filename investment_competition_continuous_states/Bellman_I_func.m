@@ -33,7 +33,7 @@ stoch_inv_cost=zeros(1,N,n_node_inv);
 
 
 %% --------------- (1) Calculate FOC (investment choice problem) -----------------
-if update_spec=="new"|update_spec=="gradient"
+if update_spec=="analytical"|update_spec=="gradient"
     % V_t1_diff:n_pts*N*n_node_inv
     if spec_precompute==1
         [V_t1_diff,basis_t1]=...
@@ -52,7 +52,7 @@ if update_spec=="new"|update_spec=="gradient"
     %%% The following is unstable????
     %%%[inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t_updated,stoch_inv_cost,theta);
 
-    if update_spec=="new"
+    if update_spec=="analytical"
         %diff=-inv_cost_diff+beta_param*V_t1_diff;
     end
 
