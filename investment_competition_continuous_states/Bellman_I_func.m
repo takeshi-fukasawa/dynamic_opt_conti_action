@@ -38,12 +38,12 @@ if update_spec=="new"|update_spec=="gradient"
     if spec_precompute==1
         [V_t1_diff,basis_t1]=...
             V_t1_diff_func_precompute((1-delta_param)*reshape(k_t,n_pts,N,1)+I_t,...
-            basis_exo_t1,coef_approx_V,state_min,state_max,Smol_elem,mu_max,d,ind,w_inv);
+            basis_exo_t1,coef_approx_V,state_min,state_max,Smol_elem,mu_max,ind,w_inv);
 
     else
          [V_t1_diff,basis_t1]=...
             V_t1_diff_func((1-delta_param)*reshape(k_t,n_pts,N,1)+I_t,...
-        exo_t1,coef_approx_V,state_min,state_max,Smol_elem,mu_max,d,ind,w_inv);
+        exo_t1,coef_approx_V,state_min,state_max,Smol_elem,mu_max,ind,w_inv);
     end
 
     [inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t,stoch_inv_cost,theta);

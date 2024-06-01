@@ -1,5 +1,5 @@
 function [V_diff,basis,V_diff2]=V_t1_diff_func_precompute(k,basis_exo,coef_approx_V,...
-    state_min,state_max,Smol_elem,mu_max,d,ind,w_inv)
+    state_min,state_max,Smol_elem,mu_max,ind,w_inv)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Input:

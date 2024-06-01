@@ -1,5 +1,5 @@
 function [V_diff,basis,V_diff2]=V_t1_diff_func(k_t1,exo_t1_mean,coef_approx_V,...
-    state_min,state_max,Smol_elem,mu_max,d,ind,w_inv)
+    state_min,state_max,Smol_elem,mu_max,ind,w_inv)
 global w_exo x_exo sd_exo
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Compute expected E[V_t1_diff]. Expectations wrt exogenous variables
