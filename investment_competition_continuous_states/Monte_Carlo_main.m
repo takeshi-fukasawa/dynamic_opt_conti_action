@@ -18,17 +18,15 @@ gpu_spec=0;
 spec_precompute=0;
 n_sim=1;
 N=2;d=N+2;
-TOL=10^(-8);
-mu_max=2%%%%
-mu_max_exo=2;%%%%
+mu_max_val=2;
+mu_max=mu_max_val;%%%%
+mu_max_exo=mu_max_val;%%%%
 delta_param=0.08;%0.08;
 beta_param=0.9;
 elas=1.5;
 
 %%resell_ratio=0.8;%1;
 resell_ratio=1;%%%%%
-
-ITER_MAX=200;
 
 tune_param=0;%1e-6;
 n_node_exo=3;
@@ -40,9 +38,9 @@ adj_cost=0.3;
 theta=[0.2;adj_cost;0.2;adj_cost];
 
 AR_coef=0.9*ones(1,2);
-sd_exo=[0.01,0.01];
+sd_exo=[0.01,0.01]*0;
 sd_inv=0;%1e-4;
-magnify_rate_kstk=2;
+magnify_rate_kstk=1.6;
 magnify_rate_exo=1.1;
 k_center=ones(1,N);
 exo_center=[4,2];%%%%

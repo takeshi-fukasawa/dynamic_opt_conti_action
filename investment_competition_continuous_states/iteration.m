@@ -38,7 +38,7 @@ spec.x_max_cell=x_max_cell;
 spec.x_min_cell=x_min_cell;
 spec.DEBUG=1;
 spec.ITER_MAX=500;
-spec.TOL=1e-8;
+spec.TOL=1e-10;
 
 %%%%%%%%%% Fixed point iteration %%%%%
 spec.update_spec=0;
