@@ -44,7 +44,7 @@ for t=1:T
     %%% Accuracy test
     V_t=sum(reshape(basis,n_coef,1).*reshape(coef_approx_V,n_coef,N),1);%1*N
 
-    [V_t1_diff,basis_t1]=V_diff_func(k_t,exo_t,coef_approx_V,...
+    [V_t1_diff,basis_t1]=V_t1_diff_func(k_t,exo_t,coef_approx_V,...
         state_min,state_max,Smol_elem,mu_max,d,ind_no_precompute,w_inv);
     [inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t,stoch_inv_cost,theta);
     

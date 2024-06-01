@@ -1,12 +1,12 @@
-function [V_diff,basis,V_diff2]=V_diff_func(k,exo,coef_approx_V,...
+function [V_diff,basis,V_diff2]=V_t1_diff_func(k_t1,exo_t1_mean,coef_approx_V,...
     state_min,state_max,Smol_elem,mu_max,d,ind,w_inv)
 global w_exo x_exo sd_exo
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Compute expected E[V_t1_diff]. Expectations wrt exogenous variables
 
 %% Input:
-% k: n_pts*N*n_node_inv; k_t1
-% exo: n_pts*n_exo; mean of exo_t1
+% k_t1: n_pts*N*n_node_inv
+% exo_t1_mean: n_pts*n_exo; mean of exo_t1
 % coef_approx_V: n_coef*n_var
 % w_inv: n_node_inv*1
 
@@ -15,18 +15,18 @@ global w_exo x_exo sd_exo
 % basis: n_pts*n_coef*n_node_inv
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-[n_pts,N,n_node_inv]=size(k);
+[n_pts,N,n_node_inv]=size(k_t1);
 n_coef=size(coef_approx_V,1);
-n_exo=size(exo,2);
+n_exo=size(exo_t1_mean,2);
 n_state=N+n_exo;
 n_var=size(coef_approx_V,2);
 
 %% Construct basis function
 
 ns_exo=size(w_exo,2);
-exo_stoch=repmat(exo,ns_exo,1)+...
-    kron(sqrt(2)*sd_exo.*x_exo',ones(size(exo,1),1));%(n_pts*ns_exo)*2
-state_stoch=[repmat(k,ns_exo,1),exo_stoch];%(n_pts*ns_exo)*(N+2)
+exo_stoch=repmat(exo_t1_mean,ns_exo,1)+...
+    kron(sqrt(2)*sd_exo.*x_exo',ones(size(exo_t1_mean,1),1));%(n_pts*ns_exo)*2
+state_stoch=[repmat(k_t1,ns_exo,1),exo_stoch];%(n_pts*ns_exo)*(N+2)
 
 % basis: n_pts*n_coef*n_node_inv
 % basis_single: n_pts*n_coef*n_node_inv*n_state
