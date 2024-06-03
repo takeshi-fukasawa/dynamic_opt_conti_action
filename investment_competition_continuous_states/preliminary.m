@@ -54,10 +54,10 @@ sz_no_precompute=[N+2 numb_terms];
 ind_no_precompute=sub2ind(sz_no_precompute,row_no_precompute,col_no_precompute); % (numb_terms*N)*1;
 
 if spec_precompute==1
-    row=row_precompute;
-    col=col_precompute;
-    sz=sz_precompute;
-    ind=ind_precompute;
+    row=row_k_precompute;
+    col=col_k_precompute;
+    sz=sz_k_precompute;
+    ind=ind_k_precompute;
 else
     row=row_no_precompute;
     col=col_no_precompute;
@@ -83,6 +83,7 @@ theta_temp=...
 	(beta_param*pi_t1_diff_initial(1)+beta_param*theta(2)*delta_param^2)/(1-beta_param*(1-delta_param))...
 	-2*theta(2)*delta_param;
 theta(1)=mean(theta_temp);
+theta(1)=0.12;%%%%%
 
 theta(3)=theta(1)*resell_ratio;%0.99;
 theta(4)=theta(2);

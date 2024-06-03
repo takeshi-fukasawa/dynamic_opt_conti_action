@@ -4,8 +4,7 @@ function [V_diff,basis,V_diff2]=V_t1_diff_func_precompute(k,basis_exo,coef_appro
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Input:
 % k: n_pts*N*n_node_inv
-% exo: n_pts*2
-% basis_exo: n_pts*n_coef; basis at time t+1
+% basis_exo: n_pts*n_coef; basis at time t+1(mean of stochastic draws)
 % coef_approx_V: n_coef*n_var
 % w_inv: n_node_inv*1
 
@@ -42,23 +41,9 @@ basis_single_k_mean(basis_single_k_mean==0)=1;
 basis_single_k_mean_prod=prod(basis_single_k_mean,4);%n_pts*n_coef
 
 
-%% Numerical derivative
-%eps=1e-5;
-%[basis_k_eps,basis_single_k_eps]=base_func(k+eps,state_min(:,1:N),state_max(:,1:N),Smol_elem(:,1:N),mu_max,N);
-%basis_diff_single_k_temp=(basis_single_k_eps-basis_single_k)/eps;
-
-%% Test
-%[basis_k,basis_single_k,basis_diff_k,basis_diff_single_k]=base_func(k,state_min(:,1:N),state_max(:,1:N),Smol_elem(:,1:N),mu_max,N);
-
-%max(basis_diff_single_k_temp./basis_diff_single_k,[],'all')
-%max(basis_diff_single_k_temp./basis_diff_single_k,[],'all')-...
-% min(basis_diff_single_k_temp./basis_diff_single_k,[],'all')
-
-%basis_diff_single_k=basis_diff_single_k_temp;
-basis_k_adjusted=basis_single_k./basis_single_k_mean.*basis_single_k_mean_prod;%n_pts*n_coef*n_node_inv*N
-
-
 basis_diff_k_adjusted=basis_diff_single_k./basis_single_k_mean.*basis_single_k_mean_prod;%n_pts*n_coef*n_node_inv*N
+
+basis_k_adjusted=basis_single_k./basis_single_k_mean.*basis_single_k_mean_prod;%n_pts*n_coef*n_node_inv*N
 
 basis=basis_k_adjusted.*basis_exo;%n_pts*n_coef*n_node_inv*N
 
