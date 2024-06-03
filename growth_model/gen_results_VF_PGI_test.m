@@ -78,14 +78,14 @@ results_alpha_comparison=[out_different_alpha;out_common_alpha];
 
 
 filename=append('results/VF_PGI_comparison.csv');
-writematrix(round(results,3),filename)
+%writematrix(round(results,3),filename)
 
 filename=append('results/VF_PGI_spectral_change_alpha0.csv');
-writematrix(round(results_spectral_change_alpha0,3),filename)
+%writematrix(round(results_spectral_change_alpha0,3),filename)
 
 filename=append('results/VF_PGI_spectral_change_lambda.csv');
-writematrix(round(results_spectral_change_lambda,3),filename)
+%writematrix(round(results_spectral_change_lambda,3),filename)
 
 filename=append('results/VF_PGI_spectral_alpha_comparison.csv');
-writematrix(round(results_alpha_comparison,3),filename)
+%writematrix(round(results_alpha_comparison,3),filename)
 

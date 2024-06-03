@@ -3,30 +3,24 @@ I_min=[];I_max=[];
 
 %I_min=-0.5;I_max=1.0;
 
+spec.TOL=1e-10;
+spec.alpha_0=1;
+
 if 1==1
     spec=[];
     if update_spec=="PM"
         %spec.dampening_param={1.0,1.0};
     elseif update_spec=="gradient"
-       spec.opt_max_spec=[0,0];
+        lambda_param=1;
+        TOL_vec=(1e-10)*ones(1,2);
+        TOL_vec(1)=TOL_vec(1)*lambda_param;
+        spec.TOL=TOL_vec;
+       spec.alpha_0=0.01;
    end
 
 
-   spec.alpha_0=1;
-
-%%% {I_t_grid_initial0,V_t_grid_initial0}
-
 I_init_val=I_t_grid_initial0;
 V_init_val=V_t_grid_initial0;
-
-if update_spec=="gradient"
-    %I_init_val=I_t_analytical_spectral;
-    %V_init_val=V_t_analytical_spectral;
-
-    %I_init_val=-0.001+I_t_analytical_spectral.*exp(0.015*rand(size(I_t_analytical_spectral)));
-    %V_init_val=0.1+V_t_analytical_spectral.*exp(0.01*rand(size(I_t_analytical_spectral)));
-
-end
 
 
 %%I_init_val=I_t_gradient.*exp(0.1*rand(size(I_t_gradient)));
@@ -38,7 +32,6 @@ spec.x_max_cell=x_max_cell;
 spec.x_min_cell=x_min_cell;
 spec.DEBUG=1;
 spec.ITER_MAX=500;
-spec.TOL=1e-10;
 
 %%%%%%%%%% Fixed point iteration %%%%%
 spec.update_spec=0;

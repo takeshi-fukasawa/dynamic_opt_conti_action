@@ -10,12 +10,10 @@ global diff diff_temp isentry entered lambda_param
 spec.ITER_MAX=300;
 %spec.ITER_MAX=10;
 
-spec.TOL=1e-8;
+
 spec.x_min_cell={[],0};
 spec.DEBUG=1;
 spectral_spec=1;
-
-lambda_param=0.01;
 
 %spec.common_alpha_spec=0;
 
@@ -74,12 +72,19 @@ profit(c);
 % Solve dynamic equilibrium:
 no_entry_exit_spec=1;%%%%
 
-method=2;
+method="gradient";
+spec.alpha_0=1;
+lambda_param=0.01;
+TOL_vec=(1e-8)*ones(1,2);
+TOL_vec(2)=TOL_vec(2)*lambda_param;
+
 [newvalue_grad,newx_grad,iter_info_grad,other_vars]=...
         eql_ma(method,no_entry_exit_spec,spec,c);
 
 if 1==1 & c.QUAD_INV_COST==0
-method=1;
+method="PM";
+spec.TOL=1e-8;
+spec.alpha_0=1;
 [newvalue_PM,newx_PM,iter_info_PM,other_vars]=...
         eql_ma(method,no_entry_exit_spec,spec,c);
 end

@@ -421,7 +421,7 @@ function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,isentry,method,no_entr
     p=(a.*ox(j))./(1+a.*ox(j)); % Based on the old investment
     diff_temp(j)=beta*a*((1-p).^2).*(v1-v2)-INV_COST-QUAD_INV_COST.*ox(j);
 
-    if method==1
+    if method=="PM"
         % r now contains the value r = (1 - p)^2. => p = 1 - sqrt(r)),
         % where p is the optimal prob. of having k rise, cond. on world
 
@@ -430,7 +430,7 @@ function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,isentry,method,no_entr
 
         nx(j) = p/(a - a * p);
     
-    elseif method==2
+    elseif method=="gradient"
         diff(j)=diff_temp(j);
         if abs(ox(j))<=1e-16 & diff_temp(j)<0
             diff(j)=0;

@@ -5,6 +5,7 @@ w_inv,state_min,state_max,Smol_elem,mu_max,inv_multiply_t_grid)
 
 global beta_param delta_param
 
+rng(100,'twister')
 
 %% Coefficients for approximation
 
@@ -16,7 +17,7 @@ n_state=N+n_exo;
 n_node_inv=size(w_inv(:),1);
 
 %% Forward simulation
-T=1000;%%%%
+T=100;%%%%
 
 k_mat=NaN(T+1,N);%t=0,...,T
 I_mat=NaN(T,N);%t=1,...,T
@@ -46,8 +47,7 @@ for t=1:T
     k_t1=(1-delta_param).*k_t+I_t;%1*N
     k_mat(t+1,:)=k_t1;
 
-    exo_t1_mean=AR_coef.*(exo_shock_mat(t,:)-exo_center(1,:))+exo_center(1,:);%1*n_exo exo_shock_mat(t+1,:)=exo_t1_mean+sd_exo.*random_val(t,:);
-
+    exo_t1_mean=AR_coef.*(exo_t-exo_center)+exo_center;%1*n_exo 
     exo_shock_mat(t+1,:)=exo_t1_mean+sd_exo.*random_val(t,:);
 
     
@@ -60,8 +60,6 @@ for t=1:T
     stoch_inv_cost=zeros(1,N,n_node_inv);
     [inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t,stoch_inv_cost,theta);
     
-    resid_I=-inv_cost_diff+beta_param*V_t1_diff;%1*N
-
 
     %%%
     n_pts=1;
@@ -74,7 +72,13 @@ for t=1:T
     
     V_t_updated=pi_func(k_t,exo_t)-E_inv_cost+beta_param*EV;%n_pts*N
 
-    resid_V=V_t_updated-V_t;
+    %%% The following is not unit free??
+    %resid_I=-inv_cost_diff+beta_param*V_t1_diff;%1*N
+    %resid_V=V_t_updated-V_t;
+
+    %%% Unit free
+    resid_I=beta_param*V_t1_diff./inv_cost_diff-1;
+    resid_V=V_t_updated./V_t-1;
     resid_mat(t,:)=[resid_I,resid_V];
 
 end % loop wrt t

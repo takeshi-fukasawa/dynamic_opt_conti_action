@@ -60,7 +60,7 @@ fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
 % "7" - conventional Euler equation method (EE)
 
 global iter_info iter_info0 V k1
-global alpha0_param
+global alpha0_param lambda_param
 global common_alpha_spec
 
 D_init=D;
@@ -227,6 +227,9 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         input={Vder0};
     elseif Method==0
         input={V,k1};
+       TOL_vec=(1e-6)*ones(1,2);
+       TOL_vec(2)=TOL_vec(2)*lambda_param;%%% TOL of action should not depend on lambda_param 
+       spec.TOL=TOL_vec;
     elseif Method==3
         input={V,k0};
     end
