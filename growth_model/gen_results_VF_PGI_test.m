@@ -9,6 +9,7 @@ addpath('C:/Users/fukas/Dropbox/git/spectral')
 
 
 D=4;
+save_spec=1;
 
 results=[];
 results_spectral_change_alpha0=[];
@@ -76,16 +77,17 @@ iter_info_different_alpha=iter_info;
 results_alpha_comparison=[out_different_alpha;out_common_alpha];
 
 
+if save_spec==1
+    filename=append('results/VF_PGI_comparison.csv');
+    writematrix(round(results,3),filename)
 
-filename=append('results/VF_PGI_comparison.csv');
-%writematrix(round(results,3),filename)
+    filename=append('results/VF_PGI_spectral_change_alpha0.csv');
+    writematrix(round(results_spectral_change_alpha0,3),filename)
 
-filename=append('results/VF_PGI_spectral_change_alpha0.csv');
-%writematrix(round(results_spectral_change_alpha0,3),filename)
+    filename=append('results/VF_PGI_spectral_change_lambda.csv');
+    writematrix(round(results_spectral_change_lambda,3),filename)
 
-filename=append('results/VF_PGI_spectral_change_lambda.csv');
-%writematrix(round(results_spectral_change_lambda,3),filename)
-
-filename=append('results/VF_PGI_spectral_alpha_comparison.csv');
-%writematrix(round(results_alpha_comparison,3),filename)
+    filename=append('results/VF_PGI_spectral_alpha_comparison.csv');
+    writematrix(round(results_alpha_comparison,3),filename)
+end
 
