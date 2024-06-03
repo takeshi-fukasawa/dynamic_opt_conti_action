@@ -146,7 +146,8 @@ parameters=[theta;sd_inv];
 
 [basis,basis_single,basis_diff,basis_diff_single]=...
     base_func([k_grid,exo_grid],state_min,state_max,Smol_elem,...
-    mu_max,N+2,ind_no_precompute);
+    mu_max,N,ind_k_precompute);
 
 ratio=basis_k.*basis_exo./basis_t_grid;% should be equal to 1
+
 

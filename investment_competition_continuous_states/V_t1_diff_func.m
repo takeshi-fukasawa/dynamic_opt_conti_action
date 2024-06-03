@@ -25,7 +25,7 @@ n_var=size(coef_approx_V,2);
 
 ns_exo=size(w_exo,2);
 exo_stoch=repmat(exo_t1_mean,ns_exo,1)+...
-    kron(sqrt(2)*sd_exo.*x_exo',ones(size(exo_t1_mean,1),1));%(n_pts*ns_exo)*2
+    kron(sqrt(2)*sd_exo.*x_exo',ones(n_pts,1));%(n_pts*ns_exo)*2
 state_stoch=[repmat(k_t1,ns_exo,1),exo_stoch];%(n_pts*ns_exo)*(N+2)
 
 % basis: n_pts*n_coef*n_node_inv
