@@ -33,17 +33,31 @@ numb_terms=size(Smol_elem,1);
 n_state=size(state_min,2);
 
 %% Construct ind for state variables
+
+%% Construct ind for kstk
+row_k_precompute=reshape(repmat(1:N,numb_terms,1),[],1);%(numb_terms*(d=N))*1; 1,1,1,...2,2,2,...,d,d,d,...d
+col_k_precompute=reshape(Smol_elem(:,1:N),[],1); %(numb_terms*N)*1; 1~m_i_max
+sz_k_precompute=[N numb_terms];
+ind_k_precompute=sub2ind(sz_k_precompute,row_k_precompute,col_k_precompute); % (numb_terms*N)*1;
+
+%% Construct ind for exo
+row_exo_precompute=reshape(repmat(1:2,numb_terms,1),[],1);%(numb_terms*(d=2))*1; 1,1,1,...2,2,2,...,d,d,d,...d
+col_exo_precompute=reshape(Smol_elem(:,N+1:end),[],1); %(numb_terms*(d=2))*1; 1~m_i_max
+sz_exo_precompute=[2 numb_terms];
+ind_exo_precompute=sub2ind(sz_exo_precompute,row_exo_precompute,col_exo_precompute); % (numb_terms*2)*1;
+ind_exo=ind_exo_precompute;
+
+
 row_no_precompute=reshape(repmat(1:n_state,numb_terms,1),[],1);%(numb_terms*(d=N))*1; 1,1,1,...2,2,2,...,d,d,d,...d
 col_no_precompute=reshape(Smol_elem(:,1:end),[],1); %(numb_terms*N)*1; 1~m_i_max
 sz_no_precompute=[N+2 numb_terms];
 ind_no_precompute=sub2ind(sz_no_precompute,row_no_precompute,col_no_precompute); % (numb_terms*N)*1;
 
 if spec_precompute==1
-    %% Construct ind for kstk
-    row=reshape(repmat(1:N,numb_terms,1),[],1);%(numb_terms*(d=N))*1; 1,1,1,...2,2,2,...,d,d,d,...d
-    col=reshape(Smol_elem(:,1:N),[],1); %(numb_terms*N)*1; 1~m_i_max
-    sz=[N numb_terms];
-    ind=sub2ind(sz,row,col); % (numb_terms*N)*1;
+    row=row_precompute;
+    col=col_precompute;
+    sz=sz_precompute;
+    ind=ind_precompute;
 else
     row=row_no_precompute;
     col=col_no_precompute;
@@ -51,11 +65,6 @@ else
     ind=ind_no_precompute;
 end
 
-%% Construct ind for exo
-row=reshape(repmat(1:2,numb_terms,1),[],1);%(numb_terms*(d=2))*1; 1,1,1,...2,2,2,...,d,d,d,...d
-col=reshape(Smol_elem(:,N+1:end),[],1); %(numb_terms*(d=2))*1; 1~m_i_max
-sz=[2 numb_terms];
-ind_exo=sub2ind(sz,row,col); % (numb_terms*2)*1;
 
 Smol_grid=Smolyak_Grid(d,mu_vec,Smol_elem);
 
@@ -79,7 +88,7 @@ theta(3)=theta(1)*resell_ratio;%0.99;
 theta(4)=theta(2);
 
 %----- Set initial values of variables for value function approximation ----------------%
-basis_t_grid=Smolyak_Polynomial(Smol_grid,d,mu_max,Smol_elem,[]);%M*n_coef
+basis_t_grid=Smolyak_Polynomial(Smol_grid,d,mu_max,Smol_elem,ind_no_precompute);%M*n_coef
 
 [n_grid,n_coef]=size(basis_t_grid);
 
@@ -115,7 +124,13 @@ weight_mat=[X_temp(:),Y_temp(:)]';%2*(n_node^2==ns)
 weight=prod(weight_mat,1);%1*ns
 w_exo=weight./sum(weight,2);%1*ns;necessary??
 
-
 basis_exo_t1_mean_grid=precompute_basis_exo_func(exo_t1_mean_grid,n_node_exo,sd_exo,Smol_elem,state_max,state_min,N,mu_max,ind_exo);
 
 parameters=[theta;sd_inv];
+
+%%%% Check precomputation code %%%%
+[basis_k,basis_single_k,basis_diff_k,basis_diff_single_k]=...
+    base_func(k_grid,state_min(:,1:N),state_max(:,1:N),Smol_elem(:,1:N),...
+    mu_max,N,ind_k_precompute);
+
+basis_k.*basis_exo

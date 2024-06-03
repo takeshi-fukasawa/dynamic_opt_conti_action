@@ -1,5 +1,5 @@
 %% Steel main code
-clear all
+%clear all
 
 global elas beta_param delta_param update_spec tune_param gpu_spec
 global spec_precompute w_exo x_exo sd_exo
@@ -13,10 +13,10 @@ addpath('C:/Users/fukas/Dropbox/git/spectral')
 
 %----(0) Parameters ------------------------
 gpu_spec=0;
-spec_precompute=1;
+spec_precompute=0;
 n_sim=1;
 N=2;d=N+2;
-mu_max=3;
+mu_max=2;
 delta_param=0.08;%0.08;
 beta_param=0.9;
 elas=1.5;
@@ -34,7 +34,7 @@ adj_cost=0.3;
 theta=[0.2;adj_cost;0.2;adj_cost];
 
 AR_coef=0.9*ones(1,2);
-sd_exo=[0.01,0.01]*0;
+sd_exo=[0.01,0.01]*1;
 sd_inv=0;%1e-4;
 magnify_rate_kstk=1.8;
 magnify_rate_exo=1.1;

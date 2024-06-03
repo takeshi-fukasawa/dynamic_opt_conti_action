@@ -22,8 +22,4 @@ basis_exo_t1_stoch=base_func(exo_t1_stoch,...
 %% take weighted average
 basis_exo_t1=reshape(sum(basis_exo_t1_stoch.*reshape(w_exo,1,1,ns_exo),3),n_obs,n_terms);
 
-%% Test: compare with deterministic case
-%basis_exo_t1_deterministic=base_func(exo_t1,state_min(:,N+1:end),state_max(:,N+1:end),Smol_elem(:,N+1:end),mu_max_exo,2);
-%mean(max(basis_exo_t1_deterministic./basis_exo_t1))
-
 return
