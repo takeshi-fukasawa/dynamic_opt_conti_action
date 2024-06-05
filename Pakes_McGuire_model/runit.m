@@ -75,7 +75,7 @@ no_entry_exit_spec=1;%%%%
 method="gradient";
 spec.alpha_0=1;
 lambda_param=0.01;
-TOL_vec=(1e-8)*ones(1,2);
+TOL_vec=(1e-10)*ones(1,2);
 TOL_vec(2)=TOL_vec(2)*lambda_param;
 
 [newvalue_grad,newx_grad,iter_info_grad,other_vars]=...

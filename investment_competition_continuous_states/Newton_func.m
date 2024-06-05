@@ -76,7 +76,7 @@ for j=1:N
              basis_t1(:,:,:,j)=basis_t1_j;
         end
         
-        if DIST_Newton<1e-8
+        if DIST_Newton<1e-10
             %DIST_Newton
             %ITER_Newton_j
             break;

@@ -9,7 +9,7 @@ addpath('C:/Users/fukas/Dropbox/git/spectral')
 
 
 D=4;
-save_spec=1;
+save_spec=0;
 
 results=[];
 results_spectral_change_alpha0=[];

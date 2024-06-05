@@ -227,7 +227,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         input={Vder0};
     elseif Method==0
         input={V,k1};
-       TOL_vec=(1e-6)*ones(1,2);
+       TOL_vec=(1e-10)*ones(1,2);
        TOL_vec(2)=TOL_vec(2)*lambda_param;%%% TOL of action should not depend on lambda_param 
        spec.TOL=TOL_vec;
     elseif Method==3
@@ -288,24 +288,28 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     
     % After the solution is computed by any method, we construct the value 
     % value function for the constructed policy rules
-    
-    spec=spec_default;
-    spec.TOL=1e-10;
-    [output_spectral,other_vars,iter_info_V]=...
-        spectral_func(@VF_Bellman_update_func,spec,{V},...
+    if 1==0
+        spec=spec_default;
+        spec.TOL=1e-10;
+        [output_spectral,other_vars,iter_info_V]=...
+            spectral_func(@VF_Bellman_update_func,spec,{V},...
             X0,c0,k1,z1,gam,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
 
-    V=output_spectral{1};
-    vf_coef = X0\V;     % Coefficients for value function
-
-    if max(abs(V))>10^10
-       iter_info_V.FLAG_ERROR=1;
+        V=output_spectral{1};
+        vf_coef = X0\V;     % Coefficients for value function
+        
+        if max(abs(V))>10^10
+            iter_info_V.FLAG_ERROR=1;
+        end
+        feval_V(D)=iter_info_V.feval;
+    else
+        feval_V(D)=0;
     end
 
     CPU(D) = toc(tStart);                      % Store running time
     VK(1:1+D+D*(D+1)/2,D) = vf_coef;   % Store the solution coefficients 
     feval(D)=iter_info.feval;
-    feval_V(D)=iter_info_V.feval;
+    
     
 end
 
