@@ -244,7 +244,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         spectral_func(fun,spec,input,...
             Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,k1,gam,c0,beta,...
             n_nodes,weight_nodes,vf_coef,D,kdamp,n_grid,opts,spectral_spec);
-    %iter_info.feval;
+    iter_info.feval
     
 
     if Method<=2 & Method>=1
@@ -281,8 +281,8 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     end
 
     k_coef = X0\k1;
-    c0=(1-delta)*k0+A*z0.*k0.^alpha-k1;
-    c_coef = X0\c0;
+    c0=(1-delta)*k0+A*z0.*k0.^alpha-
+    k1 = (1-delta)*k0+A*z0.*k0.^alpha-c0;
 
     if max(abs(k1))>10^10 || iter_info.feval==iter_info.ITER_MAX
        iter_info.FLAG_ERROR=1;
@@ -290,7 +290,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     
     % After the solution is computed by any method, we construct the value 
     % value function for the constructed policy rules
-    if 1==0
+    if 1==1
         spec=spec_default;
         spec.TOL=1e-10;
         [output_spectral,other_vars,iter_info_V]=...
@@ -311,7 +311,6 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     CPU(D) = toc(tStart);                      % Store running time
     V_coef(1:1+D+D*(D+1)/2,D) = vf_coef;   % Store the solution coefficients (V)
     K_coef(1:1+D+D*(D+1)/2,D) = k_coef;   % Store the solution coefficients (V)
-    C_coef(1:1+D+D*(D+1)/2,D) = c_coef;   % Store the solution coefficients (V)
 
     feval(D)=iter_info.feval;
     
@@ -323,29 +322,15 @@ end
 fprintf(1,'Method = %i:\n',Method);
 fprintf(1,'ACCURACY EVALUATION AND RUNNING TIME:\n\n');
 for D = D_min:D_max % For polynomial degrees from 2 to 5... 
-    if 1==0
-        %%% Use V_coef for validating the accuracy of the solution
-        [k,z] = Simulation_ECM(A,alpha,gam,delta,sigma,rho,V_coef(1:1+D+D*(D+1)/2,D),D);
+    [k,z] = Simulation_ECM(A,alpha,gam,delta,sigma,rho,V_coef(1:1+D+D*(D+1)/2,D),D);
             % Simulate the solution under a sequence of 10,200 shocks stored
             % "epsi_test.mat" and discard the first 200 entries to eliminate
             % the effect of initial conditions
-        [Mean_Residuals(D),Max_Residuals(D)] = Residuals_ECM(k,z,A,alpha,gam,delta,sigma,rho,beta,V_coef(1:1+D+D*(D+1)/2,D),D);
+    [Mean_Residuals(D),Max_Residuals(D)] = Residuals_ECM(k,z,A,alpha,gam,delta,sigma,rho,beta,V_coef(1:1+D+D*(D+1)/2,D),D);
             % Compute residuals in the model's equations in each point of the 
             % simulated path and compute the mean and maximum residuals in
             % the model's equations
-    else
-        %%% Use C_coef, K_coef for validating the accuracy of the solution
-        [k,z] = Simulation_ECM2(A,alpha,gam,delta,sigma,rho,K_coef(1:1+D+D*(D+1)/2,D),D);
-            % Simulate the solution under a sequence of 10,200 shocks stored
-            % "epsi_test.mat" and discard the first 200 entries to eliminate
-            % the effect of initial conditions
-        [Mean_Residuals(D),Max_Residuals(D)] = Residuals_ECM2(k,z,A,alpha,gam,delta,sigma,rho,beta,C_coef(1:1+D+D*(D+1)/2,D),D);
-            % Compute residuals in the model's equations in each point of the 
-            % simulated path and compute the mean and maximum residuals in
-            % the model's equations
-    %end    
-
-     fprintf(1,'Polynomial of degree = %i:\nRunning time = %.3f, Mean residuals = %.2f, Max residuals = %.2f\n\n',Degree(D),CPU(D),Mean_Residuals(D),Max_Residuals(D));
+    fprintf(1,'Polynomial of degree = %i:\nRunning time = %.3f, Mean residuals = %.2f, Max residuals = %.2f\n\n',Degree(D),CPU(D),Mean_Residuals(D),Max_Residuals(D));
             % Display the results
     
     out(D-1,:)=[D,Degree(D),CPU(D),Mean_Residuals(D),Max_Residuals(D),...

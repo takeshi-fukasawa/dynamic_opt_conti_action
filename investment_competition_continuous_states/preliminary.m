@@ -104,7 +104,7 @@ inv_multiply_t_grid=inv(basis_t_grid'*basis_t_grid+tune_param*eye(n_coef,n_coef)
 
 coef_approx_V_initial=inv_multiply_t_grid*V_t_grid_initial; %% M*N
 
-corr_check_initial=diag(corr(V_t_grid_initial,basis_t_grid*coef_approx_V_initial))
+corr_check_initial=diag(corr(V_t_grid_initial,basis_t_grid*coef_approx_V_initial));
 
 %% Validation of the code
 %run validation.m
@@ -150,4 +150,10 @@ parameters=[theta;sd_inv];
     mu_max,N+2,ind_no_precompute);
 
 ratio=basis_k.*basis_exo./basis_t_grid;% should be equal to 1
+
+%% Initial values
+I_t_grid_initial0=repmat(delta_param*reshape(k_t_grid,size(k_t_grid,1),N,1)*1,1,1,n_node_inv)+...
+    0.00*randn(n_grid,N,n_node_inv);
+V_t_grid_initial0=V_t_grid_initial+...
+    0.00*randn(n_grid,N);
 
