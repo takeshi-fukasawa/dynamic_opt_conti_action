@@ -208,7 +208,8 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
 
 
     spec=spec_default;
-    
+    spec.TOL=1e-10;
+
     if spectral_spec==0
         spec.update_spec=0;
     elseif spectral_spec==2;
@@ -227,7 +228,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         input={Vder0};
     elseif Method==0
         input={V,k1};
-       TOL_vec=(1e-10)*ones(1,2);
+       TOL_vec=(spec.TOL)*ones(1,2);
        TOL_vec(2)=TOL_vec(2)*lambda_param;%%% TOL of action should not depend on lambda_param 
        spec.TOL=TOL_vec;
     elseif Method==3
