@@ -34,7 +34,7 @@ EVder = 0;                  % Initialize the expected derivative of value
                             % function
 for j = 1:n_nodes           % Sum up the expected derivative of value 
                             % function across the integration nodes
-    X1der = Polynomial_deriv_2d([k1 z1(j)],D);  
+    X1der = Polynomial_deriv_2d([k1 z1(:,j)],D);  
                             % Construct the derivatives of basis functions 
                             % of polynomial approximating value function at
                             % integration node j
@@ -42,6 +42,6 @@ for j = 1:n_nodes           % Sum up the expected derivative of value
                             % Add up the weighted derivative of value 
                             % function across the nodes
 end
-diff_FOC = beta*EVder-((1-delta)*k0+A*z0*k0^alpha-k1)^(-gam); 
+diff_FOC = beta*EVder-((1-delta)*k0+A*z0.*k0.^alpha-k1).^(-gam); 
                             % Evaluate the difference between left and right
                             % sides of the FOC 

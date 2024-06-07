@@ -145,7 +145,8 @@ end
                                  % Compute consumption
 
             spec.TOL=1e-6;
-            spec.norm_spec=10; 
+            spec.norm_spec=10;
+            spec.update_spec=spectral_spec; 
             [output_spectral,other_vars,iter_info]=...
                 spectral_func(@VF_Bellman_update_func,spec,{V},...
                    X0,c0,k1,z1,gam,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
