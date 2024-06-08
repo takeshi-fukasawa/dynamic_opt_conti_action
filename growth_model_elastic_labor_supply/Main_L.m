@@ -46,7 +46,7 @@
 clc;
 clear all;
 
-Method = 1;   % Choose a solution method: "1", "2", "3", "4"
+Method = 3;   % Choose a solution method: "1", "2", "3", "4"
 
 % "1" - envelope condition method iterating on value function (ECM-VF)
 % "2" - endogenous grid method iterating on value function (EGM-VF)

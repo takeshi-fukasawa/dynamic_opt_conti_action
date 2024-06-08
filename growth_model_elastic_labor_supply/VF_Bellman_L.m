@@ -34,7 +34,6 @@ for j = 1:n_nodes                         % For each integration node...
     X1 = Polynomial_2d([k1 z1(:,j)],D);   % Construct polynomial   
     EV(:,j) = X1*vf_coef;                 % Evaluate value function
 end
-
 if gam==1; uc0=log(c0); else uc0=(c0.^(1-gam)-1)/(1-gam); end
             % if gam=1, the consumption utility subfunction is
             % logarithmic; otherwise, it is power
