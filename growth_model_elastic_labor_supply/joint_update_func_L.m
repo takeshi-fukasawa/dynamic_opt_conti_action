@@ -7,21 +7,24 @@ function [out,other_vars]=joint_update_func_L(V,var2,...
    global lambda_param
    
    if Method==0 %% VF-PGI update
-       k1=var2;%initial action
+       n0=var2;%initial action
        
-       [V_new] = VF_Bellman(c0,k1,z1,gam,beta,n_nodes,weight_nodes,vf_coef,D);
-              % Recompute value function using Bellman equation
+       c0=c0_analytical_func(n0,k0,alpha,nu,gam,A,B);
+       k1=k1_analytical_func(k0,n0,c0,delta,A,alpha);
+       
+       [V_new] =VF_Bellman_L(n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D);
+                                % Recompute value function using the Bellman 
+                                % equation
 
        vf_coef=X0\V; % Coefficients for value function
-                       difference=FOC_VFI(k1,k0,z0,A,alpha,gam,delta,beta,z1,n_nodes,weight_nodes,vf_coef,D);
-       k1_new=k1+lambda_param*difference;
+       difference=FOC_L_VFI(n0,k0,z0,A,alpha,gam,delta,nu,B,beta,z1,n_nodes,weight_nodes,vf_coef,D);
 
-       c0 = (1-delta)*k0+A*z0.*k0.^alpha-k1;% Find consumption from budget constraint
-           
+       n0_new=n0+lambda_param*difference;
+
        V_new = kdamp*V_new + (1-kdamp)*V;   
                    % Update V using damping
                       
-       out={V_new,k1_new};
+       out={V_new,n0_new};
    
 
    elseif Method==2

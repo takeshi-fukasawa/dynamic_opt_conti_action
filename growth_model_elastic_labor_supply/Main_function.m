@@ -229,7 +229,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
          input={V,k0};
         spec.common_alpha_spec=1; % Important
     elseif Method==0
-        input={V,k1};
+        input={V,n0};
        TOL_vec=(spec.TOL)*ones(1,2);
        TOL_vec(2)=TOL_vec(2)*lambda_param;%%% TOL of action should not depend on lambda_param 
        spec.TOL=TOL_vec;
@@ -269,6 +269,10 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     n0=other_vars.n0;
     k0=other_vars.k0;
 
+    %%%%%%%%%%%%%%%
+    vf_coef=X0\V; % Coefficients for value function
+    FOC_val=FOC_L_VFI(n0,k0,z0,A,alpha,gam,delta,nu,B,beta,z1,n_nodes,weight_nodes,vf_coef,D)
+    %%%%%%%%%%%%%%%
 
     k_coef = X0\k1;
     c_coef = X0\c0;

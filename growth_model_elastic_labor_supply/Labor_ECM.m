@@ -23,6 +23,6 @@
 
 function [dif_FOC] = Labor_ECM(x,nu,alpha,delta,B,A,k0,z0,dvf0)
 
-dif_FOC=dvf0*x^-alpha-B*(1-x)^-nu/z0/A/(1-alpha)/k0^alpha*(1-delta+alpha*A*z0*k0^(alpha-1)*x^(1-alpha));
+dif_FOC=dvf0.*x.^(-alpha)-B.*(1-x).^-nu./z0./A./(1-alpha)./k0.^alpha.*(1-delta+alpha*A.*z0.*k0.^(alpha-1).*x.^(1-alpha));
                             % Evaluate the difference between the left and 
                             % right sides of the FOC 

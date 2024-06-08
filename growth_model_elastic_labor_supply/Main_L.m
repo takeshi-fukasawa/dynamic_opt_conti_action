@@ -373,12 +373,12 @@ for D = 2:5;                            % For polynomial degrees from 2 to 5....
         % --------------------
 
         if (Method==2)||(Method==4); 
-            difk = max(abs(1-k0./k_old));     
+            difk = max(abs(1-k0./k_old))     
                                     % For EGM, we check convergence of 
                                     % current capital
             k_old = k0;        
         else         
-            difk = max(abs(1-k1./k_old));
+            difk = max(abs(1-k1./k_old))
                                    % For other methods, we check convergence  
                                    % of next period capital
             k_old = k1;

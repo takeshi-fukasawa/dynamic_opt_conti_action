@@ -24,6 +24,6 @@
 
 function [dif_FOC] = Labor_EGM(x,nu,gam,alpha,delta,beta,B,A,k1,z0,dvf1)
 
-dif_FOC=k1+(beta*dvf1)^(-1/gam)-(1-delta)*(B*(1-x)^-nu/z0/A/(1-alpha)/dvf1/beta)^(1/alpha)*x-B*(1-x)^-nu/(1-alpha)/dvf1/beta*x;
+dif_FOC=k1+(beta*dvf1).^(-1/gam)-(1-delta).*(B.*(1-x).^-nu./z0./A./(1-alpha)./dvf1./beta)^(1/alpha)*x-B*(1-x)^-nu/(1-alpha)/dvf1/beta*x;
                             % Evaluate the difference between the left and right
                             % sides of the FOC 
