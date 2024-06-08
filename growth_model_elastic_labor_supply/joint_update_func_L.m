@@ -6,11 +6,11 @@ function [out,other_vars]=joint_update_func_L(V,var2,...
    
    global lambda_param
    
-   if Method==0 %% VF-PGI update
+   if Method==0 %%%%%%%% VF-PGI update
        n0=var2;%initial action
        
-       c0=c0_analytical_func(n0,k0,alpha,nu,gam,A,B);
-       k1=k1_analytical_func(k0,n0,c0,delta,A,alpha);
+       c0=c0_analytical_func(n0,k0,z0,alpha,nu,gam,A,B);
+       k1=k1_analytical_func(k0,n0,c0,z0,delta,A,alpha);
        
        [V_new] =VF_Bellman_L(n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D);
                                 % Recompute value function using the Bellman 

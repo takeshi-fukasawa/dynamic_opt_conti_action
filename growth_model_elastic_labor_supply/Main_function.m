@@ -30,10 +30,10 @@ addpath('C:/Users/fukas/Dropbox/git/spectral')
 spectral_spec=1;
 common_alpha_spec=0;
 alpha0_param=1;
-lambda_param=0.001;
+lambda_param=1e-7;
 D=2;
 
-Method = 1;   % Choose a solution method: "1", "2", "3", "4"
+Method = 0;   % Choose a solution method: "1", "2", "3", "4"
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % "1" - envelope condition method iterating on value function (ECM-VF)
@@ -270,8 +270,11 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     k0=other_vars.k0;
 
     %%%%%%%%%%%%%%%
+    c0_temp=c0_analytical_func(n0,k0,z0,alpha,nu,gam,A,B);
+
     vf_coef=X0\V; % Coefficients for value function
-    FOC_val=FOC_L_VFI(n0,k0,z0,A,alpha,gam,delta,nu,B,beta,z1,n_nodes,weight_nodes,vf_coef,D)
+    FOC_val=FOC_L_VFI(n0,k0,z0,A,alpha,gam,delta,nu,B,beta,z1,n_nodes,weight_nodes,vf_coef,D);
+
     %%%%%%%%%%%%%%%
 
     k_coef = X0\k1;
