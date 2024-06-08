@@ -38,7 +38,7 @@
 % 9. "csolve.m"             a solver for a nonlinear equation (works faster
 %                           than "fsolve"); written by Christopher Sims 
 % -------------------------------------------------------------------------
-% Copyright © 2011-2016 by Lilia Maliar and Serguei Maliar. All rights 
+% Copyright ï½© 2011-2016 by Lilia Maliar and Serguei Maliar. All rights 
 % reserved. The code may be used, modified and redistributed under the 
 % terms provided in the file "License_Agreement.txt".
 % -------------------------------------------------------------------------
@@ -46,7 +46,7 @@
 clc;
 clear all;
 
-Method = 1;   % Choose a solution method: "1", "2", "3", "4"
+Method = 2;   % Choose a solution method: "1", "2", "3", "4"
 
 % "1" - envelope condition method iterating on value function (ECM-VF)
 % "2" - endogenous grid method iterating on value function (EGM-VF)
@@ -220,6 +220,7 @@ for D = 2:5;                            % For polynomial degrees from 2 to 5....
                             % constraint (2) in MM(2013)
 
             V=X0*vf_coef;%%%%%%%%%%%%%
+            
             [V_new] = VF_Bellman_L(n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D);
                                         % Recompute value function using 
                                         % the Bellman equation
@@ -378,7 +379,7 @@ for D = 2:5;                            % For polynomial degrees from 2 to 5....
                                     % current capital
             k_old = k0;        
         else         
-            difk = max(abs(1-k1./k_old));
+            difk = max(abs(1-k1./k_old))
                                    % For other methods, we check convergence  
                                    % of next period capital
             k_old = k1;

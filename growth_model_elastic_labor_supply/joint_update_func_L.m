@@ -1,6 +1,6 @@
 function [out,other_vars]=joint_update_func_L(V,var2,...
-   Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,k1_temp,gam,c0,...
-   beta,n_nodes,weight_nodes,vf_coef,D,kdamp,n_grid,opts,spectral_spec)
+   Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0,c0,k1,gam,...
+   nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp,n_grid,opts,spectral_spec)
 
    % Written by Takeshi Fukasawa in June 2024, based on the code of Maliar and Maliar (2013)
    
@@ -28,6 +28,13 @@ function [out,other_vars]=joint_update_func_L(V,var2,...
 %==================================================================
         % Method 2. Endogenous grid method iterating on value function (EGM-VF)
         %==================================================================            
+            k0=var2;
+            grid(:,1) = k0;        % Grid points for current capital 
+            
+            X0 = Polynomial_2d(grid,D);   % Construct polynomial on 
+                                          % current state variables
+
+
             vf_coef=X0\V; % Coefficients for value function
                        
             k1 = grid_EGM(:,1); % Grid points for next-period capital 
@@ -60,7 +67,7 @@ function [out,other_vars]=joint_update_func_L(V,var2,...
             V_new = kdamp*V_new + (1-kdamp)*V;   
                                 % Update V using damping
 
-             k0_new=k0;
+            k0_new=k0;
    
             out={V_new,k0_new};
 
