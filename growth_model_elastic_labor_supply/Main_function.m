@@ -19,8 +19,8 @@
 % -------------------------------------------------------------------------
 % Modified by Takeshi Fukasawa in June 2024
 
-clc;
-clear all;
+%clc;
+%clear all;
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 %%% Path of Spectral function
@@ -33,7 +33,7 @@ alpha0_param=1;
 lambda_param=1e-7;
 D=4;
 
-Method = 0;   % Choose a solution method: "1", "2", "3", "4"
+%%Method = 0;   % Choose a solution method: "1", "2", "3", "4"
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % "1" - envelope condition method iterating on value function (ECM-VF)
@@ -48,7 +48,6 @@ fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
 global iter_info iter_info0 V k1
 global alpha0_param lambda_param
 global common_alpha_spec
-global difference_n0
 
 D_init=D;
 D_min=D;
@@ -327,6 +326,9 @@ end
 % ---------------------------------------------------------------
 fprintf(1,'Method = %i:\n',Method);
 fprintf(1,'ACCURACY EVALUATION AND RUNNING TIME:\n\n');
+
+D_max=D_min-1;%%%%%
+
 for D = D_min:D_max % For polynomial degrees from 2 to 5... 
     if 1==0
         %%% Use V_coef for validating the accuracy of the solution
