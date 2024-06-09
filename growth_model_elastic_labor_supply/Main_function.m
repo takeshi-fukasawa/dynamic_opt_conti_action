@@ -209,8 +209,6 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     difk =   inf;                       % Initial criterion of convergence 
     k_old = inf(size(grid,1),1);        % Initialize capital choices on the 
                                         % grid for checking convergence 
-    opts = optimset('Display','none','Algorithm','trust-region-dogleg','MaxFunEvals',10000,'MaxIter',1000,'TolX',1e-10,'TolFun',1e-10);            
-                                        % Options for the solver
     Vder0 = X0der*vf_coef;              % Compute derivative of value function
 
 
@@ -233,19 +231,28 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
        TOL_vec=(spec.TOL)*ones(1,2);
        TOL_vec(2)=TOL_vec(2)*lambda_param*1000;%%% TOL of action should not depend on lambda_param 
        spec.TOL=TOL_vec;
+    elseif Method==-1
+        input={V,n0,c0};
+        TOL_vec=(spec.TOL)*ones(1,3);
+        TOL_vec(2:3)=TOL_vec(2:3)*lambda_param*1000;%%% TOL of action should not depend on lambda_param 
+        spec.TOL=TOL_vec;
     end
+
 
 
     if Method==1 | Method==3
         fun=@update_func_L;
     elseif Method==2 | Method==4 | Method==0
         fun=@joint_update_func_L;
+    elseif Method==-1
+        fun=@VF_PGI_func_n0_c0;
     end
+
 
     [output_spectral,other_vars,iter_info]=...
         spectral_func(fun,spec,input,...
         Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0,c0,k1,gam,...
-        nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp,n_grid,opts,spectral_spec);
+        nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,spectral_spec);
     %iter_info.feval;
     
 
@@ -284,11 +291,18 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
        
     vf_coef=X0\V; % Coefficients for value function
     EVder=EVder_func(k1,z1,n_nodes,weight_nodes,vf_coef,D);
-    [FOC_val,RHS,LHS]=FOC_L_VFI(EVder,n0,c0,k0,z0,A,alpha,gam,nu,B,beta);
+    [FOC_val_L,RHS,LHS]=FOC_L_VFI(EVder,n0,c0,k0,z0,A,alpha,gam,nu,B,beta);
 
+    FOC_val_C=FOC_C_VFI(EVder,n0,c0,k0,z0,A,alpha,gam,nu,B,beta);
+    
     LHS=-B*(1-n0).^(-nu);
     RHS=(-A).*(1-alpha).*z0.*(k0.^alpha).*(n0.^-alpha).*beta.*EVder;
 
+    [out,other_vars]=VF_PGI_func_n0_c0(V,n0,c0,...
+    -1,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0,c0,k1,gam,...
+    nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,spectral_spec);
+
+    
     %%%%%%%%%%%%%%%
 
     k_coef = X0\k1;
