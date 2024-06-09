@@ -25,11 +25,8 @@ if Method==1
           n0(j,1)=csolve('Labor_ECM',n0(j,1),[],0.000001,5,nu,alpha,delta,B,A,k0(j,1),z0(j,1),Vder0(j,1));   
      end
                             
-     c0=(1./(A*z0.*k0.^alpha.*n0.^-alpha.*(1-alpha)).*B.*(1-n0).^-nu).^(-1/gam);
-                     % Compute consumption using eq. (4) in MM (2013)
-
-     k1 = (1-delta)*k0+A*z0.*k0.^alpha.*n0.^(1-alpha)-c0; 
-                     % Compute next-period capital using budget 
+     c0=c0_analytical_func(n0,k0,z0,alpha,nu,gam,A,B);
+     k1=k1_analytical_func(k0,n0,c0,z0,delta,A,alpha);% Compute next-period capital using budget 
                      % constraint (2) in MM(2013)
 
     [V_new] = VF_Bellman_L(n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D);

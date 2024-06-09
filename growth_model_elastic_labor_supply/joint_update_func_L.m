@@ -12,6 +12,7 @@ function [out,other_vars]=joint_update_func_L(V,var2,...
        c0=c0_analytical_func(n0,k0,z0,alpha,nu,gam,A,B);
        k1=k1_analytical_func(k0,n0,c0,z0,delta,A,alpha);
        
+       vf_coef=X0\V;
        [V_new] =VF_Bellman_L(n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D);
                                 % Recompute value function using the Bellman 
                                 % equation
