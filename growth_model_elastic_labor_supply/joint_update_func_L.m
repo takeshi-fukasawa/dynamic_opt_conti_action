@@ -79,53 +79,6 @@ function [out,other_vars]=joint_update_func_L(V,var2,...
             out={V_new,k0_new};
 
  
-        elseif Method==4;   %==================================================================
-        %  Method 4. Endogenous grid method iterating on derivative of value 
-        %            function (EGM-DVF)
-        %==================================================================
-       
-            
-            k1 = grid_EGM(:,1);      % Grid points for next-period capital 
-                                     % (fixing endogenous grid)
-            for j = 1:n_nodes              
-                Xder1_EGM = Polynomial_deriv_2d([k1 z1(:,j)],D);
-                Vder1_EGM(:,j) = Xder1_EGM*vf_coef; 
-                                     % Compute the derivative of value function 
-                                     % in the integration nodes    
-            end
-            
-            Wder1 = Vder1_EGM*weight_nodes;   
-                                     % Compute expected derivative  of
-                                     % next-period value function
-            for j=1:n_grid           % Solve for labor using eq. (17) in MM 
-                                     % (2013)
-                n0(j,1)=csolve('Labor_EGM',n0(j,1),[],0.000001,5,nu,gam,alpha,delta,beta,B,A,k1(j,1),z0(j,1),Wder1(j,1));
-            end                                                
-            
-            c0 = (beta*Wder1).^(-1/gam);   
-                                     % Compute consumption from eq. (5) in
-                                     % MM (2013)
-            k0 = (B*(1-n0).^-nu./(1-alpha)/A./z0/beta./Wder1).^(1/alpha).*n0;
-                                     % Compute current capital from eq. (4)
-                                     % in MM (2013)
-                                              
-            Vder0_new = (1-delta+A*alpha*z0.*k0.^(alpha-1).*n0.^(1-alpha)).*(beta*Wder1);
-                                     % Recompute the derivative of value
-                                     % function in grid points
-            warning('off')           % Some polynomial terms are zero for
-                                     % the derivative and system is 
-                                     % underdetermined. The least-squares 
-                                     % problem is still correctly 
-                                     % processed by the truncated QR method
-                                     % but the system produces warning
-                   
-            V_new = kdamp*V_new + (1-kdamp)*V;   
-                                % Update V using damping
-
-             k0_new=k0;
-   
-            out={V_new,k0_new};
-   
         %==================================================================
    end
 
