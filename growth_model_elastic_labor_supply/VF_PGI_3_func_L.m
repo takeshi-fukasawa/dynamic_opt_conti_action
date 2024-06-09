@@ -1,15 +1,12 @@
-function [out,other_vars]=joint_update_func_L(V,var2,...
+function [out,other_vars]=VF_PGI_3_func_L(V,n0,c0,...
    Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0,c0,k1,gam,...
    nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp,n_grid,opts,spectral_spec)
 
    % Written by Takeshi Fukasawa in June 2024, based on the code of Maliar and Maliar (2013)
    
-   global lambda_param difference_n0
+   global lambda_param
    
-   if Method==0 %%%%%%%% VF-PGI update
-       n0=var2;%initial action
-       
-       c0=c0_analytical_func(n0,k0,z0,alpha,nu,gam,A,B);
+   if Method==-1 %%%%%%%% VF-PGI update (jointly update V,n0,c0)
        k1=k1_analytical_func(k0,n0,c0,z0,delta,A,alpha);
        
        [V_new] =VF_Bellman_L(n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D);
@@ -18,16 +15,16 @@ function [out,other_vars]=joint_update_func_L(V,var2,...
 
        vf_coef=X0\V; % Coefficients for value function
 
-       EVder=EVder_func(k1,z1,n_nodes,weight_nodes,vf_coef,D);
-       difference_n0=FOC_L_VFI(EVder,n0,c0,k0,z0,A,alpha,gam,nu,B,beta);
-
+       [difference_n0,EVder]=FOC_L_VFI(n0,c0,k1,k0,z0,A,alpha,gam,delta,nu,B,beta,z1,n_nodes,weight_nodes,vf_coef,D);
+       difference_c0=FOC_C_VFI(n0,c0,k1,k0,z0,A,alpha,gam,delta,nu,B,beta,z1,n_nodes,weight_nodes,vf_coef,D,EVder);
        
        n0_new=n0+lambda_param*difference_n0;
+       c0_new=n0+lambda_param*difference_c0;
 
        V_new = kdamp*V_new + (1-kdamp)*V;   
                    % Update V using damping
                       
-       out={V_new,n0_new};
+       out={V_new,n0_new,c0_new};
    
 
    elseif Method==2

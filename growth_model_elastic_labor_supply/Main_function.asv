@@ -31,7 +31,7 @@ spectral_spec=1;
 common_alpha_spec=0;
 alpha0_param=1;
 lambda_param=1e-7;
-D=4;
+D=3;
 
 Method = 0;   % Choose a solution method: "1", "2", "3", "4"
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -170,7 +170,7 @@ k1   =  k0*(1-delta)+A*z0.*k0.^alpha.*n0.^(1-alpha)-c0;
 %%%%%%%%%%%%%%%%%%
 spec_default.norm_spec=10;%% unit free
 spec_default.TOL=1e-6;
-spec_default.ITER_MAX=500;
+spec_default.ITER_MAX=2000;
 spec_default.alpha_0=alpha0_param;
 spec_default.common_alpha_spec=common_alpha_spec;
 spec_default.DEBUG=1;%%%%%%%%%%%%%%%%%%%
@@ -232,7 +232,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     elseif Method==0
         input={V,n0};
        TOL_vec=(spec.TOL)*ones(1,2);
-       TOL_vec(2)=TOL_vec(2)*lambda_param*1000;%%% TOL of action should not depend on lambda_param 
+       TOL_vec(2)=TOL_vec(2)*lambda_param;%%% TOL of action should not depend on lambda_param 
        spec.TOL=TOL_vec;
     end
 
