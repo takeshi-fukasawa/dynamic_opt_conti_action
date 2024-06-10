@@ -193,7 +193,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
 
 
     spec=spec_default;
-    spec.TOL=1e-8;
+    spec.TOL=1e-6;
 
     if spectral_spec==0
         spec.update_spec=0;
@@ -288,7 +288,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     % value function for the constructed policy rules
     if 1==0
         spec=spec_default;
-        spec.TOL=1e-10;
+        spec.TOL=1e-9;
         [output_spectral,other_vars,iter_info_V]=...
             spectral_func(@VF_Bellman_L_update_func,spec,{V},...
             X0,n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
