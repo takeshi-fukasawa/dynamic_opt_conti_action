@@ -226,12 +226,12 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     elseif Method==2 | Method==4
          input={V,k0};
         spec.common_alpha_spec=1; % Important
-    elseif Method==0
+    elseif Method==-1
         input={V,n0};
        TOL_vec=(spec.TOL)*ones(1,2);
        TOL_vec(2)=TOL_vec(2)*lambda_param*1000;%%% TOL of action should not depend on lambda_param 
        spec.TOL=TOL_vec;
-    elseif Method==-1
+    elseif Method==-2
         input={V,n0,c0};
         TOL_vec=(spec.TOL)*ones(1,3);
         TOL_vec(2:3)=TOL_vec(2:3)*lambda_param*1000;%%% TOL of action should not depend on lambda_param 
@@ -242,9 +242,9 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
 
     if Method==1 | Method==3
         fun=@update_func_L;
-    elseif Method==2 | Method==4 | Method==0
+    elseif Method==2 | Method==4 | Method==-1
         fun=@joint_update_func_L;
-    elseif Method==-1
+    elseif Method==-2
         fun=@VF_PGI_func_n0_c0;
     end
 
@@ -265,17 +265,10 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
        k0=output_spectral{2};
        vf_coef = X0\V;     % Coefficients for value function 
        k1=other_vars.k1;
-
-    elseif Method==3
-       Vder0=output_spectral{1};
-        vf_der_coef = X0\Vder0;     % Coefficients for value function
-        k1=other_vars.k1;
-
-    elseif Method==0
+    elseif Method==-1
         V=output_spectral{1};
         n0=output_spectral{2};
         k1=other_vars.k1;
-
         vf_coef=X0\V;
     end
 
@@ -287,7 +280,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
        
     vf_coef=X0\V; % Coefficients for value function
     EVder=EVder_func(k1,z1,n_nodes,weight_nodes,vf_coef,D);
-    FOC_val_C=FOC_C_VFI(EVder,n0,c0,k0,z0,A,alpha,gam,nu,B,beta);    
+    FOC_val_C=FOC_C(EVder,n0,c0,k0,z0,A,alpha,gam,nu,B,beta);    
     %%%%%%%%%%%%%%%
 
     k_coef = X0\k1;

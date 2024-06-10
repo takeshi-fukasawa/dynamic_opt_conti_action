@@ -6,7 +6,7 @@ function [out,other_vars]=VF_PGI_func_n0_c0(V,var2,var3,...
    
    global lambda_param
    
-   if Method==-1 %%%%%%%% VF-PGI update (jointly update V,n0,c0)
+   if Method==-2 %%%%%%%% VF-PGI update (jointly update V,n0,c0)
        n0=var2;
        c0=var3;
        
@@ -20,8 +20,8 @@ function [out,other_vars]=VF_PGI_func_n0_c0(V,var2,var3,...
        vf_coef=X0\V; % Coefficients for value function
 
        EVder=EVder_func(k1,z1,n_nodes,weight_nodes,vf_coef,D);
-       difference_n0=FOC_L_VFI(EVder,n0,c0,k0,z0,A,alpha,gam,nu,B,beta);
-       difference_c0=FOC_C_VFI(EVder,n0,c0,k0,z0,A,alpha,gam,nu,B,beta);
+       difference_n0=FOC_L(EVder,n0,c0,k0,z0,A,alpha,gam,nu,B,beta);
+       difference_c0=FOC_C(EVder,n0,c0,k0,z0,A,alpha,gam,nu,B,beta);
        
        n0_new=n0+lambda_param*difference_n0;
        c0_new=c0+lambda_param*difference_c0;
