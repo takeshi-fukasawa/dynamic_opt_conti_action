@@ -25,7 +25,7 @@
 % Output:    "Mean_Residuals" and "Max_Residuals" are, respectively, the 
 %            mean and maximum absolute Euler equation residuals (in log10)
 % -------------------------------------------------------------------------
-% Copyright © 2012-2016 by Lilia Maliar and Serguei Maliar. All rights 
+% Copyright ï¿½ 2012-2016 by Lilia Maliar and Serguei Maliar. All rights 
 % reserved. The code may be used, modified and redistributed under the 
 % terms provided in the file "License_Agreement.txt".
 % -------------------------------------------------------------------------
@@ -63,7 +63,9 @@ vcv = sigma^2;       % Variance covariance matrix
      
      % Unit-free residuals in the Euler equation
      % -----------------------------------------
-     Residuals(t,1) = weight_nodes'*(beta*c1(1:n_nodes,1).^(-gam)./c0.^(-gam).*(1-delta+alpha*A*z1(1:n_nodes,1).*k1.^(alpha-1)))-1;
+     EE_LHS=c0.^(-gam);
+     EE_RHS=weight_nodes'*(beta*c1(1:n_nodes,1).^(-gam).*(1-delta+alpha*A*z1(1:n_nodes,1).*k1.^(alpha-1)));
+     Residuals(t,1)=EE_RHS./EE_LHS-1;
 
  end
 
