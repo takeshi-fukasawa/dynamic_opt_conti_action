@@ -32,7 +32,7 @@ end
 
 %% Spectral algorithm (Change lambda)
 alpha0_param0=1;
-lambda_param0=(1e-7)*(1e-5);
+lambda_param0=(1e-7)*(1e-3);
 spectral_spec=1;
 common_alpha_spec=0;
 
@@ -46,7 +46,7 @@ for i = 1:6
 end
 
 %% Spectral algorithm (Change alpha0)
-alpha0_param0=0.000000001;
+alpha0_param0=1e-10;
 lambda_param0=1;
 spectral_spec=1;
 common_alpha_spec=0;

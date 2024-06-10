@@ -149,13 +149,12 @@ k1   =  k0*(1-delta)+A*z0.*k0.^alpha.*n0.^(1-alpha)-c0;
 %%%%%%%%%%%%%%%%%%
 spec_default.norm_spec=10;%% unit free
 spec_default.TOL=1e-6;
-spec_default.ITER_MAX=1000;
+spec_default.ITER_MAX=2000;
 spec_default.alpha_0=alpha0_param;
 spec_default.common_alpha_spec=common_alpha_spec;
 spec_default.DEBUG=1;%%%%%%%%%%%%%%%%%%%
 
 spec=spec_default;
-spec.ITER_MAX=2000;
  
     [output_spectral,other_vars,iter_info_V]=...
         spectral_func(@VF_Bellman_L_update_func,spec,{V},...
@@ -193,7 +192,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
 
 
     spec=spec_default;
-    spec.TOL=1e-9;
+    spec.TOL=1e-6;
 
     if spectral_spec==0
         spec.update_spec=0;
