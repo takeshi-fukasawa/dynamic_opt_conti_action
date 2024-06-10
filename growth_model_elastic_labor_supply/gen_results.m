@@ -1,4 +1,14 @@
-clear
+clear all
+%%% Path of Spectral function
+addpath('C:/Users/fukas/Dropbox/git/spectral')
+
+spectral_spec=1;
+common_alpha_spec=0;
+alpha0_param=1;
+lambda_param=1e-7;
+D=4;
+
+
 Method=-1;
 run Main_function.m
 c0_temp0=c0;

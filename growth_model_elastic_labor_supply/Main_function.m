@@ -1,47 +1,27 @@
 %function [out,other_output]=growth_main(Method,spectral_spec,D)
-% This MATLAB software solves a neoclassical stochastic growth model using
-% seven alternative solution methods and compares their accuracy and cost: 
-% envelope condition method iterating on value function (ECM-VF), conventional 
-% value function iteration (VFI), endogenous grid method (EGM), policy 
-% iteration using envelope condition (ECM-PI), conventional policy iteration 
-% (ECM-PI), envelope condition method iteration on the derivative of value 
-% function (ECM-DVF) and conventional Euler equation method (EE). For a 
-% description of these solution methods, see the article "Envelope Condition 
-% Method with an Application to Default Risk Models" by Cristina Arellano, 
-% Lilia Maliar, Serguei Maliar and Viktor Tsyrennikov, Journal of Economic 
-% Dynamics and Control (2016), 69, 436-459 (henceforth, AMMT, 2016).  
-%
 
-% -------------------------------------------------------------------------
-% Copyright � 2011-2016 by Lilia Maliar and Serguei Maliar. All rights 
-% reserved. The code may be used, modified and redistributed under the 
-% terms provided in the file "License_Agreement.txt".
-% -------------------------------------------------------------------------
-% Modified by Takeshi Fukasawa in June 2024
+% This MATLAB software solves a neoclassical stochastic growth model with
+% elastic labor supply using four alternative solution methods and compares 
+% their accuracy and cost. The methods considered are: (1) the envelope 
+% condition method iterating on value function (ECM-VF); (2) the endogenous 
+% grid method iterating on value function (EGM-VF); (3) the envelope condition 
+% method iterating on derivative of value function (ECM-DVF), endogenous grid 
+% method iterating on derivative of value function (EGM-DVF). For a description
+% of these solution methods, see the article "Envelope Condition Method 
+% versus Endogenous Grid Method for Solving Dynamic Programming Problems" by 
+% Lilia Maliar and Serguei Maliar,  Economics Letters (2013), 120, 262-266 
+% (henceforth, MM, 2013).  
+%
+% First version: July 21, 2011 
+% This version:  November 2, 2016
+% Modified by Takeshi Fukasawa in June 2024.
 
 %clc;
 %clear all;
 
-%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Path of Spectral function
-addpath('C:/Users/fukas/Dropbox/git/spectral')
-
-
-spectral_spec=1;
-common_alpha_spec=0;
-alpha0_param=1;
-lambda_param=1e-7;
-D=4;
-
-%%Method = 0;   % Choose a solution method: "1", "2", "3", "4"
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % "1" - envelope condition method iterating on value function (ECM-VF)
 % "2" - endogenous grid method iterating on value function (EGM-VF)
-% "3" - envelope condition method iterating on derivative of value 
-%       function (ECM-DVF)
-% "4" - endogenous grid method iterating on derivative of value 
-%       function (EGM-DVF)
 
 fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
 
@@ -223,6 +203,8 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     
     if Method==1 | Method==3 | Method==0
         input={V};
+    elseif Method==2
+        input={vf_coef};%%%%%#####
     elseif Method==2 | Method==4
          input={V,k0};
         spec.common_alpha_spec=1; % Important
@@ -242,6 +224,8 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
 
     if Method==1 | Method==0
         fun=@update_func_L;
+    elseif Method==2
+        fun=@update_func_L;%%%%####
     elseif Method==2 | Method==-1
         fun=@joint_update_func_L;
     elseif Method==-2
@@ -260,6 +244,10 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         V=output_spectral{1};
         vf_coef = X0\V;     % Coefficients for value function 
         k1=other_vars.k1;
+    elseif Method==2
+        vf_coef=output_spectral{1};
+        k1=other_vars.k1;
+        k0=other_vars.k0;
     elseif Method==2
        V=output_spectral{1};
        k0=output_spectral{2};

@@ -29,56 +29,6 @@ function [out,other_vars]=joint_update_func_L(V,var2,...
                    % Update V using damping
                       
        out={V_new,n0_new};
-   
-
-   elseif Method==2
-%==================================================================
-        % Method 2. Endogenous grid method iterating on value function (EGM-VF)
-        %==================================================================            
-            k0=var2;
-            grid(:,1) = k0;        % Grid points for current capital 
-            
-            X0 = Polynomial_2d(grid,D);   % Construct polynomial on 
-                                          % current state variables
-
-
-            vf_coef=X0\V; % Coefficients for value function
-                       
-            k1 = grid_EGM(:,1); % Grid points for next-period capital 
-                                % (fixing endogenous grid)
-            for j = 1:n_nodes                   
-                Xder1_EGM = Polynomial_deriv_2d([k1 z1(:,j)],D);
-                Vder1_EGM(:,j) = Xder1_EGM*vf_coef; 
-                                % Compute derivative of value function in
-                                % the integration nodes    
-            end
-            
-            Wder1 = Vder1_EGM*weight_nodes;   
-                                % Compute the expected derivative of next-period 
-                                % value function
-            for j=1:n_grid      % Solve for labor using eq. (17) in MM (2013)
-                n0(j,1)=csolve('Labor_EGM',n0(j,1),[],0.000001,5,nu,gam,alpha,delta,beta,B,A,k1(j,1),z0(j,1),Wder1(j,1));
-            end                                                
-            
-            c0 = (beta*Wder1).^(-1/gam);      
-                                % Compute consumption from eq. (5) in MM
-                                % (2016) 
-            k0 = (B*(1-n0).^-nu./(1-alpha)/A./z0/beta./Wder1).^(1/alpha).*n0;
-                                % Compute current capital from eq. (4) in
-                                % MM (2013)
-                                              
-            [V_new] = VF_Bellman_L(n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D);
-                                % Recompute value function using the Bellman 
-                                % equation
-                                 
-            V_new = kdamp*V_new + (1-kdamp)*V;   
-                                % Update V using damping
-
-            k0_new=k0;
-   
-            out={V_new,k0_new};
-
- 
         %==================================================================
    end
 
