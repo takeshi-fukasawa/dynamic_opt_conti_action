@@ -221,7 +221,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         spec.SQUAREM_spec=1;
     end
     
-    if Method==1 | Method==3
+    if Method==1 | Method==3 | Method==0
         input={V};
     elseif Method==2 | Method==4
          input={V,k0};
@@ -240,9 +240,9 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
 
 
 
-    if Method==1 | Method==3
+    if Method==1 | Method==0
         fun=@update_func_L;
-    elseif Method==2 | Method==4 | Method==-1
+    elseif Method==2 | Method==-1
         fun=@joint_update_func_L;
     elseif Method==-2
         fun=@VF_PGI_func_n0_c0;
@@ -256,7 +256,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     %iter_info.feval;
     
 
-    if Method==1 
+    if Method==1 | Method==0
         V=output_spectral{1};
         vf_coef = X0\V;     % Coefficients for value function 
         k1=other_vars.k1;
@@ -270,8 +270,14 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         n0=output_spectral{2};
         k1=other_vars.k1;
         vf_coef=X0\V;
+    elseif Method==-2
+        V=output_spectral{1};
+        n0=output_spectral{2};
+        c0=output_spectral{3};
+        k1=other_vars.k1;
+        vf_coef=X0\V;
     end
-
+    
     c0=other_vars.c0;
     n0=other_vars.n0;
     k0=other_vars.k0;

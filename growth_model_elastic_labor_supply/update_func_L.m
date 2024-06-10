@@ -6,16 +6,38 @@ function [out,other_vars]=update_func_L(input_cell,...
   % Modified by Takeshi Fukasawa in June 2024
 
 
-if Method==1
+if Method==1 | Method==0
     V=input_cell;
 end
 
 
+if Method==0
+%==================================================================
+% Method 0. Value function iteration (VFI)
+%==================================================================
+     vf_coef=X0\V;
+     Vder0 = X0der*vf_coef;   % Compute the derivative of value function
+               
+     for j=1:n_grid  % Solve for labor using eq. (18) in MM (2013)
+          n0(j,1)=csolve('FOC_L_VFI',n0(j,1),[],0.000001,5,...
+              k0(j,1),z0(j,1),A,alpha,gam,nu,B,beta,delta,...
+              z1(j,:),n_nodes,weight_nodes,vf_coef,D);   
+     end
+                            
+     c0=c0_analytical_func(n0,k0,z0,alpha,nu,gam,A,B);
+     k1=k1_analytical_func(k0,n0,c0,z0,delta,A,alpha);% Compute next-period capital using budget 
+                     % constraint (2) in MM(2013)
 
+    [V_new] = VF_Bellman_L(n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D);
+                                 % Recompute value function using 
+                                 % the Bellman equation
+
+    V_new=kdamp*V_new+(1-kdamp)*V; % Update V using damping
+
+elseif Method==1        
 %==================================================================
 % Method 1. Envelope condition method iterating on value function (ECM-VF)
 %==================================================================
-if Method==1        
      vf_coef=X0\V;
      Vder0 = X0der*vf_coef;   % Compute the derivative of value function
                
@@ -37,7 +59,7 @@ end
             
         
 %%%%%%%%
-if Method==1
+if Method==1 | Method==0
     out={V_new};
 elseif Method==3
     out={Vder0_new};

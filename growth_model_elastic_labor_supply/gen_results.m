@@ -10,6 +10,11 @@ run Main_function.m
 c0_temp00=c0;
 iter_info000=iter_info;
 
+Method=0;
+run Main_function.m
+c0_temp00=c0;
+iter_info0=iter_info;
+
 Method=1;
 run Main_function.m
 c0_temp1=c0;
