@@ -17,8 +17,6 @@ function [out,other_vars]=VF_PGI_func_n0_c0(V,var2,var3,...
                                 % Recompute value function using the Bellman 
                                 % equation
 
-       vf_coef=X0\V; % Coefficients for value function
-
        EVder=EVder_func(k1,z1,n_nodes,weight_nodes,vf_coef,D);
        difference_n0=FOC_L(EVder,n0,c0,k0,z0,A,alpha,gam,nu,B,beta);
        difference_c0=FOC_C(EVder,n0,c0,k0,z0,A,alpha,gam,nu,B,beta);

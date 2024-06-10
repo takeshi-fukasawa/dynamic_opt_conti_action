@@ -5,7 +5,7 @@ global V k1 iter_info alpha0_param lambda_param
 %%% Path of Spectral function
 addpath('C:/Users/fukas/Dropbox/git/spectral')
 
-spectral_spec=0;
+spectral_spec=1;
 common_alpha_spec=0;
 alpha0_param=1;
 lambda_param=1e-7;

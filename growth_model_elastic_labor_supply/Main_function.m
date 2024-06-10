@@ -149,7 +149,7 @@ k1   =  k0*(1-delta)+A*z0.*k0.^alpha.*n0.^(1-alpha)-c0;
 %%%%%%%%%%%%%%%%%%
 spec_default.norm_spec=10;%% unit free
 spec_default.TOL=1e-6;
-spec_default.ITER_MAX=500;
+spec_default.ITER_MAX=1000;
 spec_default.alpha_0=alpha0_param;
 spec_default.common_alpha_spec=common_alpha_spec;
 spec_default.DEBUG=1;%%%%%%%%%%%%%%%%%%%
@@ -193,7 +193,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
 
 
     spec=spec_default;
-    spec.TOL=1e-6;
+    spec.TOL=1e-9;
 
     if spectral_spec==0
         spec.update_spec=0;
@@ -335,7 +335,7 @@ for D = D_min:D_max % For polynomial degrees from 2 to 5...
             % Display the results
     
     out(D-1,:)=[D,Degree(D),CPU(D),Mean_Residuals(D),Max_Residuals(D),...
-        feval(D),feval_V(D),1-iter_info.FLAG_ERROR];
+        feval(D),feval_V(D),1-iter_info.FLAG_ERROR,CPU(D)/feval(D)];
 
     other_output.iter_info=iter_info;
     other_output.iter_info_V=iter_info_V;
