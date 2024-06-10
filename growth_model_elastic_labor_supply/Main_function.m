@@ -1,4 +1,4 @@
-%function [out,other_output]=growth_main(Method,spectral_spec,D)
+function [out,other_output]=Main_function(Method,spectral_spec,D)
 
 % This MATLAB software solves a neoclassical stochastic growth model with
 % elastic labor supply using four alternative solution methods and compares 
@@ -204,8 +204,8 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     if Method==1 | Method==3 | Method==0
         input={V};
     elseif Method==2
-        input={vf_coef};%%%%%#####
-    elseif Method==2 | Method==4
+        input={vf_coef};
+    elseif Method==4
          input={V,k0};
         spec.common_alpha_spec=1; % Important
     elseif Method==-1
@@ -216,7 +216,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     elseif Method==-2
         input={V,n0,c0};
         TOL_vec=(spec.TOL)*ones(1,3);
-        TOL_vec(2:3)=TOL_vec(2:3)*lambda_param*1000;%%% TOL of action should not depend on lambda_param 
+        TOL_vec(1,2:3)=TOL_vec(1,2:3).*lambda_param*1000;%%% TOL of action should not depend on lambda_param 
         spec.TOL=TOL_vec;
     end
 
@@ -225,8 +225,8 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     if Method==1 | Method==0
         fun=@update_func_L;
     elseif Method==2
-        fun=@update_func_L;%%%%####
-    elseif Method==2 | Method==-1
+        fun=@update_func_L;
+    elseif Method==-1
         fun=@joint_update_func_L;
     elseif Method==-2
         fun=@VF_PGI_func_n0_c0;
@@ -248,11 +248,10 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         vf_coef=output_spectral{1};
         k1=other_vars.k1;
         k0=other_vars.k0;
-    elseif Method==2
-       V=output_spectral{1};
-       k0=output_spectral{2};
-       vf_coef = X0\V;     % Coefficients for value function 
-       k1=other_vars.k1;
+        
+        grid(:,1) = k0;        % Grid points for current capital  
+        X0 = Polynomial_2d(grid,D);   % Construct polynomial on 
+                                          % current state variables
     elseif Method==-1
         V=output_spectral{1};
         n0=output_spectral{2};
@@ -343,4 +342,4 @@ for D = D_min:D_max % For polynomial degrees from 2 to 5...
     
 end
 
-%end  % function
+end  % function
