@@ -14,7 +14,7 @@ lambda_param=1;
 D=4;
 
 results=[];
-for i = 0:7
+for i = 3:3
         [out_i,other_output]=Main_7_Methods(i,spectral_spec,D);
         results=[results;...
             [i*ones(size(out_i,1),1),out_i]];

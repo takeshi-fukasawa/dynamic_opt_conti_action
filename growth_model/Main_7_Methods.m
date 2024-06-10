@@ -208,20 +208,18 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
 
 
     spec=spec_default;
-    spec.TOL=1e-10;
+    spec.TOL=1e-9;
 
     if spectral_spec==0
         spec.update_spec=0;
     elseif spectral_spec==2;
         spec.SQUAREM_spec=1;
     end
-    
-    if Method==3 %% EGM
-        spec.common_alpha_spec=1; % Important
-    end
 
-    if Method<=2 & Method>=1
+    if Method==1 | Method==2
         input={V};
+    elseif Method==3
+        input={vf_coef};
     elseif Method==4 | Method==5 | Method==7
         input={k1};
     elseif Method==6
@@ -231,13 +229,11 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
        TOL_vec=(spec.TOL)*ones(1,2);
        TOL_vec(2)=TOL_vec(2)*lambda_param;%%% TOL of action should not depend on lambda_param 
        spec.TOL=TOL_vec;
-    elseif Method==3
-        input={V,k0};
     end
 
-    if Method<=7 & Method>=1 & Method~=3
+    if Method<=7 & Method>=1
         fun=@update_func;
-    else
+    elseif Method==0
         fun=@joint_update_func;
     end
 
@@ -248,10 +244,21 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     %iter_info.feval;
     
 
-    if Method<=2 & Method>=1
+    if Method==1 | Method==2
         V=output_spectral{1};
         vf_coef = X0\V;     % Coefficients for value function 
         k1=other_vars.k1;
+    elseif Method==3
+        vf_coef=output_spectral{1};
+        k1=other_vars.k1;
+        k0=other_vars.k0;
+        
+        grid(:,1) = k0;        % Grid points for current capital  
+        X0 = Polynomial_2d(grid,D);   % Construct polynomial on 
+                                          % current state variables
+
+        vf_coef=X0\V; % Coefficients for value function
+
     elseif Method==4 | Method==5 | Method==7
         k1=output_spectral{1};
         V=other_vars.V;
@@ -272,15 +279,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     c0=other_vars.c0;
     k0=other_vars.k0;
 
-    if Method==3 % EGM
-        V=output_spectral{1};
-        k0=output_spectral{2};
-        grid=other_vars.grid;
-        X0=other_vars.X0;
-        vf_coef = X0\V;     % Coefficients for value function 
-        k1=other_vars.k1;
-    end
-
+    
     k_coef = X0\k1;
     c0=(1-delta)*k0+A*z0.*k0.^alpha-k1;
     c_coef = X0\c0;

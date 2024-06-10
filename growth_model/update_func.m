@@ -7,8 +7,10 @@ function [out,other_vars]=update_func(input_cell,...
 
   global V X0_temp
 
-if Method<=3 & Method>=1
+if Method==1 | Method==2
     V=input_cell;
+elseif Method==3
+    vf_coef=input_cell;
 elseif Method==4 | Method==5 | Method==7
     k1=input_cell;
 elseif Method==6
@@ -61,8 +63,6 @@ end
         % Method 3. Endogenous grid method (EGM)
         %==================================================================                                   
         elseif Method==3;         
-            X0=X0_temp;
-            vf_coef=X0\V; % Coefficients for value function
             
             k1 = grid_EGM(:,1); % Grid points for next-period capital 
                                 % (fixing endogenous grid)
@@ -97,10 +97,10 @@ end
             
             X0 = Polynomial_2d(grid,D);   % Construct polynomial on 
                                           % current state variables
-            X0_temp=X0;%%%%
+            vf_coef_new=X0\V_new;
 
-            V_new = kdamp*V_new + (1-kdamp)*V;   
-                                   % Update V using damping
+            vf_coef_new = kdamp*vf_coef_new + (1-kdamp)*vf_coef;   
+                                   % Update vf_coef using damping
         %==================================================================
                                                             
                                                            
@@ -226,8 +226,10 @@ end
         end               
         
 %%%%%%%%
-if Method<=3 & Method>=1
+if Method==1 | Method==2
     out={V_new};
+elseif Method==3
+    out={vf_coef_new};
 elseif Method==4 | Method==5 | Method==7
     out={k1_new};
 elseif Method==6
