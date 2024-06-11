@@ -6,6 +6,7 @@ clear all
 addpath('C:/Users/fukas/Dropbox/git/spectral')
 
 global diff diff_temp isentry entered lambda_param
+global wmax
 
 spec.ITER_MAX=300;
 %spec.ITER_MAX=10;
@@ -37,7 +38,7 @@ c.ENTRY_HIGH = 0.25;
 c.ENTRY_SUNK = 0.2;
 c.ENTRY_AT = 4;
 c.BETA = 0.925;
-c.BETA = 0.98;
+%%c.BETA = 0.99;
 
 c.DELTA = 0.7;
 c.SCRAP_VAL = 0.1;
@@ -47,6 +48,7 @@ c.QUAD_INV_COST=0.0;%%%%%%%
 c.MC = 5;
 c.MKT_SIZE = 5;
 c.KMAX = 19;
+%%c.KMAX = 20;
 
 c.WSTAR = 12;
 c.INTERCEPT = 3;
@@ -72,30 +74,37 @@ profit(c);
 % Solve dynamic equilibrium:
 no_entry_exit_spec=1;%%%%
 
+TOL=1e-6;
+
 method="gradient";
 spec.alpha_0=1;
 lambda_param=0.01;
-TOL_vec=(1e-10)*ones(1,2);
+TOL_vec=TOL*ones(1,2);
 TOL_vec(2)=TOL_vec(2)*lambda_param;
+spec.TOL=TOL_vec;
 
 [newvalue_grad,newx_grad,iter_info_grad,other_vars]=...
         eql_ma(method,no_entry_exit_spec,spec,c);
 
+DIST_grad=iter_info_grad.DIST_table(iter_info_grad.feval,:);
+DIST_grad(2)=DIST_grad(2)/lambda_param;
+
 if 1==1 & c.QUAD_INV_COST==0
 method="PM";
-spec.TOL=1e-8;
+spec.TOL=TOL;
 spec.alpha_0=1;
 [newvalue_PM,newx_PM,iter_info_PM,other_vars]=...
         eql_ma(method,no_entry_exit_spec,spec,c);
 end
 
+DIST_PM=iter_info_PM.DIST_table(iter_info_PM.feval,:);
 
 results_grad=[round(iter_info_grad.t_cpu,2),iter_info_grad.feval,...
-    log10(iter_info_grad.DIST_table(iter_info_grad.feval,:))];
+    log10(DIST_grad)];
 
 if c.QUAD_INV_COST==0
 results_PM=[round(iter_info_PM.t_cpu,2),iter_info_PM.feval,...
-    log10(iter_info_PM.DIST_table(iter_info_PM.feval,:))];
+    log10(DIST_PM)];
 results=[results_PM;results_grad];
 
 else
