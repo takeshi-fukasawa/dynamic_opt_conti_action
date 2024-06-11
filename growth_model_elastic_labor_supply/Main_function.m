@@ -147,7 +147,7 @@ k1   =  k0*(1-delta)+A*z0.*k0.^alpha.*n0.^(1-alpha)-c0;
                      % where css/yss is calculated in the steady state
       
 %%%%%%%%%%%%%%%%%%
-spec_default.norm_spec=1;%% unit free
+spec_default.norm_spec=10;%% unit free
 spec_default.TOL=1e-6;
 spec_default.ITER_MAX=3000;
 spec_default.alpha_0=alpha0_param;
@@ -192,7 +192,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
 
 
     spec=spec_default;
-    spec.TOL=1e-5;
+    spec.TOL=1e-6;
 
     if spectral_spec==0
         spec.update_spec=0;
