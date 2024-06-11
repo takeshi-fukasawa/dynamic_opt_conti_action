@@ -8,7 +8,7 @@ function [x,rc] = csolve(FUN,x,gradfun,crit,itmax,varargin)
 %
 % gradfun:  string naming the function called to evaluate the gradient matrix.  If this
 %           is null (i.e. just "[]"), a numerical gradient is used instead.
-% crit:     if the sum of absolute values that FUN returns is less than this,
+% crit:     if the max (previous version: sum) of absolute values that FUN returns is less than this,
 %           the equation is solved.
 % itmax:    the solver stops when this number of iterations is reached, with rc=4
 % varargin: in this position the user can place any number of additional arguments, all
@@ -31,6 +31,11 @@ verbose=0;% if this is set to zero, all screen output is suppressed
 %------------ analyticg --------------
 analyticg=1-isempty(gradfun); %if the grad argument is [], numerical derivatives are used.
 %-------------------------------------
+
+%%% Modified by Takeshi Fukasawa in June 2024:
+%%% crit: if the max (previous version: sum) of absolute values that FUN returns is less than this,
+%%%           the equation is solved.
+
 nv=length(x);
 tvec=delta*eye(nv);
 done=0;
@@ -39,7 +44,9 @@ if isempty(varargin)
 else
    f0=feval(FUN,x,varargin{:});
 end   
-af0=sum(abs(f0));
+%%af0=sum(abs(f0));
+af0=max(abs(f0));
+
 af00=af0;
 itct=0;
 while ~done
@@ -82,7 +89,9 @@ while ~done
    while ~subDone
       dx=lambda*dx0;
       f=feval(FUN,x+dx,varargin{:});
-      af=sum(abs(f));
+      %%af=sum(abs(f));
+      af=max(abs(f));
+      
       if af<afmin
          afmin=af;
          fmin=f;

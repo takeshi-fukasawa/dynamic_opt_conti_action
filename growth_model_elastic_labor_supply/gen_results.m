@@ -8,8 +8,8 @@ addpath('C:/Users/fukas/Dropbox/git/spectral')
 
 spectral_spec=1;
 common_alpha_spec=0;
-alpha0_param=1e-7;
-lambda_param=1;
+alpha0_param=1;
+lambda_param=1e-7;
 D=4;
 
 %%%%%%%%%%
@@ -30,11 +30,8 @@ elseif spectral_spec==2
     tag='_SQUAREM';
 end
 
-%filename=append('results/growth_model_algorithm_comparison',...
-%    tag,'.csv');
-
 filename=append('results/growth_model_algorithm_comparison_summary',...
     tag,'.csv');
 
-%writematrix(round(results_summary,3),filename)
+writematrix(round(results_summary,3),filename)
 
