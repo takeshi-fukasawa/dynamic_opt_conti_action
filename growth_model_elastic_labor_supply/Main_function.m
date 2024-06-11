@@ -27,7 +27,7 @@ fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
 
 global iter_info iter_info0 V k1
 global alpha0_param lambda_param
-global common_alpha_spec
+global common_alpha_spec n0 c0
 
 D_init=D;
 D_min=D;
@@ -147,9 +147,9 @@ k1   =  k0*(1-delta)+A*z0.*k0.^alpha.*n0.^(1-alpha)-c0;
                      % where css/yss is calculated in the steady state
       
 %%%%%%%%%%%%%%%%%%
-spec_default.norm_spec=10;%% unit free
+spec_default.norm_spec=1;%% unit free
 spec_default.TOL=1e-6;
-spec_default.ITER_MAX=2000;
+spec_default.ITER_MAX=3000;
 spec_default.alpha_0=alpha0_param;
 spec_default.common_alpha_spec=common_alpha_spec;
 spec_default.DEBUG=1;%%%%%%%%%%%%%%%%%%%
@@ -192,7 +192,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
 
 
     spec=spec_default;
-    spec.TOL=1e-6;
+    spec.TOL=1e-5;
 
     if spectral_spec==0
         spec.update_spec=0;
@@ -210,12 +210,12 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     elseif Method==-1
         input={V,n0};
        TOL_vec=(spec.TOL)*ones(1,2);
-       TOL_vec(2)=TOL_vec(2)*lambda_param*1000;%%% TOL of action should not depend on lambda_param 
+       TOL_vec(2)=TOL_vec(2)*lambda_param;%%% TOL of action should not depend on lambda_param 
        spec.TOL=TOL_vec;
     elseif Method==-2
         input={V,n0,c0};
         TOL_vec=(spec.TOL)*ones(1,3);
-        TOL_vec(1,2:3)=TOL_vec(1,2:3).*lambda_param*1000;%%% TOL of action should not depend on lambda_param 
+        TOL_vec(1,2:3)=TOL_vec(1,2:3).*lambda_param;%%% TOL of action should not depend on lambda_param 
         spec.TOL=TOL_vec;
     end
 

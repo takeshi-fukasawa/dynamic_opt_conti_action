@@ -13,12 +13,10 @@ save_spec=0;
 Method=-2;
 
 results=[];
-results_spectral_change_alpha0=[];
-results_spectral_change_lambda=[];
 
 %% Fixed point iteration and VF-PGI
 alpha0_param0=1;
-lambda_param0=(1e-7)*(1e-5);
+lambda_param0=(1e-7)*(1e-3);
 spectral_spec=0;
 
 for i = 1:6
@@ -35,6 +33,7 @@ alpha0_param0=1;
 lambda_param0=(1e-7)*(1e-3);
 spectral_spec=1;
 common_alpha_spec=0;
+results_spectral_change_lambda=[];
 
 for i = 1:6
     lambda_param=lambda_param0*10^(i-1);
@@ -50,6 +49,7 @@ alpha0_param0=1e-10;
 lambda_param0=1;
 spectral_spec=1;
 common_alpha_spec=0;
+results_spectral_change_alpha0=[];
 
 for i = 1:10
     alpha0_param=alpha0_param0*10^(i-1);
