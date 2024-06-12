@@ -44,7 +44,7 @@ c.DELTA = 0.7;
 c.SCRAP_VAL = 0.1;
 c.INV_MULT = 3;
 c.INV_COST = 1;
-c.QUAD_INV_COST=0.0;%%%%%%%
+c.QUAD_INV_COST=0.5;%%%%%%%
 c.MC = 5;
 c.MKT_SIZE = 5;
 c.KMAX = 19;
@@ -89,7 +89,7 @@ spec.TOL=TOL_vec;
 DIST_grad=iter_info_grad.DIST_table(iter_info_grad.feval,:);
 DIST_grad(2)=DIST_grad(2)/lambda_param;
 
-if 1==1 & c.QUAD_INV_COST==0
+if 1==1 
 method="PM";
 spec.TOL=TOL;
 spec.alpha_0=1;
