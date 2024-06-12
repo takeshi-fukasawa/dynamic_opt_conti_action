@@ -350,6 +350,7 @@ function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,isentry,method,no_entr
   global diff diff_temp entered 
   global encfirm etable1 etable2 multfac1 multfac2
   global delta kmax mask two_n lambda_param
+  global p
 
   locw = qdecode(w);
   locwx = locw;
@@ -411,6 +412,7 @@ function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,isentry,method,no_entr
       v2 = entered*tempv2 + (1-entered)*v2;
     end
 
+    if method=="PM" & QUAD_INV_COST==0
     % Calculate values for firm, given that it is not leaving
 
     if v1 <= v2; % Avoid division by zeros
@@ -418,10 +420,6 @@ function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,isentry,method,no_entr
     else; r = 1.0/(beta*a*(v1-v2));
     end
 
-    p=(a.*ox(j))./(1+a.*ox(j)); % Based on the old investment
-    diff_temp(j)=beta*a*((1-p).^2).*(v1-v2)-INV_COST-QUAD_INV_COST.*ox(j);
-
-    if method=="PM"
         % r now contains the value r = (1 - p)^2. => p = 1 - sqrt(r)),
         % where p is the optimal prob. of having k rise, cond. on world
 
@@ -430,8 +428,14 @@ function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,isentry,method,no_entr
 
         nx(j) = p/(a - a * p);
     
+    elseif method=="PM" & QUAD_INV_COST>0
+        
+      x_j_init=ox(j);
+      x_sol=fmincon(XXX);%%%%%%%
+      nx(j)=x_sol;
+
     elseif method=="gradient"
-        diff(j)=diff_temp(j);
+        diff(j)=FOC_func(ox(j),v1,v2,a,beta,INV_COST,QUAD_INV_COST);
         if abs(ox(j))<=1e-16 & diff_temp(j)<0
             diff(j)=0;
         end
