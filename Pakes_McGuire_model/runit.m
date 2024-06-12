@@ -8,23 +8,20 @@ addpath('C:/Users/fukas/Dropbox/git/spectral')
 global diff diff_temp isentry entered lambda_param
 global wmax
 
-spec.ITER_MAX=300;
+spec.ITER_MAX=1000;
 %spec.ITER_MAX=10;
-
-
-spec.x_min_cell={[],0};
-spec.DEBUG=1;
-spectral_spec=1;
 
 %spec.common_alpha_spec=0;
 
-if spectral_spec==0
-    spec.update_spec=0;
-end
+spec.x_min_cell={[],0};
+spec.DEBUG=1;
+
+spectral_spec=0;
+
 
 % Model Parameters
 
-c.MAX_FIRMS = 2;
+c.MAX_FIRMS = 3;
 c.START_FIRMS = 1;
 c.EQL_TYPE = 'COMPETITION'; % COMPETITION|MONOPOLY|PLANNER
 
@@ -44,7 +41,7 @@ c.DELTA = 0.7;
 c.SCRAP_VAL = 0.1;
 c.INV_MULT = 3;
 c.INV_COST = 1;
-c.QUAD_INV_COST=0.5;%%%%%%%
+c.QUAD_INV_COST=0.0;%%%%%%%
 c.MC = 5;
 c.MKT_SIZE = 5;
 c.KMAX = 19;
@@ -83,32 +80,34 @@ TOL_vec=TOL*ones(1,2);
 TOL_vec(2)=TOL_vec(2)*lambda_param;
 spec.TOL=TOL_vec;
 
+if spectral_spec==0
+    spec.update_spec=0;
+end
+
 [newvalue_grad,newx_grad,iter_info_grad,other_vars]=...
         eql_ma(method,no_entry_exit_spec,spec,c);
 
 DIST_grad=iter_info_grad.DIST_table(iter_info_grad.feval,:);
 DIST_grad(2)=DIST_grad(2)/lambda_param;
 
-if 1==1 
 method="PM";
 spec.TOL=TOL;
 spec.alpha_0=1;
 [newvalue_PM,newx_PM,iter_info_PM,other_vars]=...
         eql_ma(method,no_entry_exit_spec,spec,c);
-end
 
 DIST_PM=iter_info_PM.DIST_table(iter_info_PM.feval,:);
 
 results_grad=[round(iter_info_grad.t_cpu,2),iter_info_grad.feval,...
     log10(DIST_grad)];
 
-if c.QUAD_INV_COST==0
 results_PM=[round(iter_info_PM.t_cpu,2),iter_info_PM.feval,...
     log10(DIST_PM)];
-results=[results_PM;results_grad];
 
+if spectral_spec==1
+    results=[results_grad;results_PM];
 else
-    results=results_grad;
+    results=[results_PM];
 end
 
 if spectral_spec==0
@@ -123,5 +122,5 @@ end
 
 filename=append('results/PakesMcGuire_model_algorithm_comparison_summary',...
     tag,'_',string(c.MAX_FIRMS),'_',string(c.BETA),'.csv');
-%writematrix(round(results,2),filename)
+writematrix(round(results,2),filename)
 

@@ -431,25 +431,28 @@ function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,isentry,method,no_entr
 
 
      elseif method=="PM" & QUAD_INV_COST>0
-        %%%%%%%
-        x_j_init=ox(j);
-        options=[];
-        A=[];b=[];Aeq=[];beq=[];
-        lb=0;ub=[];nonlcon=[]; 
+
+        %%% Nonlinear optimization
+        options = optimset('Display','off');
+        x_min=0;x_max=1;%%%
+        x_sol=fminbnd(@Q_func,x_min,x_max,options,v1,v2,a,beta,INV_COST,QUAD_INV_COST);
+        
+        %%% Use fmincon or fminunc => Slower...
+        %x_j_init=ox(j);
+        %options=[];
+        %A=[];b=[];Aeq=[];beq=[];
+        %lb=0;ub=[];nonlcon=[]; 
         %options = optimoptions('fmincon','Display','off','SpecifyObjectiveGradient',true);
         %x_sol=fmincon(@Q_func,x_j_init,A,b,Aeq,beq,lb,ub,nonlcon,options,v1,v2,a,beta,INV_COST,QUAD_INV_COST);
         
-        options = optimset('Display','off');
-        x_sol=fminbnd(@Q_func,0,1,options,v1,v2,a,beta,INV_COST,QUAD_INV_COST);
-        
         %options = optimoptions('fminunc','Display','off');
         %x_sol=fminunc(@Q_func,x_j_init,options,v1,v2,a,beta,INV_COST,QUAD_INV_COST);
-        %if x_sol<0
-        %    x_sol=0;
-        %end
+        
+        if x_sol<1e-4
+            x_sol=0;% avoid warning message concerning the range of states
+        end
 
         nx(j)=x_sol;
-        %%%%%%%%
 
         p=(a.*ox(j))./(1+a.*ox(j));
 
