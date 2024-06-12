@@ -5,7 +5,6 @@ global elas beta_param delta_param update_spec tune_param gpu_spec
 global spec_precompute w_exo x_exo sd_exo
 global diff lambda_param
 
-DEBUG=0;
 addpath('./Smolyak_cpu')
 
 %%% Path of spectral algorithm code
@@ -15,8 +14,8 @@ addpath('C:/Users/fukas/Dropbox/git/spectral')
 gpu_spec=0;
 spec_precompute=1;
 n_sim=1;
-N=2;d=N+2;
-mu_max=2;
+N=3;d=N+2;
+mu_max=3;
 delta_param=0.08;%0.08;
 beta_param=0.9;
 elas=1.5;
@@ -25,7 +24,7 @@ elas=1.5;
 resell_ratio=1;%%%%%
 
 tune_param=0;%1e-6;
-n_node_exo=5;
+n_node_exo=10;
 n_node_inv=1;
 
 n_exo=2; %% Fixed
@@ -36,7 +35,7 @@ theta=[0.2;adj_cost;0.2;adj_cost];
 AR_coef=0.9*ones(1,2);
 sd_exo=[0.01,0.01]*1;
 sd_inv=0;%1e-4;
-magnify_rate_kstk=1.8;
+magnify_rate_kstk=1.5;
 magnify_rate_exo=1.03;
 k_center=ones(1,N);
 exo_center=[4,2];%%%%
@@ -86,6 +85,10 @@ iter_results_output_func(iter_info_gradient,resid_mat_gradient);...
 iter_results_output_func(iter_info_PM,resid_mat_PM);...
 iter_results_output_func(iter_info_analytical,resid_mat_analytical)],3);
 
+table_summary=round([...
+iter_results_output_func(iter_info_gradient_spectral,resid_mat_gradient_spectral);...
+iter_results_output_func(iter_info_PM_spectral,resid_mat_PM_spectral);...
+iter_results_output_func(iter_info_PM,resid_mat_PM)],3);
 
-%writematrix([table;table_spectral],append("results/results_",string(N),".csv"))
+writematrix(table_summary,append("results/results_",string(N),".csv"))
 
