@@ -350,6 +350,7 @@ function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,isentry,method,no_entr
   global diff diff_temp entered 
   global encfirm etable1 etable2 multfac1 multfac2
   global delta kmax mask two_n lambda_param
+  global p
   
   locw = qdecode(w);
   locwx = locw;
@@ -428,32 +429,19 @@ function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,isentry,method,no_entr
 
         nx(j) = p/(a - a * p);
     
-        %%%%%%%
-        x_j_init=ox(j);
-        options=[];
-        A=[];b=[];Aeq=[];beq=[];
-        lb=0;ub=[];nonlcon=[]; 
-        %options = optimoptions('fmincon','Display','off');
-        %x_sol=fmincon(@Q_func,x_j_init,A,b,Aeq,beq,lb,ub,nonlcon,options,v1,v2,a,beta,INV_COST,QUAD_INV_COST);
-        
-        %options = optimoptions('fminunc','Display','off');
-        %x_sol=fminunc(@Q_func,x_j_init,options,v1,v2,a,beta,INV_COST,QUAD_INV_COST);
-        %if x_sol<0
-        %    x_sol=0;
-        %end
-
-        %nx(j)=x_sol;
-        %%%%%%%%
-
      elseif method=="PM" & QUAD_INV_COST>0
-        x_j_init=ox(j);
-        options=[];
-        x_sol=fminbnd(x_j_init,@Q_func,options,v1,v2,a,beta,INV_COST,QUAD_INV_COST);
-        nx(j)=x_sol;
+
+        diff(j)=FOC_func(ox(j),v1,v2,a,beta,INV_COST,QUAD_INV_COST);
+        if abs(ox(j))<=1e-16 & diff(j)<0
+            diff(j)=0;
+        end
+
+        nx(j)=ox(j)+lambda_param*diff(j);
+    
 
     elseif method=="gradient"
 
-        [diff(j),p]=FOC_func(ox(j),v1,v2,a,beta,INV_COST,QUAD_INV_COST);
+        diff(j)=FOC_func(ox(j),v1,v2,a,beta,INV_COST,QUAD_INV_COST);
         if abs(ox(j))<=1e-16 & diff(j)<0
             diff(j)=0;
         end
