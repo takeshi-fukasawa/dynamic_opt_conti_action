@@ -220,6 +220,13 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         TOL_vec(1,2:3)=TOL_vec(1,2:3).*lambda_param;%%% TOL of action should not depend on lambda_param 
         spec.TOL=TOL_vec;
         spec.norm_spec=[10,0,0];% unit free norm for V
+
+    elseif Method==-3
+        input={V,[n0;c0]};
+        TOL_vec=(spec.TOL)*ones(1,2);
+        TOL_vec(2)=TOL_vec(2)*lambda_param;%%% TOL of action should not depend on lambda_param 
+        spec.TOL=TOL_vec;
+        spec.norm_spec=[10,0];% unit free norm for V
     end
 
 
@@ -228,9 +235,11 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     elseif Method==2
         fun=@update_func_L;
     elseif Method==-1
-        fun=@joint_update_func_L;
+        fun=@VF_PGI_func_n0;
     elseif Method==-2
         fun=@VF_PGI_func_n0_c0;
+    elseif Method==-3
+        fun=@VF_PGI_func_n0_c0_2;
     end
 
 
@@ -264,8 +273,15 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         c0=output_spectral{3};
         k1=other_vars.k1;
         vf_coef=X0\V;
+    elseif Method==-3
+        V=output_spectral{1};
+        var2=output_spectral{2};
+        n0=var2(1:n_grid,1);
+        c0=var2(n_grid+1:n_grid*2,1);
+        k1=other_vars.k1;
+        vf_coef=X0\V;
     end
-    
+
     c0=other_vars.c0;
     n0=other_vars.n0;
     k0=other_vars.k0;

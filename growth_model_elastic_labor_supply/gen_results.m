@@ -14,7 +14,7 @@ D=4;
 
 %%%%%%%%%%
 results=[];
-for i = -2:2
+for i = -3:-2
         [out_i,other_output]=Main_function(i,spectral_spec,D);
         results=[results;...
             [i*ones(size(out_i,1),1),out_i]];
@@ -33,5 +33,5 @@ end
 filename=append('results/growth_model_algorithm_comparison_summary',...
     tag,'.csv');
 
-writematrix(round(results_summary,3),filename)
+%writematrix(round(results_summary,3),filename)
 
