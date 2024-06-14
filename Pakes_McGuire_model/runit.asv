@@ -26,7 +26,7 @@ c.MAX_FIRMS = 1;
 c.START_FIRMS = 1;
 c.EQL_TYPE = 'COMPETITION'; % COMPETITION|MONOPOLY|PLANNER
 
-%%%c.IND_TYPE = 'COST'; 
+c.IND_TYPE = 'COST'; 
 c.IND_TYPE = 'QUALITY';
 
 c.ENTRY_TYPE = 'RAN_ENTRY';
@@ -41,7 +41,7 @@ c.DELTA = 0.7;
 c.SCRAP_VAL = 0.1;
 c.INV_MULT = 3;
 c.INV_COST = 1;
-c.QUAD_INV_COST=1.0;%%%%%%%
+c.QUAD_INV_COST=0.0;%%%%%%%
 c.MC = 5;
 c.MKT_SIZE = 5;
 c.KMAX = 19;
@@ -113,30 +113,24 @@ spec.alpha_0=1;
 
 DIST_PM_spectral=iter_info_PM_spectral.DIST_table(iter_info_PM_spectral.feval,:);
 
+%% PM (VFI-star)
+method="PM";
+spec.TOL=TOL;
+spec.alpha_0=1;
+spec.update_spec=0;
+[newvalue_PM,newx_PM,iter_info_PM,other_vars]=...
+        eql_ma(method,no_entry_exit_spec,spec,c);
+
+DIST_PM=iter_info_PM.DIST_table(iter_info_PM.feval,:);
+
 results_grad_spectral=[round(iter_info_grad_spectral.t_cpu,2),iter_info_grad_spectral.feval,...
     log10(DIST_grad_spectral)];
 results_PM_spectral=[round(iter_info_PM_spectral.t_cpu,2),iter_info_PM_spectral.feval,...
     log10(DIST_PM_spectral)];
-
-if c.QUAD_INV_COST==0
-    %% PM (VFI)
-    method="PM";
-    spec.TOL=TOL;
-    spec.alpha_0=1;
-    spec.update_spec=0;
-    [newvalue_PM,newx_PM,iter_info_PM,other_vars]=...
-            eql_ma(method,no_entry_exit_spec,spec,c);
-    
-    DIST_PM=iter_info_PM.DIST_table(iter_info_PM.feval,:);
-    results_PM=[round(iter_info_PM.t_cpu,2),iter_info_PM.feval,...
+results_PM=[round(iter_info_PM.t_cpu,2),iter_info_PM.feval,...
     log10(DIST_PM)];
 
-    results=[results_grad_spectral;results_PM_spectral;results_PM];
-
-else
-    results=[results_grad_spectral;results_PM_spectral];
-end
-
+results=[results_grad_spectral;results_PM_spectral;results_PM];
 
 tag=c.IND_TYPE;
 if c.QUAD_INV_COST>0
@@ -145,5 +139,5 @@ end
 
 filename=append('results/results_',...
     tag,'_',string(c.MAX_FIRMS),'_',string(c.BETA),'.csv');
-writematrix(round(results,2),filename)
+%writematrix(round(results,2),filename)
 

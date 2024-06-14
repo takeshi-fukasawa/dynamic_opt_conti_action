@@ -61,7 +61,7 @@ if nfirms > 1;
   % This data is: v (value), x (investment), p (probability of state rising),
   %   isentry
 
-  %%load(['a.' c.PREFIX '_markov' int2str(nfirms) '.mat']);
+  load(['./middle_output/' 'a.' c.PREFIX '_markov' int2str(nfirms) '.mat']);
 
   oneton = zeros(nfirms,1);
   i=1;
@@ -105,7 +105,7 @@ while nfirms <= rlnfirms;
 
   disp(sprintf('\nFirms: %d   States: %d\nInitialization ...', nfirms, wmax));
 
-  load(['a.' c.PREFIX '_pr' int2str(nfirms) '.mat'])
+  load(['./middle_output/' 'a.' c.PREFIX '_pr' int2str(nfirms) '.mat'])
 
   two_n = 2^(nfirms-1);
   dtable = [];
