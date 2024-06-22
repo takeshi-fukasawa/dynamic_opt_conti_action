@@ -9,9 +9,6 @@ function [out,other_vars]=joint_update_func(V,var2,...
    if Method==0 %% VF-PGI update
        k1=var2;%initial action
        
-       [V_new] = VF_Bellman(c0,k1,z1,gam,beta,n_nodes,weight_nodes,vf_coef,D);
-              % Recompute value function using Bellman equation
-
        vf_coef=X0\V; % Coefficients for value function
                 
        %for i = 1:n_grid    % For each grid point 
@@ -22,7 +19,10 @@ function [out,other_vars]=joint_update_func(V,var2,...
        k1_new=k1+lambda_param*difference;
 
        c0 = (1-delta)*k0+A*z0.*k0.^alpha-k1;% Find consumption from budget constraint
-           
+       
+       [V_new] = VF_Bellman(c0,k1,z1,gam,beta,n_nodes,weight_nodes,vf_coef,D);
+              % Recompute value function using Bellman equation
+
        V_new = kdamp*V_new + (1-kdamp)*V;   
                    % Update V using damping
                       

@@ -9,12 +9,18 @@ addpath('C:/Users/fukas/Dropbox/git/spectral')
 
 spectral_spec=1;
 common_alpha_spec=0;
-alpha0_param=0.001;
-lambda_param=1;
+alpha0_param=1;
+lambda_param=0.001;
 D=4;
 
 results=[];
-for i = 3:3
+if spectral_spec==1
+    i_start=0;
+else
+    i_start=1;
+end
+
+for i = i_start:7
         [out_i,other_output]=Main_7_Methods(i,spectral_spec,D);
         results=[results;...
             [i*ones(size(out_i,1),1),out_i]];

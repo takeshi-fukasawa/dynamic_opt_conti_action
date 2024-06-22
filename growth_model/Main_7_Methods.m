@@ -228,7 +228,6 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         input={V,k1};
        TOL_vec=(spec.TOL)*ones(1,2);
        TOL_vec(2)=TOL_vec(2)*lambda_param;%%% TOL of action should not depend on lambda_param 
-       spec.TOL=TOL_vec;
     end
 
     if Method<=7 & Method>=1
