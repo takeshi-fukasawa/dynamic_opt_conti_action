@@ -1,8 +1,8 @@
 # Replication code of "Simple method for efficiently solving dynamic models with continuous actions using policy gradient" (Fukasawa, 2024)
 
-This repository contains replication codes of the paper titled "Simple method for efficiently solving dynamic models with continuous actions using policy gradient" by Takeshi Fukasawa, proposing VF-PGI-Spectral (Value function-Policy Gradient Iteration-Spectral) algorithm for computationally efficiently solving dynamic models with continuous actions. These codes are written in MATLAB.
+This repository contains replication code of the paper titled "Simple method for efficiently solving dynamic models with continuous actions using policy gradient" by Takeshi Fukasawa, proposing VF-PGI-Spectral (Value Function-Policy Gradient Iteration-Spectral) algorithm for computationally efficiently solving dynamic models with continuous actions. The code is written in MATLAB.
 
-Note that the codes rely on my other repository takeshi-fukasawa/spectral. If you run the replication codes, please also download the spectral repository, and modify the path specified in the main code.
+Note that the code relies on my other repository takeshi-fukasawa/spectral. If you run the replication code, please also download the spectral repository, and modify the path specified in the main code.
 
 ## growth_model_elastic_labor_supply (Section 5.1, Appendix C.1)
 The code is based on the replication code of Maliar and Maliar (2013), and it is designed to solve the single-agent neoclassical growth model with elastic labor supply. We can obtain the results of the experiments shown in Section 5.1 and Appendix C.1 of the paper by running gen_results.m and gen_results_VF_PGI_test.m.
@@ -11,7 +11,7 @@ The code is based on the replication code of Maliar and Maliar (2013), and it is
 The code is designed to solve a dynamic investment competition model with continuous states. We can obtain the results of the experiments shown in Section 5.2 of the paper by running Main_code.m. Note that the code utilizes the Smolyak method. Functions related to the Smolyak method are based on Judd et al. (2014).
 
 ## Pakes_McGuire_model (Section 5.3)
-The code is based on the replication code of Pakes and McGuire (1994), downloaded from https://scholar.harvard.edu/pakes/pages/pakes-maguire-algorithm-0. It is designed to solve dynamic investment competition model with discrete states considered by Pakes and McGuire (1994). We can obtain the results of the experiments shown in Section 5.3 of the paper by running runit.m.
+The code is based on the replication code of Pakes and McGuire (1994), downloaded from https://scholar.harvard.edu/pakes/pages/pakes-maguire-algorithm-0. It is designed to solve the dynamic investment competition model with discrete states considered by Pakes and McGuire (1994). We can obtain the results of the experiments shown in Section 5.3 of the paper by running runit.m.
 
 ## growth_model_inelastic_labor_supply (Appendix C.2)
 The code is based on the replication code of Coleman (2021) and Arellano et al. (2016), and it is designed to solve the single-agent neoclassical growth model with inelastic labor supply. We can obtain the results of the experiments shown in Appendix C.2 of the paper by running gen_results.m.
