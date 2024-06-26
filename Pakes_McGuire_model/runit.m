@@ -2,8 +2,7 @@
 
 clear all
 
-%%% Spectral algorithm code path
-addpath('C:/Users/fukas/Dropbox/git/spectral')
+addpath('C:/Users/fukas/Dropbox/git/spectral')%%%%% Spectral algorithm code path  %%
 addpath('./profit_functions')
 addpath('./middle_output')
 
@@ -12,9 +11,6 @@ global wmax
 global profit
 
 spec.ITER_MAX=1000;
-%spec.ITER_MAX=10;
-
-%spec.common_alpha_spec=0;
 
 spec.x_min_cell={[],0};
 spec.DEBUG=1;
@@ -22,26 +18,26 @@ spec.DEBUG=1;
 
 % Model Parameters
 
-c.MAX_FIRMS = 1;
+c.MAX_FIRMS = 1; %% Number of firms %%%
 c.START_FIRMS = 1;
 c.EQL_TYPE = 'COMPETITION'; % COMPETITION|MONOPOLY|PLANNER
 
 %%%c.IND_TYPE = 'COST'; 
-c.IND_TYPE = 'QUALITY';
+c.IND_TYPE = 'QUALITY';%%% Consider differentiated products model as in Pakes and McGuire (1994).
 
 c.ENTRY_TYPE = 'RAN_ENTRY';
 c.ENTRY_LOW = 0.15;
 c.ENTRY_HIGH = 0.25;
 c.ENTRY_SUNK = 0.2;
 c.ENTRY_AT = 4;
-c.BETA = 0.925;
+c.BETA = 0.925; %% Discount factor %%
 %%c.BETA = 0.99;
 
 c.DELTA = 0.7;
 c.SCRAP_VAL = 0.1;
 c.INV_MULT = 3;
 c.INV_COST = 1;
-c.QUAD_INV_COST=1.0;%%%%%%%
+c.QUAD_INV_COST=1.0;%%%%%%% Quadratic investment cost %%%%
 c.MC = 5;
 c.MKT_SIZE = 5;
 c.KMAX = 19;
@@ -69,7 +65,7 @@ profit_func(c);
 
 
 % Solve dynamic equilibrium:
-no_entry_exit_spec=1;%%%%
+no_entry_exit_spec=1;%%%% If 1, solve the model without entry/exit. If 0, solve the model with entry/exit.
 
 TOL=1e-6;
 
@@ -96,7 +92,7 @@ if 1==0
     TOL_vec(2)=TOL_vec(2)*lambda_param;
     spec.TOL=TOL_vec;
     
-    spec.update_spec=0;
+    spec.update_spec=0;%% Use standard fixed point iteration
     [newvalue_grad,newx_grad,iter_info_grad,other_vars]=...
             eql_ma(method,no_entry_exit_spec,spec,c);
     
@@ -123,7 +119,7 @@ if c.QUAD_INV_COST==0
     method="PM";
     spec.TOL=TOL;
     spec.alpha_0=1;
-    spec.update_spec=0;
+    spec.update_spec=0; %% Use standard fixed point iteration
     [newvalue_PM,newx_PM,iter_info_PM,other_vars]=...
             eql_ma(method,no_entry_exit_spec,spec,c);
     

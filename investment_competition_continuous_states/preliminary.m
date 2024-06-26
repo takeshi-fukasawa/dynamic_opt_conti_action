@@ -74,6 +74,8 @@ exo_grid=Rescale(Smol_grid(:,(N+1):end),exo_min,exo_max,-1,1);%M*2
 [pi_grid,mc_grid,P_grid,Q_grid,q_grid]=pi_func(k_grid,exo_grid);
 share_grid=q_grid./Q_grid;
 
+
+if 1==0 %% Temporary %%
 %--------  Set theta1 -----------------------%
 %%% Assume that theta is approximately consistent with k_center.
 k_t1_desired=k_center;
@@ -87,6 +89,7 @@ theta(1)=0.12;%%%%%
 
 theta(3)=theta(1)*resell_ratio;%0.99;
 theta(4)=theta(2);
+end
 
 %----- Set initial values of variables for value function approximation ----------------%
 basis_t_grid=Smolyak_Polynomial(Smol_grid,d,mu_max,Smol_elem,ind_no_precompute);%M*n_coef

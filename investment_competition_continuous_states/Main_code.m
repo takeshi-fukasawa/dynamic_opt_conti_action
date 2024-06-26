@@ -5,10 +5,10 @@ global elas beta_param delta_param update_spec tune_param gpu_spec
 global spec_precompute w_exo x_exo sd_exo
 global diff lambda_param
 
-addpath('./Smolyak_cpu')
-
 %%% Path of spectral algorithm code
 addpath('C:/Users/fukas/Dropbox/git/spectral')
+
+addpath('./Smolyak_cpu')
 
 %----(0) Parameters ------------------------
 gpu_spec=0;
@@ -20,8 +20,7 @@ delta_param=0.08;%0.08;
 beta_param=0.9;
 elas=1.5;
 
-%%resell_ratio=0.8;%1;
-resell_ratio=1;%%%%%
+resell_ratio=1;%%%%% Fixed %%%
 
 tune_param=0;%1e-6;
 n_node_exo=10;
@@ -29,8 +28,7 @@ n_node_inv=1;
 
 n_exo=2; %% Fixed
 
-adj_cost=0.3;
-theta=[0.2;adj_cost;0.2;adj_cost];
+theta=[0.12;0.3;0.12;0.3];
 
 AR_coef=0.9*ones(1,2);
 sd_exo=[0.01,0.01]*1;
@@ -38,7 +36,7 @@ sd_inv=0;%1e-4;
 magnify_rate_kstk=1.5;
 magnify_rate_exo=1.03;
 k_center=ones(1,N);
-exo_center=[4,2];%%%%
+exo_center=[4,2];
 
 
 firm_id=N;
