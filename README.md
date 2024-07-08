@@ -20,7 +20,7 @@ The code is based on the replication code of Coleman (2021) and Arellano et al. 
 ## References
 * Arellano, C., Maliar, L., Maliar, S., & Tsyrennikov, V. (2016). Envelope condition method with an application to default risk models. Journal of Economic Dynamics and Control, 69, 436-459.
 * Coleman, C., Lyon, S., Maliar, L. et al. (2021). Matlab, Python, Julia: What to Choose in Economics?. Comput Economics, 58, 1263–1288.
-* Fukasawa, T. (2024). Simple method for efficiently solving dynamic models with continuous actions using policy gradient, mimeo.  
+* Fukasawa, T. (2024). Simple method for efficiently solving dynamic models with continuous actions using policy gradient, arXiv:2407.04227, 2024.
 * Judd, K. L., Maliar, L., Maliar, S., & Valero, R. (2014). Smolyak method for solving dynamic economic models: Lagrange interpolation, anisotropic grid and adaptive domain. Journal of Economic Dynamics and Control, 44, 92-123.  
 * Pakes, A. & McGuire, P. (1994). Computing Markov-Perfect Nash Equilibria: Numerical Implications of a Dynamic Differentiated Product Model. RAND Journal of Economics, 25, 555-589.
 * Maliar, L., & Maliar, S. (2013). Envelope condition method versus endogenous grid method for solving dynamic programming problems. Economics Letters, 120(2), 262-266.
