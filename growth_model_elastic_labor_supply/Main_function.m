@@ -19,10 +19,14 @@ function [out,other_output]=Main_function(Method,spectral_spec,D)
 %clc;
 %clear all;
 
-
+%% Methods
+% "-3": VF-PGI (update n0 and c0; treat [n0;c0] as one variable)
+% "-2": VF-PGI (Updating n0 and c0)
+% "-1": VF-PGI (Updating n0)
+% "0" - Value function iteration
 % "1" - envelope condition method iterating on value function (ECM-VF)
 % "2" - endogenous grid method iterating on value function (EGM-VF)
-
+% 
 fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
 
 global iter_info iter_info0 V k1
@@ -200,13 +204,12 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         spec.SQUAREM_spec=1;
     end
     
-    if Method==1 | Method==3 | Method==0
+    if Method==1 | Method==0
         input={V};
     elseif Method==2
         input={vf_coef};
-    elseif Method==4
-         input={V,k0};
-        spec.common_alpha_spec=1; % Important
+    elseif Method==3
+        input={n0};
     elseif Method==-1
         input={V,n0};
        TOL_vec=(spec.TOL)*ones(1,2);
@@ -234,6 +237,8 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         fun=@update_func_L;
     elseif Method==2
         fun=@update_func_L;
+    elseif Method==3
+        fun=@update_EE_func_n0;
     elseif Method==-1
         fun=@VF_PGI_func_n0;
     elseif Method==-2
@@ -262,6 +267,11 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         grid(:,1) = k0;        % Grid points for current capital  
         X0 = Polynomial_2d(grid,D);   % Construct polynomial on 
                                           % current state variables
+
+    elseif Method==3
+        n0=output_spectral{1};
+        k1=other_vars.k1;
+
     elseif Method==-1
         V=output_spectral{1};
         n0=output_spectral{2};
@@ -286,24 +296,9 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     n0=other_vars.n0;
     k0=other_vars.k0;
 
-    %%%%%%%%%%%%%%%
-       
-    vf_coef=X0\V; % Coefficients for value function
-    EVder=EVder_func(k1,z1,n_nodes,weight_nodes,vf_coef,D);
-    FOC_val_C=FOC_C(EVder,n0,c0,k0,z0,A,alpha,gam,nu,B,beta);    
-    %%%%%%%%%%%%%%%
-
-    k_coef = X0\k1;
-    c_coef = X0\c0;
-    n_coef = X0\n0;
-
-    if max(abs(k1))>10^10 || iter_info.feval==iter_info.ITER_MAX
-       iter_info.FLAG_ERROR=1;
-    end
-    
-    % After the solution is computed by any method, we construct the value 
+        % After the solution is computed by any method, we construct the value 
     % value function for the constructed policy rules
-    if 1==0
+    if Method==3 % Euler equation method
         spec=spec_default;
         spec.TOL=1e-9;
         [output_spectral,other_vars,iter_info_V]=...
@@ -320,6 +315,22 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     else
         feval_V(D)=0;
     end
+
+    %%%%%%%%%%%%%%%
+       
+    vf_coef=X0\V; % Coefficients for value function
+    EVder=EVder_func(k1,z1,n_nodes,weight_nodes,vf_coef,D);
+    FOC_val_C=FOC_C(EVder,n0,c0,k0,z0,A,alpha,gam,nu,B,beta);    
+    %%%%%%%%%%%%%%%
+
+    k_coef = X0\k1;
+    c_coef = X0\c0;
+    n_coef = X0\n0;
+
+    if max(abs(k1))>10^10 || iter_info.feval==iter_info.ITER_MAX
+       iter_info.FLAG_ERROR=1;
+    end
+    
 
     CPU(D) = toc(tStart);                      % Store running time
     V_coef(1:1+D+D*(D+1)/2,D) = vf_coef;   % Store the solution coefficients (V)
