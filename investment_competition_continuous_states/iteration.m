@@ -34,6 +34,7 @@ spec.DEBUG=1;
 spec.ITER_MAX=500;
 
 %%%%%%%%%% Fixed point iteration %%%%%
+geval_total=0;
 spec.update_spec=0;
 [output,other_vars,iter_info]=spectral_func(...
     @Bellman_I_func,spec,...
@@ -44,12 +45,14 @@ spec.update_spec=0;
 end
 I_sol=output{1};
 V_sol=output{2};
+iter_info.geval_total=geval_total;
 
 [resid_mat,k_path,exo_shock_path]=...
 precision_check_func(I_sol,V_sol,k_center,exo_center,ind_no_precompute,AR_coef,sd_exo,theta,...
 w_inv,state_min,state_max,Smol_elem,mu_max,inv_multiply_t_grid);
 
 %%%%%%%%%% Spectral algorithm %%%%%
+geval_total=0;
 spec.update_spec=[];
 [output,other_vars,iter_info_spectral]=spectral_func(...
     @Bellman_I_func,spec,...
@@ -60,6 +63,7 @@ spec.update_spec=[];
 
 I_sol_spectral=output{1};
 V_sol_spectral=output{2};
+iter_info_spectral.geval_total=geval_total;
 
 [resid_mat_spectral,k_path_spectral,exo_shock_path_spectral]=...
 precision_check_func(I_sol,V_sol,k_center,exo_center,ind_no_precompute,AR_coef,sd_exo,theta,...

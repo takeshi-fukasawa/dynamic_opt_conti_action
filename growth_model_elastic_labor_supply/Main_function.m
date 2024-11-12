@@ -32,6 +32,7 @@ fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
 global iter_info iter_info0 V k1
 global alpha0_param lambda_param
 global common_alpha_spec n0 c0
+global geval_total
 
 D_init=D;
 D_min=D;
@@ -247,13 +248,18 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         fun=@VF_PGI_func_n0_c0_2;
     end
 
-
+   geval_total=0;% global variable
     [output_spectral,other_vars,iter_info]=...
         spectral_func(fun,spec,input,...
         Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0,c0,k1,gam,...
         nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,spectral_spec);
     %iter_info.feval;
+
+    if Method<0 | Method==3
+        geval_total=iter_info.feval*n_grid;
+    end
     
+    geval_Q(D)=geval_total;
 
     if Method==1 | Method==0
         V=output_spectral{1};
@@ -363,7 +369,7 @@ for D = D_min:D_max % For polynomial degrees from 2 to 5...
             % Display the results
     
     out(D-1,:)=[D,Degree(D),CPU(D),Mean_Residuals(D),Max_Residuals(D),...
-        feval(D),feval_V(D),1-iter_info.FLAG_ERROR,CPU(D)/feval(D)];
+        feval(D),feval_V(D),1-iter_info.FLAG_ERROR,CPU(D)/feval(D),geval_Q(D)];
 
     other_output.iter_info=iter_info;
     other_output.iter_info_V=iter_info_V;

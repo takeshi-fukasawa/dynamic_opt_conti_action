@@ -5,6 +5,7 @@ function [out,other_vars]=update_func_L(input_cell,...
   % Based on Maliar and Maliar (2013)
   % Modified by Takeshi Fukasawa in June 2024
 
+   global geval_total
 
 if Method==1 | Method==0
     V=input_cell;
@@ -19,11 +20,12 @@ if Method==0
 %==================================================================
      vf_coef=X0\V;
      Vder0 = X0der*vf_coef;   % Compute the derivative of value function
-               
+            
      for j=1:n_grid  % Solve for labor using eq. (18) in MM (2013)
-          n0(j,1)=csolve('FOC_L_VFI',n0(j,1),[],0.000001,5,...
+          [n0(j,1),exitflag,n_iter,geval]=csolve('FOC_L_VFI',n0(j,1),[],0.000001,5,...
               k0(j,1),z0(j,1),A,alpha,gam,nu,B,beta,delta,...
-              z1(j,:),n_nodes,weight_nodes,vf_coef,D);   
+              z1(j,:),n_nodes,weight_nodes,vf_coef,D);
+          geval_total=geval_total+geval;   
      end
                             
      c0=c0_analytical_func(n0,k0,z0,alpha,nu,gam,A,B);
@@ -42,9 +44,10 @@ elseif Method==1
 %==================================================================
      vf_coef=X0\V;
      Vder0 = X0der*vf_coef;   % Compute the derivative of value function
-               
+              
      for j=1:n_grid  % Solve for labor using eq. (18) in MM (2013)
-          n0(j,1)=csolve('Labor_ECM',n0(j,1),[],0.000001,5,nu,alpha,delta,B,A,k0(j,1),z0(j,1),Vder0(j,1));   
+          [n0(j,1),exitflag,n_iter,geval]=csolve('Labor_ECM',n0(j,1),[],0.000001,5,nu,alpha,delta,B,A,k0(j,1),z0(j,1),Vder0(j,1));  
+          geval_total=geval_total+geval; 
      end
                             
      c0=c0_analytical_func(n0,k0,z0,alpha,nu,gam,A,B);
@@ -75,8 +78,10 @@ elseif Method==1
         Wder1 = Vder1_EGM*weight_nodes;   
                 % Compute the expected derivative of next-period 
                 % value function
+
         for j=1:n_grid      % Solve for labor using eq. (17) in MM (2013)
-            n0(j,1)=csolve('Labor_EGM',n0(j,1),[],0.000001,5,nu,gam,alpha,delta,beta,B,A,k1(j,1),z0(j,1),Wder1(j,1));
+            [n0(j,1),exitflag,n_iter,geval]=csolve('Labor_EGM',n0(j,1),[],0.000001,5,nu,gam,alpha,delta,beta,B,A,k1(j,1),z0(j,1),Wder1(j,1));
+          geval_total=geval_total+geval;
         end                                                
 
         c0 = (beta*Wder1).^(-1/gam);      

@@ -18,6 +18,7 @@ function [out,other_vars]=...
 
 global beta_param delta_param spec update_spec
 global spec_precompute diff
+global geval_total
 
 [n_pts,N,n_node_inv]=size(I_t);
 n_node_inv=size(w_inv,1);
@@ -56,11 +57,16 @@ if update_spec=="analytical"|update_spec=="gradient"
         %diff=-inv_cost_diff+beta_param*V_t1_diff;
     end
 
+    geval_total=geval_total+n_pts*N;
+
 else %% PM algorithm
     %%% basis_t1: based on I_t, rather than I_t_updated
-    [I_t_updated,basis_t1,feval_Newton]=Newton_func(I_t,k_t,exo_t1,basis_exo_t1,stoch_inv_cost,...
+    [I_t_updated,basis_t1,geval]=Newton_func0(I_t,k_t,exo_t1,basis_exo_t1,stoch_inv_cost,...
     coef_approx_V,state_min,state_max,Smol_elem,mu_max,d,ind,w_inv,theta,I_min,I_max);
-    [inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t,stoch_inv_cost,theta);
+  
+geval_total=geval_total+geval;
+
+ [inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t,stoch_inv_cost,theta);
     %%%[inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t_updated,stoch_inv_cost,theta);
 end
 

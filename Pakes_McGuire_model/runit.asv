@@ -18,7 +18,7 @@ spec.DEBUG=1;
 
 % Model Parameters
 
-c.MAX_FIRMS = 2; %% Number of firms %%%
+c.MAX_FIRMS = 1; %% Number of firms %%%
 c.START_FIRMS = 1;
 c.EQL_TYPE = 'COMPETITION'; % COMPETITION|MONOPOLY|PLANNER
 
@@ -122,6 +122,7 @@ if c.QUAD_INV_COST==0
     spec.update_spec=0; %% Use standard fixed point iteration
     [newvalue_PM,newx_PM,iter_info_PM,other_vars]=...
             eql_ma(method,no_entry_exit_spec,spec,c);
+    iter_info_PM.geval_total=iter_info_PM.feval*size(profit,1)*size(profit,2);
     
     DIST_PM=iter_info_PM.DIST_table(iter_info_PM.feval,:);
     results_PM=[round(iter_info_PM.t_cpu,2),iter_info_PM.feval,...

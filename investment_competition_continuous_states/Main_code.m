@@ -4,6 +4,8 @@ clear all
 global elas beta_param delta_param update_spec tune_param gpu_spec
 global spec_precompute w_exo x_exo sd_exo
 global diff lambda_param
+global geval_total
+
 
 %%% Path of spectral algorithm code
 addpath('C:/Users/fukas/Dropbox/git/spectral')
@@ -88,5 +90,5 @@ iter_results_output_func(iter_info_gradient_spectral,resid_mat_gradient_spectral
 iter_results_output_func(iter_info_PM_spectral,resid_mat_PM_spectral);...
 iter_results_output_func(iter_info_PM,resid_mat_PM)],3);
 
-writematrix(table_summary,append("results/results_",string(N),".csv"))
+%writematrix(table_summary,append("results/results_",string(N),".csv"))
 

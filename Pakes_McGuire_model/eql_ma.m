@@ -22,6 +22,7 @@ global kmax x_entryl x_entryh phi entry_k beta delta a
 global binom dtable encfirm etable1 etable2 y mask multfac1 multfac2
 global nfirms profit two_n wmax prising
 global INV_COST QUAD_INV_COST
+global geval_total
 
 kmax = c.KMAX;
 x_entryl = c.ENTRY_LOW;
@@ -194,6 +195,7 @@ while nfirms <= rlnfirms;
   ix = 1;
 
   %%%%%%%%%%%%%%%%%%%%%%
+geval_total=0;
   if 1==1
       [output_spectral,other_vars,iter_info]=...
         spectral_func(@contract,spec,{oldvalue,oldx},...
@@ -203,6 +205,8 @@ while nfirms <= rlnfirms;
       newx=output_spectral{2};
       oldvalue=newvalue;
       oldx=newx;
+
+      iter_info.geval_total=geval_total;
 
       iter_info.feval
   else % Original code (without using the spectral algorithm)
@@ -350,7 +354,8 @@ function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,isentry,method,no_entr
   global diff diff_temp entered 
   global encfirm etable1 etable2 multfac1 multfac2
   global delta kmax mask two_n lambda_param
-  
+     global geval_total
+
   locw = qdecode(w);
   locwx = locw;
   oval = oldvalue(w,:)';
@@ -428,15 +433,20 @@ function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,isentry,method,no_entr
 
         nx(j) = p/(a - a * p);
     
+        geval_total=geval_total+1;
 
 
      elseif method=="PM" & QUAD_INV_COST>0
 
         %%% Nonlinear optimization
-        options = optimset('Display','off');
-        x_min=0;x_max=1;%%%
-        x_sol=fminbnd(@Q_func,x_min,x_max,options,v1,v2,a,beta,INV_COST,QUAD_INV_COST);
+        %options = optimset('Display','off');
+        %x_min=0;x_max=1;%%%
+        %x_sol=fminbnd(@Q_func,x_min,x_max,options,v1,v2,a,beta,INV_COST,QUAD_INV_COST);
         
+        [x_sol,exitflag,n_iter,geval]=csolve('FOC_func',ox(j),[],0.000001,5,...
+              v1,v2,a,beta,INV_COST,QUAD_INV_COST); 
+        geval_total=geval_total+geval;
+
         %%% Use fmincon or fminunc => Slower...
         %x_j_init=ox(j);
         %options=[];
@@ -464,6 +474,9 @@ function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,isentry,method,no_entr
         end
 
         nx(j)=ox(j)+lambda_param*diff(j);
+
+        geval_total=geval_total+1;
+
     end
     
     % Now calculate the value from staying in
