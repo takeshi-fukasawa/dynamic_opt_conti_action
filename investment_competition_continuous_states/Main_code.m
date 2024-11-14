@@ -4,7 +4,7 @@ clear all
 global elas beta_param delta_param update_spec tune_param gpu_spec
 global spec_precompute w_exo x_exo sd_exo
 global diff lambda_param
-global geval_total
+global geval_total veval_total spec
 
 
 %%% Path of spectral algorithm code
@@ -16,7 +16,7 @@ addpath('./Smolyak_cpu')
 gpu_spec=0;
 spec_precompute=1;
 n_sim=1;
-N=3;d=N+2;
+N=2;d=N+2;
 mu_max=3;
 delta_param=0.08;%0.08;
 beta_param=0.9;
@@ -71,24 +71,32 @@ run iteration.m
 update_spec="gradient";
 run iteration.m
 
+%% Policy iteration
+update_spec="PI";
+run iteration.m
+
 end
 
 
 table_spectral=round([...
 iter_results_output_func(iter_info_gradient_spectral,resid_mat_gradient_spectral);...
 iter_results_output_func(iter_info_PM_spectral,resid_mat_PM_spectral);...
+iter_results_output_func(iter_info_PI_spectral,resid_mat_PI_spectral);...
 iter_results_output_func(iter_info_analytical_spectral,resid_mat_analytical_spectral)],3);
 
 
 table=round([...
 iter_results_output_func(iter_info_gradient,resid_mat_gradient);...
 iter_results_output_func(iter_info_PM,resid_mat_PM);...
+iter_results_output_func(iter_info_PI,resid_mat_PI);...
 iter_results_output_func(iter_info_analytical,resid_mat_analytical)],3);
 
 table_summary=round([...
 iter_results_output_func(iter_info_gradient_spectral,resid_mat_gradient_spectral);...
 iter_results_output_func(iter_info_PM_spectral,resid_mat_PM_spectral);...
-iter_results_output_func(iter_info_PM,resid_mat_PM)],3);
+iter_results_output_func(iter_info_PM,resid_mat_PM);...
+iter_results_output_func(iter_info_PI_spectral,resid_mat_PI_spectral);...
+iter_results_output_func(iter_info_PI,resid_mat_PI)],3);
 
 %writematrix(table_summary,append("results/results_",string(N),".csv"))
 
