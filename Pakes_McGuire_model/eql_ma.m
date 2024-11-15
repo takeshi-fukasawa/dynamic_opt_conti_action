@@ -306,7 +306,6 @@ function [out,other_vars] = contract(oldvalue,oldx,method,no_entry_exit_spec)
   other_vars.diff_mat=diff_mat;
 
 
-
 function [oldvalue,oldx] = update(newvalue,newx)
 % This procedure takes the solved newx, newvalue matrix for the nfirms - 1
 % problem, and puts them into the nfirms matrices oldx, oldvalue, for use
@@ -385,7 +384,6 @@ function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,isentry,method,no_entr
   locwe = locwx;
   locwe(nfirms) = entry_k;
 
-if method~="PI"%%%%%%
   % Now calculate the optimal policies for this industry structure, given that
   % entry and exit are as specified.
 
@@ -511,15 +509,6 @@ if method~="PI"%%%%%%
     end
   end% while
 
-elseif method=="PI"%%%%%%
-
-[nx,nval]=policy_iter_func(ox,oldvalue,...
-w,locw,locwx,locwe,entered,profit,INV_COST,QUAD_INV_COST,phi,beta,...
-nfirms,a,delta,kmax,mask,two_n,...
-          encfirm,etable1,etable2,multfac1,multfac2,no_entry_exit_spec);
-
-
-end% method=="PI"
 
   out1 = nx';
   out2 = nval';
@@ -693,125 +682,3 @@ function [out1] = decode(code)
 
   out1 = ntuple;
 
-
-function [nx,nval]=policy_iter_func(ox,oval,...
-w,locw,locwx,locwe,entered,profit,INV_COST,QUAD_INV_COST,phi,beta,...
-nfirms,a,delta,kmax,mask,two_n,...
-          encfirm,etable1,etable2,multfac1,multfac2,no_entry_exit_spec)
-
-    global geval_total
-    
-    nx=ox;
-    
-    %% Value iteration
-    spec_v_iter=[];
-    spec_v_iter.TOL=1e-8;
-    [output_spectral,other_vars_spectral,iter_info]=...
-        spectral_func(@v_update_func,spec_v_iter,{oval},...
-        ox,w,locw,locwx,locwe,entered,profit,INV_COST,QUAD_INV_COST,phi,beta,...
-        nfirms,a,delta,kmax,mask,two_n,...
-        encfirm,etable1,etable2,multfac1,multfac2,no_entry_exit_spec);
-
-    nval=output_spectral{1};
-    v1_vec=other_vars_spectral.v1_vec;
-    v2_vec=other_vars_spectral.v2_vec;
-
-    %% Policy update
-    for j=1:nfirms
-        v1=v1_vec(j);
-        v2=v2_vec(j);
-
-        if QUAD_INV_COST==0
-            % Calculate values for firm, given that it is not leaving
-
-            if v1 <= v2; % Avoid division by zeros
-                r = 1.0;
-            else; r = 1.0/(beta*a*(v1-v2));
-            end
-
-            % r now contains the value r = (1 - p)^2. => p = 1 - sqrt(r)),
-            % where p is the optimal prob. of having k rise, cond. on world
-    
-            r = min([max([r;0.0000000000001]);1]);
-            p = 1.0 - sqrt(r); % based on the optimality condition
-    
-            nx(j) = p/(a - a * p);
-        
-            geval_total=geval_total+1;
-
-
-         elseif QUAD_INV_COST>0
-    
-            %%% Nonlinear optimization
-            
-            [x_sol,exitflag,n_iter,geval]=csolve('FOC_func',ox(j),[],0.000001,5,...
-                  v1,v2,a,beta,INV_COST,QUAD_INV_COST); 
-            geval_total=geval_total+geval;
-    
-            nx(j)=x_sol;
-        end
-    end% for loop wrt j
-
-function [out,other_vars]=v_update_func(oldvalue,...
-    ox,w,locw,locwx,locwe,entered,profit,INV_COST,QUAD_INV_COST,phi,beta,...
-    nfirms,a,delta,kmax,mask,two_n,...
-          encfirm,etable1,etable2,multfac1,multfac2,no_entry_exit_spec)
-
-nval=oldvalue;
-v1_vec=zeros(nfirms,1);
-v2_vec=zeros(nfirms,1);
-
-for j=1:nfirms
-
-if locw(j) == 0;
-      nval(j:nfirms) = phi*ones(nfirms-j+1,1);
-      break;
-    end
-
-    v1=0; v2=0;
-    if entered < 1;
-
-      % First: Calculate v, without entry
-
-      [v1, v2] = calcval(j,locwx,ox,locw(j),oldvalue,...
-        a,delta,kmax,mask,nfirms,two_n,...
-          encfirm,etable1,etable2,multfac1,multfac2);
-    end
-
-    if entered > 0;
-
-      % A firm wants to enter with positive probability
-
-      [tempv1, tempv2] = calcval(j,locwe,ox,locw(j),oldvalue,...
-        a,delta,kmax,mask,nfirms,two_n,...
-          encfirm,etable1,etable2,multfac1,multfac2);
-      v1 = entered*tempv1 + (1-entered)*v1;
-      v2 = entered*tempv2 + (1-entered)*v2;
-    end
-
-   v1_vec(j)=v1;
-   v2_vec(j)=v2;
-
-    p=(a.*ox(j))./(1+a.*ox(j));
-
-    %%% Compute nval based on initial x (ox)
-    nval(j) = profit(w,j) - INV_COST.*ox(j)-QUAD_INV_COST.*ox(j).^2 + beta*(v1*p + v2*(1-p));
-
-    if nval(j) <= phi & no_entry_exit_spec==0
-      nval(j) = phi;
-    end
-
-if no_entry_exit_spec==0
-        locwx(j) = (nval(j) > phi)*locw(j);
-    else
-        locwx(j) = locw(j);
-        locwe(j) = locwx(j);
-        j=j+1;
-    end
- 
-end%for loop wrt j
-
-out={nval};
-other_vars=[];
-other_vars.v1_vec=v1_vec;
-other_vars.v2_vec=v2_vec;

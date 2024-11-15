@@ -133,18 +133,6 @@ else
     results=[results_grad_spectral;results_PM_spectral];
 end
 
-%% Policy iteration (PI)
-method="PI";
-spec.TOL=TOL;
-spec.alpha_0=1;
-[newvalue_PI_spectral,newx_PI_spectral,iter_info_PI_spectral,other_vars]=...
-        eql_ma(method,no_entry_exit_spec,spec,c);
-
-DIST_PI_spectral=iter_info_PI_spectral.DIST_table(iter_info_PI_spectral.feval,:);
-
-results_PI_spectral=[round(iter_info_PI_spectral.t_cpu,2),iter_info_PI_spectral.feval,iter_info_PI_spectral.geval_total,...
-    log10(DIST_PI_spectral)];
-
 
 tag=c.IND_TYPE;
 if c.QUAD_INV_COST>0
