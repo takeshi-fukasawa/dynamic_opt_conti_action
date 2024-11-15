@@ -19,7 +19,6 @@ if Method==0
 % Method 0. Value function iteration (VFI)
 %==================================================================
      vf_coef=X0\V;
-     Vder0 = X0der*vf_coef;   % Compute the derivative of value function
             
      for j=1:n_grid  % Solve for labor using eq. (18) in MM (2013)
           [n0(j,1),exitflag,n_iter,geval]=csolve('FOC_L_VFI',n0(j,1),[],0.000001,5,...
@@ -37,6 +36,7 @@ if Method==0
                                  % the Bellman equation
 
     V_new=kdamp*V_new+(1-kdamp)*V; % Update V using damping
+                           
 
 elseif Method==1        
 %==================================================================
@@ -103,6 +103,32 @@ elseif Method==1
 
          vf_coef_new = kdamp*vf_coef_new + (1-kdamp)*vf_coef;   
                 % Update Vvf_coef using damping
+
+elseif Method==4
+     
+%==================================================================
+% Method 4. Policy iteration (PI)
+%==================================================================
+
+     vf_coef=X0\V;
+            
+     for j=1:n_grid  % Solve for labor using eq. (18) in MM (2013)
+          [n0(j,1),exitflag,n_iter,geval]=csolve('FOC_L_VFI',n0(j,1),[],0.000001,5,...
+              k0(j,1),z0(j,1),A,alpha,gam,nu,B,beta,delta,...
+              z1(j,:),n_nodes,weight_nodes,vf_coef,D);
+          geval_total=geval_total+geval;   
+     end
+
+     c0=c0_analytical_func(n0,k0,z0,alpha,nu,gam,A,B);
+     k1=k1_analytical_func(k0,n0,c0,z0,delta,A,alpha);% Compute next-period capital using budget 
+                     % constraint (2) in MM(2013)
+
+   spec_V_iter=[];
+   spec_V_iter.TOL=1e-9;
+   %spec.V_iter.ITER_MAX=3; [out,other_vars,iter_info_V_iter]=spectral_func(@V_update_func,spec_V_iter,{V},
+    X0,n0,n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
+
+   V_new=out{1};
 
 end
             

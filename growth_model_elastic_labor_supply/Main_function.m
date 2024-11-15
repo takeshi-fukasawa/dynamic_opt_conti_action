@@ -26,7 +26,9 @@ function [out,other_output]=Main_function(Method,spectral_spec,D)
 % "0" - Value function iteration
 % "1" - envelope condition method iterating on value function (ECM-VF)
 % "2" - endogenous grid method iterating on value function (EGM-VF)
-% 
+% "3": Euler equation method (EE)
+ % "4": Policy iteration method (PI)
+
 fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
 
 global iter_info iter_info0 V k1

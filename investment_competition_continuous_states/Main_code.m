@@ -16,7 +16,7 @@ addpath('./Smolyak_cpu')
 gpu_spec=0;
 spec_precompute=1;
 n_sim=1;
-N=2;d=N+2;
+N=3;d=N+2;
 mu_max=3;
 delta_param=0.08;%0.08;
 beta_param=0.9;
