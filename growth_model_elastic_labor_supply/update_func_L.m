@@ -5,9 +5,9 @@ function [out,other_vars]=update_func_L(input_cell,...
   % Based on Maliar and Maliar (2013)
   % Modified by Takeshi Fukasawa in June 2024
 
-   global geval_total
+   global geval_total feval_V_total
 
-if Method==1 | Method==0
+if Method==1 | Method==0 | Method==4
     V=input_cell;
 elseif Method==2
     vf_coef=input_cell;
@@ -124,17 +124,19 @@ elseif Method==4
                      % constraint (2) in MM(2013)
 
    spec_V_iter=[];
-   spec_V_iter.TOL=1e-9;
-   %spec.V_iter.ITER_MAX=3; [out,other_vars,iter_info_V_iter]=spectral_func(@V_update_func,spec_V_iter,{V},
-    X0,n0,n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
+   spec_V_iter.TOL=1e-6;
+   %spec.V_iter.ITER_MAX=3; 
+   [out,other_vars,iter_info_V_iter]=spectral_func(@V_update_func,spec_V_iter,{V},...
+    X0,n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
+
+   feval_V_total=feval_V_total+iter_info_V_iter.feval*n_grid;
 
    V_new=out{1};
 
 end
-            
         
 %%%%%%%%
-if Method==1 | Method==0
+if Method==1 | Method==0 | Method==4
     out={V_new};
 elseif Method==2
     out={vf_coef_new};

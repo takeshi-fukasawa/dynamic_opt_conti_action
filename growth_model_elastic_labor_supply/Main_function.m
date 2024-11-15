@@ -34,7 +34,7 @@ fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
 global iter_info iter_info0 V k1
 global alpha0_param lambda_param
 global common_alpha_spec n0 c0
-global geval_total
+global geval_total feval_V_total
 
 D_init=D;
 D_min=D;
@@ -207,7 +207,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         spec.SQUAREM_spec=1;
     end
     
-    if Method==1 | Method==0
+    if Method==1 | Method==0 | Method==4
         input={V};
     elseif Method==2
         input={vf_coef};
@@ -236,9 +236,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     end
 
 
-    if Method==1 | Method==0
-        fun=@update_func_L;
-    elseif Method==2
+    if Method==1 | Method==0 | Method==2 | Method==4
         fun=@update_func_L;
     elseif Method==3
         fun=@update_EE_func_n0;
@@ -251,6 +249,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     end
 
    geval_total=0;% global variable
+   feval_V_total=0;%global variable
     [output_spectral,other_vars,iter_info]=...
         spectral_func(fun,spec,input,...
         Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0,c0,k1,gam,...
@@ -260,7 +259,11 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     if Method<0 | Method==3
         geval_total=iter_info.feval*n_grid;
     end
-    
+
+    if Method<=2
+        feval_V_total=iter_info.feval*n_grid;
+    end 
+   
     geval_Q(D)=geval_total;
 
     if Method==1 | Method==0
@@ -319,10 +322,9 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         if max(abs(V))>10^10
             iter_info_V.FLAG_ERROR=1;
         end
-        feval_V(D)=iter_info_V.feval;
-    else
-        feval_V(D)=0;
+        feval_V_total=iter_info_V.feval*n_grid;
     end
+    feval_V(D)=feval_V_total;
 
     %%%%%%%%%%%%%%%
        
@@ -345,9 +347,8 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     K_coef(1:1+D+D*(D+1)/2,D) = k_coef;   % Store the solution coefficients (V)
     C_coef(1:1+D+D*(D+1)/2,D) = c_coef;   % Store the solution coefficients (V)
     N_coef(1:1+D+D*(D+1)/2,D) = n_coef;   % Store the solution coefficients (V)
+    n_iter(D)=iter_info.n_iter;
 
-    feval(D)=iter_info.feval;
-    
     
 end
 
@@ -371,7 +372,8 @@ for D = D_min:D_max % For polynomial degrees from 2 to 5...
             % Display the results
     
     out(D-1,:)=[D,Degree(D),CPU(D),Mean_Residuals(D),Max_Residuals(D),...
-        feval(D),feval_V(D),1-iter_info.FLAG_ERROR,CPU(D)/feval(D),geval_Q(D)];
+        1-iter_info.FLAG_ERROR,n_iter(D),CPU(D)/n_iter(D),...
+        feval_V(D),geval_Q(D)];
 
     other_output.iter_info=iter_info;
     other_output.iter_info_V=iter_info_V;
