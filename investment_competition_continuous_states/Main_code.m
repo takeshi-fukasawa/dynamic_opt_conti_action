@@ -16,7 +16,6 @@ addpath('./Smolyak_cpu')
 gpu_spec=0;
 spec_precompute=1;
 n_sim=1;
-N=3;d=N+2;
 mu_max=3;
 delta_param=0.08;%0.08;
 beta_param=0.9;
@@ -37,66 +36,74 @@ sd_exo=[0.01,0.01]*1;
 sd_inv=0;%1e-4;
 magnify_rate_kstk=1.5;
 magnify_rate_exo=1.03;
-k_center=ones(1,N);
+
+
 exo_center=[4,2];
+table_summary_all=[];
 
+for N=1:3
+    d=N+2;
+    k_center=ones(1,N);
+    
+    firm_id=N;
+    
+    run preliminary.m
+    
+    %% Simulation
+    for i=1:n_sim
+    randn('seed',100+i)
+    %% Initialize
+    I_t_grid_initial0=repmat(delta_param*reshape(k_t_grid,size(k_t_grid,1),N,1)*1,1,1,n_node_inv)+...
+        0.00*randn(n_grid,N,n_node_inv);
+    %I_t_grid_initial0=0.05*ones(n_grid,N,n_node_inv);
+    V_t_grid_initial0=V_t_grid_initial+...
+        0.00*randn(n_grid,N);
+    
+    %% Pakes McGuire(1994) algorithm
+    if 1==1
+    update_spec="PM";
+    run iteration.m
+    end%%%%%
+    
+    
+    %% Algorithm based on an analytical formula
+    update_spec="analytical";
+    run iteration.m
+    
+    
+    %% VF-PGI algorithm
+    update_spec="gradient";
+    run iteration.m
+    
+    %% Policy iteration
+    update_spec="PI";
+    run iteration.m
+    
+    end
+    
+    
+    table_spectral=round([...
+    iter_results_output_func(iter_info_gradient_spectral,resid_mat_gradient_spectral);...
+    iter_results_output_func(iter_info_PM_spectral,resid_mat_PM_spectral);...
+    iter_results_output_func(iter_info_PI_spectral,resid_mat_PI_spectral);...
+    iter_results_output_func(iter_info_analytical_spectral,resid_mat_analytical_spectral)],3);
+    
+    
+    table=round([...
+    iter_results_output_func(iter_info_gradient,resid_mat_gradient);...
+    iter_results_output_func(iter_info_PM,resid_mat_PM);...
+    iter_results_output_func(iter_info_PI,resid_mat_PI);...
+    iter_results_output_func(iter_info_analytical,resid_mat_analytical)],3);
+    
+    table_summary=round([...
+    iter_results_output_func(iter_info_gradient_spectral,resid_mat_gradient_spectral);...
+    iter_results_output_func(iter_info_PM_spectral,resid_mat_PM_spectral);...
+    iter_results_output_func(iter_info_PM,resid_mat_PM);...
+    iter_results_output_func(iter_info_PI_spectral,resid_mat_PI_spectral);...
+    iter_results_output_func(iter_info_PI,resid_mat_PI)],3);
+    table_summary=[N*ones(size(table_summary,1),1),table_summary];
+    table_summary_all=[table_summary_all;table_summary];
 
-firm_id=N;
+end%N=1,2,3
 
-run preliminary.m
-
-%% Simulation
-for i=1:n_sim
-randn('seed',100+i)
-%% Initialize
-I_t_grid_initial0=repmat(delta_param*reshape(k_t_grid,size(k_t_grid,1),N,1)*1,1,1,n_node_inv)+...
-    0.00*randn(n_grid,N,n_node_inv);
-%I_t_grid_initial0=0.05*ones(n_grid,N,n_node_inv);
-V_t_grid_initial0=V_t_grid_initial+...
-    0.00*randn(n_grid,N);
-
-%% Pakes McGuire(1994) algorithm
-if 1==1
-update_spec="PM";
-run iteration.m
-end%%%%%
-
-
-%% Algorithm based on an analytical formula
-update_spec="analytical";
-run iteration.m
-
-
-%% VF-PGI algorithm
-update_spec="gradient";
-run iteration.m
-
-%% Policy iteration
-update_spec="PI";
-run iteration.m
-
-end
-
-
-table_spectral=round([...
-iter_results_output_func(iter_info_gradient_spectral,resid_mat_gradient_spectral);...
-iter_results_output_func(iter_info_PM_spectral,resid_mat_PM_spectral);...
-iter_results_output_func(iter_info_PI_spectral,resid_mat_PI_spectral);...
-iter_results_output_func(iter_info_analytical_spectral,resid_mat_analytical_spectral)],3);
-
-
-table=round([...
-iter_results_output_func(iter_info_gradient,resid_mat_gradient);...
-iter_results_output_func(iter_info_PM,resid_mat_PM);...
-iter_results_output_func(iter_info_PI,resid_mat_PI);...
-iter_results_output_func(iter_info_analytical,resid_mat_analytical)],3);
-
-table_summary=round([...
-iter_results_output_func(iter_info_gradient_spectral,resid_mat_gradient_spectral);...
-iter_results_output_func(iter_info_PM_spectral,resid_mat_PM_spectral);...
-iter_results_output_func(iter_info_PM,resid_mat_PM);...
-iter_results_output_func(iter_info_PI_spectral,resid_mat_PI_spectral);...
-iter_results_output_func(iter_info_PI,resid_mat_PI)],3);
-
-%writematrix(table_summary,append("results/results_",string(N),".csv"))
-
+writematrix(table_summary_all,append("results/results_all.csv"))

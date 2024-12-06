@@ -17,9 +17,8 @@ spec.DEBUG=1;
 
 
 results_all=[];
-c.QUAD_INV_COST=0.0;%%%%%%% Quadratic investment cost %%%%
 
-for N=1:3
+for N=1:1
     c.MAX_FIRMS = N; %% Number of firms %%%
     
     c.START_FIRMS = 1;
@@ -40,6 +39,7 @@ for N=1:3
     c.SCRAP_VAL = 0.1;
     c.INV_MULT = 3;
     c.INV_COST = 1;
+    c.QUAD_INV_COST=1.0;%%%%%%% Quadratic investment cost %%%%
     c.MC = 5;
     c.MKT_SIZE = 5;
     c.KMAX = 19;
@@ -134,8 +134,7 @@ for N=1:3
     if c.QUAD_INV_COST>0
         tag=append(tag,'_quad');
     end
-    results=[N*ones(size(results,1),1),results];
-
+    results=[N*ones(size(results,1),1),results
     filename=append('results/results_',...
         tag,'_',string(c.MAX_FIRMS),'_',string(c.BETA),'.csv');
     %writematrix(round(results,2),filename)
