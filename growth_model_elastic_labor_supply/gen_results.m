@@ -14,11 +14,11 @@ D=4;
 
 %%%%%%%%%%
 %% Main results
-optimistic_PI_param=500;%sufficiently large values
+optimistic_PI_param=5;%sufficiently large values
 
-for spectral_spec=1:1
+for spectral_spec=0:1
 results=[];
-for i = 5:5
+for i = 4:4
         [out_i,other_output]=Main_function(i,spectral_spec,D);
         results=[results;...
             [i*ones(size(out_i,1),1),out_i]];
@@ -41,7 +41,7 @@ filename=append('results/growth_model_algorithm_comparison_summary_all.csv');
 %% Optimistic policy iteration (OPI)
 spectral_spec=1;
 results_spectral=[];
-for i=4:5
+for i=4:4
 for optimistic_PI_param=1:5
            [out_i,other_output]=Main_function(i,spectral_spec,D);
         results_spectral=[results_spectral;...
@@ -51,7 +51,7 @@ end%i=4:5
 
 spectral_spec=0;
 results_no_spectral=[];
-for i=4:5
+for i=4:4
 for optimistic_PI_param=1:5
            [out_i,other_output]=Main_function(i,spectral_spec,D);
         results_no_spectral=[results_no_spectral;...
@@ -61,7 +61,7 @@ end%i=4:5
 
 results_OPI=[results_spectral;results_no_spectral];
 
-results_OPI_summary=results(find(results_OPI(:,2)==D),:)
+results_OPI_summary=results_OPI(find(results_OPI(:,2)==D),:)
 
 filename=append('results/growth_model_algorithm_comparison_summary_OPI_all.csv');
 

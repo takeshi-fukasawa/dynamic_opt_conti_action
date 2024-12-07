@@ -19,16 +19,17 @@ function [out,other_vars]=PI_update_func(n0,...
 
    spec_V_iter=[];
    spec_V_iter.TOL=1e-6;
-   spec.V_iter.ITER_MAX=optimistic_PI_param; 
+   spec_V_iter.ITER_MAX=optimistic_PI_param; 
    if spectral_spec==0
       spec_V_iter.update_spec=0;
    end
 
+   %V=zeros(n_grid,1);
    %%%vf_coef=X0\V;%%%
    vf_coef=[];%%%%
-   %%%%V=zeros(n_grid,1);
-   %spec_V_iter.update_spec=0;
-   %spec_V_iter.alpha_0=1e-6;
+   
+   spec_V_iter.update_spec=0;
+   spec_V_iter.alpha_0=1e-6;
 
    [out,other_vars,iter_info_V_iter]=spectral_func(...
        @V_update_func,spec_V_iter,{V},...

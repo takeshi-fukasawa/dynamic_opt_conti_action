@@ -129,7 +129,7 @@ elseif Method==4
 
    spec_V_iter=[];
    spec_V_iter.TOL=1e-6;
-   spec.V_iter.ITER_MAX=optimistic_PI_param; 
+   spec_V_iter.ITER_MAX=optimistic_PI_param; 
      if spectral_spec==0
       spec.update_spec=0;
     end
