@@ -3,11 +3,12 @@ clear
 
 global V k1 iter_info lambda_param alpha0_param
 global common_alpha_spec
+global optimistic_PI_param
 
 %%% Path of Spectral function
 addpath('C:/Users/fukas/Dropbox/git/spectral')
 
-
+optimistic_PI_param=500;
 D=4;
 save_spec=1;
 Method=-2;%%% VF-PGI

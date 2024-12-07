@@ -1,11 +1,12 @@
 function [out,other_vars]=update_func_L(input_cell,...
-   Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0,c0,k1,gam,...
+   Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0_temp,c0,k1,gam,...
    nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,spectral_spec)
   
   % Based on Maliar and Maliar (2013)
   % Modified by Takeshi Fukasawa in June 2024
 
-   global geval_total feval_V_total
+   global geval_total feval_V_total n0
+   global optimistic_PI_param
 
 if Method==1 | Method==0 | Method==4
     V=input_cell;
@@ -19,7 +20,8 @@ if Method==0
 % Method 0. Value function iteration (VFI)
 %==================================================================
      vf_coef=X0\V;
-            
+
+      %%% Use global n0 as initial values => hot start
      for j=1:n_grid  % Solve for labor using eq. (18) in MM (2013)
           [n0(j,1),exitflag,n_iter,geval]=csolve('FOC_L_VFI',n0(j,1),[],0.000001,5,...
               k0(j,1),z0(j,1),A,alpha,gam,nu,B,beta,delta,...
@@ -44,7 +46,8 @@ elseif Method==1
 %==================================================================
      vf_coef=X0\V;
      Vder0 = X0der*vf_coef;   % Compute the derivative of value function
-              
+       
+      %%% Use global n0 as initial values => hot start       
      for j=1:n_grid  % Solve for labor using eq. (18) in MM (2013)
           [n0(j,1),exitflag,n_iter,geval]=csolve('Labor_ECM',n0(j,1),[],0.000001,5,nu,alpha,delta,B,A,k0(j,1),z0(j,1),Vder0(j,1));  
           geval_total=geval_total+geval; 
@@ -79,6 +82,7 @@ elseif Method==1
                 % Compute the expected derivative of next-period 
                 % value function
 
+      %%% Use global n0 as initial values => hot start
         for j=1:n_grid      % Solve for labor using eq. (17) in MM (2013)
             [n0(j,1),exitflag,n_iter,geval]=csolve('Labor_EGM',n0(j,1),[],0.000001,5,nu,gam,alpha,delta,beta,B,A,k1(j,1),z0(j,1),Wder1(j,1));
           geval_total=geval_total+geval;
@@ -107,11 +111,11 @@ elseif Method==1
 elseif Method==4
      
 %==================================================================
-% Method 4. Policy iteration (PI)
+% Method 4. Policy iteration (PI) directly updating V
 %==================================================================
 
      vf_coef=X0\V;
-            
+     %%% Use global n0 as initial values => hot start   
      for j=1:n_grid  % Solve for labor using eq. (18) in MM (2013)
           [n0(j,1),exitflag,n_iter,geval]=csolve('FOC_L_VFI',n0(j,1),[],0.000001,5,...
               k0(j,1),z0(j,1),A,alpha,gam,nu,B,beta,delta,...
@@ -125,8 +129,11 @@ elseif Method==4
 
    spec_V_iter=[];
    spec_V_iter.TOL=1e-6;
-   %spec.V_iter.ITER_MAX=3; 
-   [out,other_vars,iter_info_V_iter]=spectral_func(@V_update_func,spec_V_iter,{V},...
+   spec.V_iter.ITER_MAX=optimistic_PI_param; 
+     if spectral_spec==0
+      spec.update_spec=0;
+    end
+ [out,other_vars,iter_info_V_iter]=spectral_func(@V_update_func,spec_V_iter,{V},...
     X0,n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
 
    feval_V_total=feval_V_total+iter_info_V_iter.feval*n_grid;

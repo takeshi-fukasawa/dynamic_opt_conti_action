@@ -27,7 +27,8 @@ function [out,other_output]=Main_function(Method,spectral_spec,D)
 % "1" - envelope condition method iterating on value function (ECM-VF)
 % "2" - endogenous grid method iterating on value function (EGM-VF)
 % "3": Euler equation method (EE)
- % "4": Policy iteration method (PI)
+ % "4": Policy iteration method (PI) updating V
+ % "5": Policy iteration method (PI) updating n0
 
 fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
 
@@ -211,7 +212,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         input={V};
     elseif Method==2
         input={vf_coef};
-    elseif Method==3
+    elseif Method==3 | Method==5
         input={n0};
     elseif Method==-1
         input={V,n0};
@@ -240,6 +241,8 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         fun=@update_func_L;
     elseif Method==3
         fun=@update_EE_func_n0;
+    elseif Method==5
+        fun=@PI_update_func;
     elseif Method==-1
         fun=@VF_PGI_func_n0;
     elseif Method==-2
@@ -256,7 +259,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,spectral_spec);
     %iter_info.feval;
 
-    if Method<0 | Method==3
+    if Method<0 | Method==3 | Method==5
         geval_total=iter_info.feval*n_grid;
     end
 
@@ -282,7 +285,10 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     elseif Method==3
         n0=output_spectral{1};
         k1=other_vars.k1;
-
+     elseif Method==5 % PI updating n0
+        n0=output_spectral{1};
+        k1=other_vars.k1;
+        vf_coef=X0\V;
     elseif Method==-1
         V=output_spectral{1};
         n0=output_spectral{2};
@@ -311,7 +317,11 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     % value function for the constructed policy rules
     if Method==3 % Euler equation method
         spec=spec_default;
-        spec.TOL=1e-9;
+        spec.TOL=1e-6;
+        if spectral_spec==0
+            spec.update_spec=0;
+        end
+
         [output_spectral,other_vars,iter_info_V]=...
             spectral_func(@VF_Bellman_L_update_func,spec,{V},...
             X0,n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
