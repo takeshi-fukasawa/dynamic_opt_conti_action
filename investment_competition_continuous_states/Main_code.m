@@ -5,7 +5,7 @@ global elas beta_param delta_param update_spec tune_param gpu_spec
 global spec_precompute w_exo x_exo sd_exo
 global diff lambda_param
 global geval_total veval_total spec
-
+global OPI_param
 
 %%% Path of spectral algorithm code
 addpath('C:/Users/fukas/Dropbox/git/spectral')
@@ -40,8 +40,9 @@ magnify_rate_exo=1.03;
 
 exo_center=[4,2];
 table_summary_all=[];
+OPI_param=500;
 
-for N=1:3
+for N=3:3
     d=N+2;
     k_center=ones(1,N);
     
@@ -106,4 +107,4 @@ for N=1:3
 
 end%N=1,2,3
 
-writematrix(table_summary_all,append("results/results_all.csv"))
+%writematrix(table_summary_all,append("results/results_all.csv"))

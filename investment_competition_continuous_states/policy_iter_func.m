@@ -19,6 +19,7 @@ function [out,other_vars]=...
 global beta_param delta_param spec update_spec
 global spec_precompute diff
 global geval_total veval_total
+global OPI_param
 
 [n_pts,N,n_node_inv]=size(I_t);
 n_node_inv=size(w_inv,1);
@@ -34,7 +35,7 @@ pi_mat=pi_func(k_t,exo_t);
 
 %%% Value iteration
 spec_V_iter=[];
-%spec_V_iter.ITER_MAX=3;
+spec_V_iter.ITER_MAX=OPI_param;
 spec_V_iter.TOL=1e-9;
 spec_V_iter.update_spec=spec.update_spec;
 
