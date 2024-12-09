@@ -121,7 +121,7 @@ elseif update_spec=="gradient"
     V_t_gradient_spectral=V_sol_spectral;
     resid_mat_gradient_spectral=resid_mat_spectral;
 
-elseif update_spec=="PI" & OPI_param>=100
+elseif update_spec=="PI" & OPI_param_max>=100
     iter_info_PI=iter_info;
     I_t_PI=I_sol;
     V_t_PI=V_sol;
@@ -132,15 +132,6 @@ elseif update_spec=="PI" & OPI_param>=100
     V_t_PI_spectral=V_sol_spectral;
     resid_mat_PI_spectral=resid_mat_spectral;
 
-elseif update_spec=="PI" & OPI_param<100
-    iter_info_OPI=iter_info;
-    I_t_OPI=I_sol;
-    V_t_OPI=V_sol;
-    resid_mat_OPI=resid_mat;
-
-    iter_info_OPI_spectral=iter_info_spectral;
-    I_t_OPI_spectral=I_sol_spectral;
-    V_t_OPI_spectral=V_sol_spectral;
-    resid_mat_OPI_spectral=resid_mat_spectral;
+    
 end
 

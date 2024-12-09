@@ -39,8 +39,8 @@ filename=append('results/growth_model_algorithm_comparison_summary_all.csv');
 
 %%%%%%%%%
 %% Optimistic policy iteration (OPI)
-OPI_param_min=10;
-OPI_param_max=10;
+OPI_param_min=3;
+OPI_param_max=15;
 
 spectral_spec=1;
 results_spectral=[];
@@ -48,7 +48,7 @@ for i=4:4
 for optimistic_PI_param=OPI_param_min:OPI_param_max
            [out_i,other_output]=Main_function(i,spectral_spec,D);
         results_spectral=[results_spectral;...
-            [i*ones(size(out_i,1),1),out_i]];
+            [optimistic_PI_param*ones(size(out_i,1),1),i*ones(size(out_i,1),1),out_i]];
 end%optimistic_PI_param
 end%i=4:5
 
@@ -58,14 +58,14 @@ for i=4:4
 for optimistic_PI_param=OPI_param_min:OPI_param_max
            [out_i,other_output]=Main_function(i,spectral_spec,D);
         results_no_spectral=[results_no_spectral;...
-            [i*ones(size(out_i,1),1),out_i]];
+            [optimistic_PI_param*ones(size(out_i,1),1),i*ones(size(out_i,1),1),out_i]];
 end%optimistic_PI_param
 end%i=4:5
 
 results_OPI=[results_spectral;results_no_spectral];
 
-results_OPI_summary=results_OPI(find(results_OPI(:,2)==D),:)
+results_OPI_summary=results_OPI(find(results_OPI(:,3)==D),:)
 
 filename=append('results/growth_model_algorithm_comparison_summary_OPI_all.csv');
 
-%writematrix(round(results_OPI_summary,3),filename)
+writematrix(round(results_OPI_summary,3),filename)
