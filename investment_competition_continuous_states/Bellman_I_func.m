@@ -1,6 +1,6 @@
 function [out,other_vars]=...
     Bellman_I_func(I_t,V_t,...
-    k_t,exo_t,exo_t1,basis_t,inv_multiply_t,basis_exo_t1,...
+    k_t,exo_t,pi_mat,exo_t1,basis_t,inv_multiply_t,basis_exo_t1,...
     x_inv,w_inv,...
     state_min,state_max,Smol_elem,mu_max,d,ind,parameters,I_min,I_max)
 
@@ -80,7 +80,7 @@ EV=reshape(sum(temp.*reshape(w_inv,1,1,n_node_inv,1),3),n_pts,N);%n_pts*N
 % inv_cost:n_pts*N*n_node_inv
 E_inv_cost=reshape(sum(inv_cost.*reshape(w_inv,1,1,n_node_inv),3),n_pts,N);
 
-V_t_updated=pi_func(k_t,exo_t)-E_inv_cost+beta_param*EV;%n_pts*N
+V_t_updated=pi_mat-E_inv_cost+beta_param*EV;%n_pts*N
 
 if 1==0
     V_t_updated=V_t_updated-V_t_updated(1,:);%%% Relative value function iteration (cf. Bray 2019)

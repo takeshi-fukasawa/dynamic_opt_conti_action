@@ -1,6 +1,6 @@
 function [out,other_vars]=...
     policy_iter_func(I_t,V_t,...
-    k_t,exo_t,exo_t1,basis_t,inv_multiply_t,basis_exo_t1,...
+    k_t,exo_t,pi_mat,exo_t1,basis_t,inv_multiply_t,basis_exo_t1,...
     x_inv,w_inv,...
     state_min,state_max,Smol_elem,mu_max,d,ind,parameters,I_min,I_max)
 
@@ -31,7 +31,7 @@ theta=parameters(1:4);
 stoch_inv_cost=zeros(1,N,n_node_inv);
 
   [inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t,stoch_inv_cost,theta);
-pi_mat=pi_func(k_t,exo_t);
+
 
 %%% Value iteration
 spec_V_iter=[];

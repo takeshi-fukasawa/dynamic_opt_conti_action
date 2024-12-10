@@ -60,7 +60,7 @@ while ~done
          else
             grad = (feval(FUN,x*ones(1,nv)+tvec,varargin{:})-f0*ones(1,nv))/delta;
          end
-        n_feval=n_feval+1;
+        n_feval=n_feval+nv;
       else % use analytic gradient
          grad=feval(gradfun,x,varargin{:});
       end
