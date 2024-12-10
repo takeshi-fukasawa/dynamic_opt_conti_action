@@ -14,11 +14,11 @@ D=4;
 
 %%%%%%%%%%
 %% Main results
-optimistic_PI_param=10;%sufficiently large values
+optimistic_PI_param=1000;%sufficiently large values
 
-for spectral_spec=0:1
+for spectral_spec=1:1
 results=[];
-for i = -2:4
+for i = 5:5
         [out_i,other_output]=Main_function(i,spectral_spec,D);
         results=[results;...
             [i*ones(size(out_i,1),1),out_i]];

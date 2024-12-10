@@ -30,7 +30,7 @@ theta=parameters(1:4);
 
 stoch_inv_cost=zeros(1,N,n_node_inv);
 
-  [inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t,stoch_inv_cost,theta);
+  [inv_cost]=inv_cost_func(k_t,I_t,stoch_inv_cost,theta);
 
 
 %%% Value iteration

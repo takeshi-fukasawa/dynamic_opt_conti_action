@@ -28,11 +28,13 @@ function [out,other_vars]=PI_update_func(n0,...
    %%%vf_coef=X0\V;%%%
    vf_coef=[];%%%%
    
-   spec_V_iter.update_spec=0;
+   %spec_V_iter.update_spec=0;
    spec_V_iter.alpha_0=1e-6;
+   spec_V_iter.norm_spec=10;%% unit free
+   %spec_V_iter.alpha_0=alpha0_param;
 
    [out,other_vars,iter_info_V_iter]=spectral_func(...
-       @V_update_func,spec_V_iter,{V},...
+       @VF_Bellman_L_update_func,spec_V_iter,{V},...
     X0,n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
 
    V_new=out{1};

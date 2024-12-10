@@ -17,9 +17,9 @@ spec.DEBUG=1;
 
 
 results_all=[];
-c.QUAD_INV_COST=0.0;%%%%%%% Quadratic investment cost %%%%
+c.QUAD_INV_COST=1.0;%%%%%%% Quadratic investment cost %%%%
 
-for N=1:3
+for N=2:2
     c.MAX_FIRMS = N; %% Number of firms %%%
     
     c.START_FIRMS = 1;
@@ -145,5 +145,5 @@ end%N=1,2,3
 
 filename=append('results/results_',...
     tag,'_',string(c.BETA),'.csv');
-writematrix(round(results_all,2),filename)
+%writematrix(round(results_all,2),filename)
 

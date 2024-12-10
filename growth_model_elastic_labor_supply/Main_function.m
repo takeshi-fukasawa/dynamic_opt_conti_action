@@ -181,6 +181,7 @@ V_init=V;
 vf_coef_init=vf_coef;
 %%%%%%%%%%
 
+
 % 5. Main iterative cycle: constructing polynomial approximations of degrees 
 % from 2 to 5 for value function 
 % --------------------------------------------------------------------------

@@ -42,7 +42,7 @@ exo_center=[4,2];
 table_summary_all=[];
 OPI_param=500;
 
-for N=3:3
+for N=2:2
     d=N+2;
     k_center=ones(1,N);
     
@@ -108,7 +108,7 @@ for N=3:3
 
 end%N=1,2,3
 
-%writematrix(table_summary_all,append("results/results_all.csv"))
+writematrix(table_summary_all,append("results/results_all.csv"))
 
 %% OPI
-%run run_OPI.m
+run run_OPI.m

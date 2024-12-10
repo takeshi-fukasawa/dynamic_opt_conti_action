@@ -133,7 +133,7 @@ elseif Method==4
      if spectral_spec==0
       spec.update_spec=0;
     end
- [out,other_vars,iter_info_V_iter]=spectral_func(@V_update_func,spec_V_iter,{V},...
+ [out,other_vars,iter_info_V_iter]=spectral_func(@VF_Bellman_L_update_func,spec_V_iter,{V},...
     X0,n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
 
    feval_V_total=feval_V_total+iter_info_V_iter.feval*n_grid;

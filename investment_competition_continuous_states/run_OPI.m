@@ -1,6 +1,6 @@
 %% OPI
-table_summary_all=[];
-for N=1:3
+table_summary_all_OPI=[];
+for N=2:2
     d=N+2;
     k_center=ones(1,N);
     
@@ -34,8 +34,8 @@ for N=1:3
     iter_results_output_func(iter_info_OPI_spectral,resid_mat_OPI_spectral);...
     iter_results_output_func(iter_info_OPI,resid_mat_OPI)],3);
     table_summary=[N*ones(size(table_summary,1),1),table_summary];
-    table_summary_all=[table_summary_all;table_summary];
+    table_summary_all_OPI=[table_summary_all_OPI;table_summary];
 
 end%N=1,2,3
 
-writematrix(table_summary_all,append("results/results_all_OPI.csv"))
+writematrix(table_summary_all_OPI,append("results/results_all_OPI.csv"))
