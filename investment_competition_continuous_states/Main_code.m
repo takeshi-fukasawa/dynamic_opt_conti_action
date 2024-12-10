@@ -42,7 +42,7 @@ exo_center=[4,2];
 table_summary_all=[];
 OPI_param=500;
 
-for N=2:2
+for N=1:3
     d=N+2;
     k_center=ones(1,N);
     
@@ -81,6 +81,11 @@ for N=2:2
     update_spec="PI";
     run iteration.m
 
+    %% Policy iteration
+    OPI_param=10;
+    update_spec="PI";
+    run iteration.m
+
     end
     
     
@@ -95,6 +100,7 @@ for N=2:2
     iter_results_output_func(iter_info_gradient,resid_mat_gradient);...
     iter_results_output_func(iter_info_PM,resid_mat_PM);...
     iter_results_output_func(iter_info_PI,resid_mat_PI);...
+    iter_results_output_func(iter_info_OPI,resid_mat_OPI);...
     iter_results_output_func(iter_info_analytical,resid_mat_analytical)],3);
     
     table_summary=round([...
@@ -102,7 +108,10 @@ for N=2:2
     iter_results_output_func(iter_info_PM_spectral,resid_mat_PM_spectral);...
     iter_results_output_func(iter_info_PM,resid_mat_PM);...
     iter_results_output_func(iter_info_PI_spectral,resid_mat_PI_spectral);...
-    iter_results_output_func(iter_info_PI,resid_mat_PI)],3);
+    iter_results_output_func(iter_info_PI,resid_mat_OPI);...
+    iter_results_output_func(iter_info_OPI_spectral,resid_mat_OPI_spectral);...
+    iter_results_output_func(iter_info_OPI,resid_mat_OPI);...
+    ],3);
     table_summary=[N*ones(size(table_summary,1),1),table_summary];
     table_summary_all=[table_summary_all;table_summary];
 
@@ -110,5 +119,3 @@ end%N=1,2,3
 
 writematrix(table_summary_all,append("results/results_all.csv"))
 
-%% OPI
-run run_OPI.m

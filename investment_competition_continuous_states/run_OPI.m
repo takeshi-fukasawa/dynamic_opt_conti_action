@@ -1,6 +1,6 @@
 %% OPI
 table_summary_all_OPI=[];
-for N=2:2
+for N=1:3
     d=N+2;
     k_center=ones(1,N);
     
