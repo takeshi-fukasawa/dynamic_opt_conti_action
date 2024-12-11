@@ -72,20 +72,20 @@ basis_reshaped=permute(reshape(basis,n_pts,n_node,n_coef),[1,3,2]);
 basis_single_reshaped=permute(reshape(basis_single,n_pts,n_node,n_coef,n_state),[1,3,2,4]);
 
 if nargout>=3
-%% Reshape basis_diff: n_pts*n_node*n_coef*n_state => n_pts*n_coef*n_node*n_state
-basis_diff_reshaped=permute(reshape(basis_diff,n_pts,n_node,n_coef,n_state),[1,3,2,4]);
+	%% Reshape basis_diff: n_pts*n_node*n_coef*n_state => n_pts*n_coef*n_node*n_state
+	basis_diff_reshaped=permute(reshape(basis_diff,n_pts,n_node,n_coef,n_state),[1,3,2,4]);
 
-%% Reshape basis_diff_single: n_pts*n_node*n_coef*n_state => n_pts*n_coef*n_node*n_state
-basis_diff_single_reshaped=permute(reshape(basis_diff_single,n_pts,n_node,n_coef,n_state),[1,3,2,4]);
+	%% Reshape basis_diff_single: n_pts*n_node*n_coef*n_state => n_pts*n_coef*n_node*n_state
+	basis_diff_single_reshaped=permute(reshape(basis_diff_single,n_pts,n_node,n_coef,n_state),[1,3,2,4]);
 end
 
 
 if nargout>=5
-%% Reshape basis_diff: n_pts*n_node*n_coef*n_state => n_pts*n_coef*n_node*n_state
-basis_diff2_reshaped=permute(reshape(basis_diff2,n_pts,n_node,n_coef,n_state),[1,3,2,4]);
+	%% Reshape basis_diff: n_pts*n_node*n_coef*n_state => n_pts*n_coef*n_node*n_state
+	basis_diff2_reshaped=permute(reshape(basis_diff2,n_pts,n_node,n_coef,n_state),[1,3,2,4]);
 
-%% Reshape basis_diff_single: n_pts*n_node*n_coef*n_state => n_pts*n_coef*n_node*n_state
-basis_diff2_single_reshaped=permute(reshape(basis_diff2_single,n_pts,n_node,n_coef,n_state),[1,3,2,4]);
+	%% Reshape basis_diff_single: n_pts*n_node*n_coef*n_state => n_pts*n_coef*n_node*n_state
+	basis_diff2_single_reshaped=permute(reshape(basis_diff2_single,n_pts,n_node,n_coef,n_state),[1,3,2,4]);
 end
 
 return

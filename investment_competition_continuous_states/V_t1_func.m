@@ -1,4 +1,4 @@
-function [basis,V_diff,V_diff2]=V_t1_diff_func(k_t1,exo_t1_mean,coef_approx_V,...
+function [basis,V_diff,V_diff2]=V_t1_func(k_t1,exo_t1_mean,coef_approx_V,...
     state_min,state_max,Smol_elem,mu_max,ind,w_inv)
 global w_exo x_exo sd_exo
 %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -37,8 +37,8 @@ if nargout==1
    [basis_temp,basis_single_temp]=...
         base_func(state_stoch,state_min,state_max,Smol_elem,mu_max,n_state,ind);
 
-
-elseif nargout==2  [basis_temp,basis_single_temp,basis_diff_temp,basis_diff_single_temp]=...
+elseif nargout==2  
+    [basis_temp,basis_single_temp,basis_diff_temp,basis_diff_single_temp]=...
         base_func(state_stoch,state_min,state_max,Smol_elem,mu_max,n_state,ind);
 else
     [basis_temp,basis_single_temp,basis_diff_temp,basis_diff_single_temp,...
@@ -74,34 +74,34 @@ basis_adjusted=basis_single./basis_single_mean.*basis_single_mean_prod;%n_pts*n_
 basis=basis_adjusted(:,:,:,1:N);%n_pts*n_coef*n_node_inv*N
 
 if nargout>=2
-basis_diff=...
-    reshape(sum(reshape(basis_diff_temp,n_pts,ns_exo,n_coef,n_node_inv,n_state).*reshape(w_exo,1,ns_exo,1,1,1),2),...
-    n_pts,n_coef,n_node_inv,n_state);%n_pts*n_coef*n_node_inv
-basis_diff_single=...
-    reshape(sum(reshape(basis_diff_single_temp,n_pts,ns_exo,n_coef,n_node_inv,N+2).*reshape(w_exo,1,ns_exo,1,1,1),2),...
-    n_pts,n_coef,n_node_inv,n_state);%n_pts*n_coef*n_node_inv*n_state
-
-basis_diff_adjusted=basis_diff_single./basis_single_mean.*basis_single_mean_prod;%n_pts*n_coef*n_node_inv*N
-
-
-basis_diff=basis_diff_adjusted(:,:,:,1:N);%n_pts*n_coef*n_node_inv*N
-
-%%sum: n_pts*n_coef*n_node_inv*N=>n_pts*1*n_node_inv*N=>n_pts*N*n_node_inv*N
-V_diff=sum(basis_diff.*reshape(coef_approx_V,1,n_coef,1,n_var),2);%%n_pts*1*n_node_inv*n_var
-V_diff=permute(V_diff,[1,4,3,2]);%%n_pts*n_var*n_node_inv
+    basis_diff=...
+        reshape(sum(reshape(basis_diff_temp,n_pts,ns_exo,n_coef,n_node_inv,n_state).*reshape(w_exo,1,ns_exo,1,1,1),2),...
+        n_pts,n_coef,n_node_inv,n_state);%n_pts*n_coef*n_node_inv
+    basis_diff_single=...
+        reshape(sum(reshape(basis_diff_single_temp,n_pts,ns_exo,n_coef,n_node_inv,N+2).*reshape(w_exo,1,ns_exo,1,1,1),2),...
+        n_pts,n_coef,n_node_inv,n_state);%n_pts*n_coef*n_node_inv*n_state
+    
+    basis_diff_adjusted=basis_diff_single./basis_single_mean.*basis_single_mean_prod;%n_pts*n_coef*n_node_inv*N
+    
+    
+    basis_diff=basis_diff_adjusted(:,:,:,1:N);%n_pts*n_coef*n_node_inv*N
+    
+    %%sum: n_pts*n_coef*n_node_inv*N=>n_pts*1*n_node_inv*N=>n_pts*N*n_node_inv*N
+    V_diff=sum(basis_diff.*reshape(coef_approx_V,1,n_coef,1,n_var),2);%%n_pts*1*n_node_inv*n_var
+    V_diff=permute(V_diff,[1,4,3,2]);%%n_pts*n_var*n_node_inv
 
 
 end%nargout>=2
 
 
 if nargout==3
-basis_diff2_adjusted=basis_diff2_single./basis_single_mean.*basis_single_mean_prod;%n_pts*n_coef*n_node_inv*N
-
-basis_diff2=basis_diff2_adjusted(:,:,:,1:N);%n_pts*n_coef*n_node_inv*N
-
-%%sum: n_pts*n_coef*n_node_inv*N=>n_pts*1*n_node_inv*N=>n_pts*N*n_node_inv*N
-V_diff2=sum(basis_diff2.*reshape(coef_approx_V,1,n_coef,1,n_var),2);%%n_pts*1*n_node_inv*n_var
-V_diff2=permute(V_diff2,[1,4,3,2]);%%n_pts*n_var*n_node_inv
+    basis_diff2_adjusted=basis_diff2_single./basis_single_mean.*basis_single_mean_prod;%n_pts*n_coef*n_node_inv*N
+    
+    basis_diff2=basis_diff2_adjusted(:,:,:,1:N);%n_pts*n_coef*n_node_inv*N
+    
+    %%sum: n_pts*n_coef*n_node_inv*N=>n_pts*1*n_node_inv*N=>n_pts*N*n_node_inv*N
+    V_diff2=sum(basis_diff2.*reshape(coef_approx_V,1,n_coef,1,n_var),2);%%n_pts*1*n_node_inv*n_var
+    V_diff2=permute(V_diff2,[1,4,3,2]);%%n_pts*n_var*n_node_inv
 end%if nargout==3
 
 return
