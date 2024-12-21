@@ -56,7 +56,7 @@ I_sol=output{1};
 V_sol=output{2};
 iter_info.geval_total=geval_total;
 if veval_total==0
-    iter_info.veval_total=n_grid*N*iter_info.n_iter;
+    iter_info.veval_total=n_grid*N*iter_info.feval;
 else
     iter_info.veval_total=veval_total;
 end
@@ -80,7 +80,7 @@ I_sol_spectral=output{1};
 V_sol_spectral=output{2};
 iter_info_spectral.geval_total=geval_total;
 if veval_total==0
-    iter_info_spectral.veval_total=n_grid*N*iter_info_spectral.n_iter;
+    iter_info_spectral.veval_total=n_grid*N*iter_info_spectral.feval;
 else
     iter_info_spectral.veval_total=veval_total;
 end

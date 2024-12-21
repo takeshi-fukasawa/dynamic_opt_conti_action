@@ -16,17 +16,19 @@ D=4;
 %% Main results
 optimistic_PI_param=1000;%sufficiently large values
 
-for spectral_spec=1:1
+for spectral_spec=1:2
 results=[];
-for i = 5:5
+for i = 3:3
         [out_i,other_output]=Main_function(i,spectral_spec,D);
         results=[results;...
             [i*ones(size(out_i,1),1),out_i]];
 end%i
 if spectral_spec==0
    results_no_spectral=results;
-else
+elseif spectral_spec==1
    results_spectral=results;
+elseif spectral_spec==2
+   results_Anderson=results;
 end
 end% spectral_spec
 results=[results_spectral;results_no_spectral];

@@ -202,13 +202,17 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
 
     spec=spec_default;
     spec.TOL=1e-6;
+    %spec.ITER_MAX=500;%%%
 
     if spectral_spec==0
         spec.update_spec=0;
     elseif spectral_spec==2;
+        %spec.Anderson_acceleration=1;%%%%
+        %spec.common_alpha_spec=1;
+        spec.ITER_MAX=500;
         spec.SQUAREM_spec=1;
     end
-    
+
     if Method==1 | Method==0 | Method==4
         input={V};
     elseif Method==2
@@ -358,7 +362,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     K_coef(1:1+D+D*(D+1)/2,D) = k_coef;   % Store the solution coefficients (V)
     C_coef(1:1+D+D*(D+1)/2,D) = c_coef;   % Store the solution coefficients (V)
     N_coef(1:1+D+D*(D+1)/2,D) = n_coef;   % Store the solution coefficients (V)
-    n_iter(D)=iter_info.n_iter;
+    n_iter(D)=iter_info.feval;
 
     
 end
