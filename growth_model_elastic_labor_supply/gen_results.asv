@@ -72,3 +72,32 @@ filename=append('results/growth_model_algorithm_comparison_summary_OPI_all.csv')
 
 writematrix(round(results_OPI_summary,3),filename)
 
+%% SQUAREM
+optimistic_PI_param=1000;%sufficiently large values
+spectral_spec=2;%Anderson acceleration
+
+results_Anderson=[];
+for i = -3:4
+    [out_i,other_output]=Main_function(i,spectral_spec,D);
+    results_Anderson=[results_Anderson;...
+        [i*ones(size(out_i,1),1),out_i]];
+end%i
+
+results_Anderson_summary=results_Anderson(find(results_Anderson(:,2)==D),:)
+
+%% Anderson acceleration
+optimistic_PI_param=1000;%sufficiently large values
+spectral_spec=3;%Anderson acceleration
+
+results_Anderson=[];
+for i = -3:4
+    [out_i,other_output]=Main_function(i,spectral_spec,D);
+    results_Anderson=[results_Anderson;...
+        [i*ones(size(out_i,1),1),out_i]];
+end%i
+
+results_Anderson_summary=results_Anderson(find(results_Anderson(:,2)==D),:)
+
+%filename=append('results/growth_model_algorithm_comparison_summary_all.csv');
+
+%writematrix(round(results_summary,3),filename)

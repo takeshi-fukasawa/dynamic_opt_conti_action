@@ -209,13 +209,9 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     elseif spectral_spec==2;% SQAUREM
         spec.ITER_MAX=500;
         spec.SQUAREM_spec=1;
-    elseif spectral_spec==3;% Anderson acceleration (Only one variable type)
+    elseif spectral_spec==3;% Anderson acceleration (common variab
         spec.Anderson_acceleration=1;%%%%
         spec.common_alpha_spec=1;
-        spec.ITER_MAX=500;
-    elseif spectral_spec==4;% Anderson acceleration (Heterogeneous variable type)
-        spec.Anderson_acceleration=1;%%%%
-        spec.common_alpha_spec=[];
         spec.ITER_MAX=500;
     end
 
