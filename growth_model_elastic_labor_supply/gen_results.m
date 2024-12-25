@@ -12,6 +12,14 @@ alpha0_param=1;%%% value of alpha0 used in the spectral algorithm
 lambda_param=1e-7;%% Value of lambda
 D=4;
 
+%%%%%%%%%%%
+spectral_spec=0;
+Method=6;
+results=[];
+[out_i,other_output]=Main_function(Method,spectral_spec,D);
+results=[results;...
+         [i*ones(size(out_i,1),1),out_i]];
+
 %%%%%%%%%%
 %% Main results
 optimistic_PI_param=1000;%sufficiently large values

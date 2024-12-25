@@ -29,6 +29,7 @@ function [out,other_output]=Main_function(Method,spectral_spec,D)
 % "3": Euler equation method (EE)
  % "4": Policy iteration method (PI) updating V
  % "5": Policy iteration method (PI) updating n0
+% "6": Safe Accelerated Value Iteration (S-AVI)
 
 fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
 
@@ -199,9 +200,9 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
                                         % grid for checking convergence 
     Vder0 = X0der*vf_coef;              % Compute derivative of value function
 
-
+    TOL=1e-6;
     spec=spec_default;
-    spec.TOL=1e-6;
+    spec.TOL=TOL;
     %spec.ITER_MAX=500;%%%
 
     if spectral_spec==0
@@ -248,6 +249,11 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         spec.norm_spec=[10,0];% unit free norm for V
     end
 
+   %%%%%%%
+    if Method==3| Method==4 % PI itself is fast=> Use original iteration (w/o spectral)
+       spec.update_spec=0;
+    end 
+    %%%%%
 
     if Method==1 | Method==0 | Method==2 | Method==4
         fun=@update_func_L;
@@ -263,13 +269,26 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         fun=@VF_PGI_func_n0_c0_2;
     end
 
-   geval_total=0;% global variable
+    geval_total=0;% global variable
    feval_V_total=0;%global variable
+
+   if Method==6|Method==7 %S-AVI
+     [V,other_vars,iter_info]=S_AVI_func(V_init,TOL,X0der,X0,delta,A,alpha,...
+         grid_EGM,grid,z0,z1,k0,n0,c0,k1,gam,...
+   nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid);
+        vf_coef = X0\V;     % Coefficients for value function 
+        k1=other_vars.k1;
+
+    else%Method<=5
+
     [output_spectral,other_vars,iter_info]=...
         spectral_func(fun,spec,input,...
         Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0,c0,k1,gam,...
         nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,spectral_spec);
     %iter_info.feval;
+
+   
+   end% Method~=6,7
 
     if Method<0 | Method==3 | Method==5
         geval_total=iter_info.feval*n_grid;
@@ -278,7 +297,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     if Method<=2
         feval_V_total=iter_info.feval*n_grid;
     end 
-   
+
     geval_Q(D)=geval_total;
 
     if Method==1 | Method==0
