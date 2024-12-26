@@ -29,7 +29,8 @@ function [out,other_output]=Main_function(Method,spectral_spec,D)
 % "3": Euler equation method (EE)
  % "4": Policy iteration method (PI) updating V
  % "5": Policy iteration method (PI) updating n0
-% "6": Safe Accelerated Value Iteration (S-AVI)
+% "6": Accelerated Value Iteration (AVI)
+% "7": Safe-Accelerated Value Iteration (S-AVI)
 
 fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
 

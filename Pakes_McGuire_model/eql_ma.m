@@ -10,7 +10,7 @@
 
 % Modified by Takeshi Fukasawa in April 2024
 
-function [newvalue,newx,iter_info,other_vars] = eql_ma(method,no_entry_exit_spec,spec,c)
+function [newvalue,newx,iter_info,other_vars] = eql_ma(method,profit,no_entry_exit_spec,spec,c)
 
 
 % #include pmg.h;
@@ -19,8 +19,8 @@ function [newvalue,newx,iter_info,other_vars] = eql_ma(method,no_entry_exit_spec
 % constants not modifiable by user
 
 global kmax x_entryl x_entryh phi entry_k beta delta a
-global binom dtable encfirm etable1 etable2 y mask multfac1 multfac2
-global nfirms profit two_n wmax prising
+global binom dtable encfirm etable1 etable2 mask multfac1 multfac2
+global nfirms two_n wmax prising
 global INV_COST QUAD_INV_COST
 global geval_total
 
@@ -199,7 +199,7 @@ geval_total=0;
   if 1==1
       [output_spectral,other_vars,iter_info]=...
         spectral_func(@contract,spec,{oldvalue,oldx},...
-        method,no_entry_exit_spec);
+        profit,method,no_entry_exit_spec);
 
       newvalue=output_spectral{1};
       newx=output_spectral{2};
@@ -213,7 +213,7 @@ geval_total=0;
   norm = tol + 1;
   avgnorm = norm;
   while (norm > tol) & (avgnorm > 0.0001*tol);
-    [out,other_vars]=contract(oldvalue,oldx,method,no_entry_exit_spec);
+    [out,other_vars]=contract(oldvalue,oldx,profit,method,no_entry_exit_spec);
     newvalue=out{1};
     newx=out{2};
     norm = max(max(abs(oldvalue - newvalue)));
@@ -273,7 +273,7 @@ c.EQL_DONE = 1;
 
 
 
-function [out,other_vars] = contract(oldvalue,oldx,method,no_entry_exit_spec)
+function [out,other_vars] = contract(oldvalue,oldx,profit,method,no_entry_exit_spec)
   % This procedure does one iterative step on investment and the value fn
   % local w;
   % First: check for which values of w_s would a firm want to enter
@@ -296,7 +296,7 @@ function [out,other_vars] = contract(oldvalue,oldx,method,no_entry_exit_spec)
 
   w = 1;
   while w <= wmax;
-    [newx(w,:), newvalue(w,:),diff_mat(w,:)] = optimize(w,oldvalue,oldx,isentry,method,no_entry_exit_spec);
+    [newx(w,:), newvalue(w,:),diff_mat(w,:)] = optimize(w,oldvalue,oldx,profit,isentry,method,no_entry_exit_spec);
     w=w+1;
   end
 
@@ -340,7 +340,7 @@ function [oldvalue,oldx] = update(newvalue,newx)
 
 
 
-function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,isentry,method,no_entry_exit_spec)
+function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,profit,isentry,method,no_entry_exit_spec)
 % This procedure calculates optimal investment, and value fn., for a
 % given industry structure w. Thus, a vector nfirms long of each is returned.
 % local locw,locwx,locwe,  % Decoded copies of other's omegas w and w/o entry
@@ -349,8 +349,8 @@ function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,isentry,method,no_entr
 %   v1,v2,  % v1: value of investing; v2: value of not investing
 %   i,j,p,r,tempv1,tempv2,temp, nval,nx; % Returned values of investment, value fn.
 
-  global a beta entry_k nfirms phi profit INV_COST QUAD_INV_COST
-  global diff diff_temp entered 
+  global a beta entry_k nfirms phi INV_COST QUAD_INV_COST
+  global diff entered 
   global encfirm etable1 etable2 multfac1 multfac2
   global delta kmax mask two_n lambda_param
      global geval_total
@@ -379,8 +379,12 @@ function [out1,out2,diff_temp] = optimize(w,oldvalue,oldx,isentry,method,no_entr
 
   % Figure out the probability of entry
 
-  entered = isentry(qencode(flipud(sortrows(flipud(locwx),1)),encfirm,etable1,etable2,multfac1,multfac2,nfirms));
-
+  if no_entry_exit_spec==0
+      entered = isentry(qencode(flipud(sortrows(flipud(locwx),1)),encfirm,etable1,etable2,multfac1,multfac2,nfirms));
+  else
+      entered=1;
+  end
+  
   locwe = locwx;
   locwe(nfirms) = entry_k;
 

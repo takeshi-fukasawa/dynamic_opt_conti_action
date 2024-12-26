@@ -69,7 +69,7 @@ for N=2:2
     % Solve dynamic equilibrium:
     no_entry_exit_spec=1;%%%% If 1, solve the model without entry/exit. If 0, solve the model with entry/exit.
     
-    TOL=1e-6;
+    TOL=1e-1;
     
     %% VF-PGI-Spectral
     method="gradient";
@@ -80,7 +80,7 @@ for N=2:2
     spec.TOL=TOL_vec;
     
     [newvalue_grad_spectral,newx_grad_spectral,iter_info_grad_spectral,other_vars]=...
-            eql_ma(method,no_entry_exit_spec,spec,c);
+            eql_ma(method,profit,no_entry_exit_spec,spec,c);
     
     DIST_grad_spectral=iter_info_grad_spectral.DIST_table(iter_info_grad_spectral.feval,:);
     DIST_grad_spectral(2)=DIST_grad_spectral(2)/lambda_param;
@@ -96,7 +96,7 @@ for N=2:2
         
         spec.update_spec=0;%% Use standard fixed point iteration
         [newvalue_grad,newx_grad,iter_info_grad,other_vars]=...
-                eql_ma(method,no_entry_exit_spec,spec,c);
+                eql_ma(method,profit,no_entry_exit_spec,spec,c);
         
         DIST_grad=iter_info_grad.DIST_table(iter_info_grad.feval,:);
         DIST_grad(2)=DIST_grad(2)/lambda_param;
@@ -107,7 +107,7 @@ for N=2:2
     spec.TOL=TOL;
     spec.alpha_0=1;
     [newvalue_PM_spectral,newx_PM_spectral,iter_info_PM_spectral,other_vars]=...
-            eql_ma(method,no_entry_exit_spec,spec,c);
+            eql_ma(method,profit,no_entry_exit_spec,spec,c);
    
     results_grad_spectral=create_results_func(iter_info_grad_spectral);
     results_PM_spectral=create_results_func(iter_info_PM_spectral);
@@ -119,7 +119,7 @@ for N=2:2
         spec.alpha_0=1;
         spec.update_spec=0; %% Use standard fixed point iteration
         [newvalue_PM,newx_PM,iter_info_PM,other_vars]=...
-                eql_ma(method,no_entry_exit_spec,spec,c);
+                eql_ma(method,profit,no_entry_exit_spec,spec,c);
         
         results_PM=create_results_func(iter_info_PM);
     
