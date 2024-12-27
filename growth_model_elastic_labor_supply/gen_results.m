@@ -17,7 +17,7 @@ optimistic_PI_param=1000;%sufficiently large values
 
 for spectral_spec=1:1
     results=[];
-    for i = 4:4
+    for i = -3:4
             [out_i,other_output]=Main_function(i,spectral_spec,D);
             results=[results;...
                 [i*ones(size(out_i,1),1),out_i]];
