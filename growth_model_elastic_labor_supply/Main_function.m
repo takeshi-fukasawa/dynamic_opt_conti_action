@@ -251,7 +251,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     end
 
    %%%%%%%
-    if Method==3| Method==4 % PI itself is fast=> Use original iteration (w/o spectral)
+    if Method==4| Method==5 % PI itself is fast=> Use original iteration (w/o spectral)
        spec.update_spec=0;
     end 
     %%%%%
@@ -271,24 +271,25 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     end
 
     geval_total=0;% global variable
-   feval_V_total=0;%global variable
+    feval_V_total=0;%global variable
 
    if Method==6|Method==7 %S-AVI
-     [V,other_vars,iter_info]=S_AVI_func(V_init,TOL,X0der,X0,delta,A,alpha,...
+     [V,other_vars,iter_info]=S_AVI_func(Method,V_init,TOL,X0der,X0,delta,A,alpha,...
          grid_EGM,grid,z0,z1,k0,n0,c0,k1,gam,...
-   nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid);
-        vf_coef = X0\V;     % Coefficients for value function 
-        k1=other_vars.k1;
+         nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid);
+     vf_coef = X0\V;     % Coefficients for value function 
+     k1=other_vars.k1;
+
+     feval_V_total=iter_info.feval*n_grid;
 
     else%Method<=5
 
-    [output_spectral,other_vars,iter_info]=...
-        spectral_func(fun,spec,input,...
-        Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0,c0,k1,gam,...
-        nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,spectral_spec);
-    %iter_info.feval;
+        [output_spectral,other_vars,iter_info]=...
+            spectral_func(fun,spec,input,...
+            Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0,c0,k1,gam,...
+            nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,spectral_spec);
+        %iter_info.feval;
 
-   
    end% Method~=6,7
 
     if Method<0 | Method==3 | Method==5
