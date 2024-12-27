@@ -135,7 +135,12 @@ elseif Method==4
    end
    spec_V_iter.norm_spec=10;
 
-   spec_V_iter.Anderson_acceleration=1;
+   if spectral_spec==3
+    spec_V_iter.Anderson_acceleration=1;
+   elseif spectral_spec==2
+       spec_V_iter.SQUAREM_spec=1;
+   end
+   
    [out,other_vars,iter_info_V_iter]=spectral_func(@VF_Bellman_L_update_func,spec_V_iter,{V},...
     X0,n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
 

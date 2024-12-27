@@ -13,10 +13,10 @@ results_SQUAREM_summary=results_SQUAREM(find(results_SQUAREM(:,2)==D),:)
 
 %% Anderson acceleration (One variable type)
 optimistic_PI_param=1000;%sufficiently large values
-spectral_spec=3;%Anderson acceleration
+spectral_spec=1;%Anderson acceleration
 
 results_Anderson=[];
-for i = -3:4
+for i = 4:4
     [out_i,other_output]=Main_function(i,spectral_spec,D);
     results_Anderson=[results_Anderson;...
         [i*ones(size(out_i,1),1),out_i]];

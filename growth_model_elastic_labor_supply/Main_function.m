@@ -253,6 +253,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
    %%%%%%%
     if Method==4| Method==5 % PI itself is fast=> Use original iteration (w/o spectral)
        spec.update_spec=0;
+       spec.Anderson_acceleration=0;
     end 
     %%%%%
 
