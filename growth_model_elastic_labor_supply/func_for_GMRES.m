@@ -1,10 +1,14 @@
-function [out] =func_for_GMRES(V)
+function [out] =func_for_GMRES(V,X1_array,X0,beta,weight_nodes)
 
-vf_coef=X0\V;
-
-for j = 1:n_nodes                         % For each integration node...
-    X1 = Polynomial_2d([k1 z1(:,j)],D);   % Construct polynomial   
-    EV(:,j) = X1*vf_coef;                 % Evaluate value function
+    [n_grid,n_coef,n_nodes]=size(X1_array);
+    vf_coef=X0\V;
+    
+    %%% X1: n_grid*n_coef*n_nodes
+    %%% vf_coef: n_coef*1
+    EV=reshape(...
+        sum(reshape(X1_array,n_grid,n_coef,n_nodes).*...
+        reshape(vf_coef,1,n_coef,1),2),...
+        n_grid,n_nodes);
+    
+    out=V-beta*EV*weight_nodes;        
 end
-
-out=V-beta*EV*weight_nodes;        

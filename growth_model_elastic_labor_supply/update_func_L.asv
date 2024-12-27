@@ -163,7 +163,7 @@ elseif Method==4
         profit=uc0+B*un0;
     
         V0=V;
-        spec_V_iter.Anderson_acceleration=1;
+        
         [out,other_vars,iter_info_V_iter]=spectral_func(@VF_Bellman_L_given_X1_array,spec_V_iter,{V},...
             profit,X1_array,X0,beta,weight_nodes);
 
