@@ -19,6 +19,7 @@ if Method==0
 %==================================================================
 % Method 0. Value function iteration (VFI)
 %==================================================================
+    %%%V=V-V(1);%%%%%
      vf_coef=X0\V;
 
       %%% Use global n0 as initial values => hot start
@@ -115,13 +116,31 @@ elseif Method==4
 %==================================================================
 
      vf_coef=X0\V;
-     %%% Use global n0 as initial values => hot start   
-     for j=1:n_grid  % Solve for labor using eq. (18) in MM (2013)
-          [n0(j,1),exitflag,n_iter,geval]=csolve('FOC_L_VFI',n0(j,1),[],0.000001,5,...
-              k0(j,1),z0(j,1),A,alpha,gam,nu,B,beta,delta,...
-              z1(j,:),n_nodes,weight_nodes,vf_coef,D);
-          geval_total=geval_total+geval;   
+     
+     %%% Use global n0 as initial values => hot start  
+
+     if 1==0%%%%%
+         for j=1:n_grid  % Solve for labor using eq. (18) in MM (2013)
+              [n0(j,1),exitflag,n_iter,geval]=csolve('FOC_L_VFI',n0(j,1),[],0.000001,5,...
+                  k0(j,1),z0(j,1),A,alpha,gam,nu,B,beta,delta,...
+                  z1(j,:),n_nodes,weight_nodes,vf_coef,D);
+              geval_total=geval_total+geval;   
+         end
+     
+     else%%%%%
+         Vder0 = X0der*vf_coef;   % Compute the derivative of value function
+           
+          %%% Use global n0 as initial values => hot start       
+         for j=1:n_grid  % Solve for labor using eq. (18) in MM (2013)
+              [n0(j,1),exitflag,n_iter,geval]=csolve('Labor_ECM',n0(j,1),[],0.000001,5,nu,alpha,delta,B,A,k0(j,1),z0(j,1),Vder0(j,1));  
+              geval_total=geval_total+geval; 
+         end
      end
+
+     c0=c0_analytical_func(n0,k0,z0,alpha,nu,gam,A,B);
+     k1=k1_analytical_func(k0,n0,c0,z0,delta,A,alpha);% Compute next-period capital using budget 
+                     % constraint (2) in MM(2013)
+
 
      c0=c0_analytical_func(n0,k0,z0,alpha,nu,gam,A,B);
      k1=k1_analytical_func(k0,n0,c0,z0,delta,A,alpha);% Compute next-period capital using budget 
@@ -147,6 +166,8 @@ elseif Method==4
        [out,other_vars,iter_info_V_iter]=spectral_func(@VF_Bellman_L_update_func,spec_V_iter,{V},...
         X0,n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
 
+
+        V_new=out{1};
    else
 
         X1_array=[];
@@ -166,24 +187,25 @@ elseif Method==4
         spec_V_iter.Anderson_acceleration=1;
         [out,other_vars,iter_info_V_iter]=spectral_func(@VF_Bellman_L_given_X1_array,spec_V_iter,{V},...
             profit,X1_array,X0,beta,weight_nodes);
-
-        func_for_GMRES_anonymous= @(V)func_for_GMRES(V,X1_array,X0,beta,weight_nodes);
+        feval_V_total=feval_V_total+iter_info_V_iter.feval*n_grid;
+    
+        V_new=out{1};
+        func_for_krylov_anonymous= @(V)func_for_krylov(V,X1_array,X0,beta,weight_nodes);
         
         ITER_MAX_gmres=100;
         TOL_gmres=1e-6;
-        [V,flag_vec,relres,iter_gmres,resvec] = gmres(func_for_GMRES_anonymous, profit,[],...
-            TOL_gmres,ITER_MAX_gmres,[],[],V0); % solve for Krylov vector
+        %[V_new,flag_vec,relres,iter_gmres,resvec] = gmres(func_for_krylov_anonymous, profit,[],...
+        %    TOL_gmres,ITER_MAX_gmres,[],[],V0); % solve for Krylov vector
+        %feval_V_total=feval_V_total+prod(iter_gmres)*n_grid;
     
             
-       feval_V_total=feval_V_total+iter_info_V_iter.feval*n_grid;
-    
+       
        other_vars.c0=c0;
        other_vars.n0=n0;
        other_vars.k1=k1;
        
    end
    
-   V_new=out{1};
 
 end
         

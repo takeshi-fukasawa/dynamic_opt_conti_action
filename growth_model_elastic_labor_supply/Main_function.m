@@ -38,6 +38,8 @@ global iter_info iter_info0 V k1
 global alpha0_param lambda_param
 global common_alpha_spec n0 c0
 global geval_total feval_V_total
+global n0
+
 
 D_init=D;
 D_min=D;
@@ -106,7 +108,7 @@ z0 = grid(:,2);                      % Grid points for productivity in the
     
 % 4. Gauss Hermite quadrature
 %----------------------------
-Qn      = 5;         % Number of integration nodes in Gauss Hermite quadrature
+Qn      = 10; %%%        % Number of integration nodes in Gauss Hermite quadrature
 nshocks = 1;         % Number of stochastic shocks is 1
 vcv     = sigma^2;   % Variance covariance matrix
 [n_nodes,epsi_nodes,weight_nodes] = GH_Quadrature(Qn,nshocks,vcv);

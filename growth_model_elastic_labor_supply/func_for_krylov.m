@@ -1,4 +1,4 @@
-function [out] =func_for_GMRES(V,X1_array,X0,beta,weight_nodes)
+function [out] =func_for_krylov(V,X1_array,X0,beta,weight_nodes)
 
     [n_grid,n_coef,n_nodes]=size(X1_array);
     vf_coef=X0\V;
@@ -10,5 +10,5 @@ function [out] =func_for_GMRES(V,X1_array,X0,beta,weight_nodes)
         reshape(vf_coef,1,n_coef,1),2),...
         n_grid,n_nodes);
     
-    out=V-beta*EV*weight_nodes;        
+    out=V-beta*EV*weight_nodes;    
 end

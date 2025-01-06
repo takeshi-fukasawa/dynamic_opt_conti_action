@@ -3,16 +3,16 @@ I_min=[];I_max=[];
 
 %I_min=-0.5;I_max=1.0;
 
-spec.TOL=1e-10;
+spec.TOL=1e-6;
 spec.alpha_0=1;
 
 if 1==1
-    spec=[];
+    %spec=[];
     if update_spec=="PM"
         %spec.dampening_param={1.0,1.0};
     elseif update_spec=="gradient"
         lambda_param=1;
-        TOL_vec=(1e-10)*ones(1,2);
+        TOL_vec=(1e-6)*ones(1,2);
         TOL_vec(1)=TOL_vec(1)*lambda_param;
         spec.TOL=TOL_vec;
        spec.alpha_0=0.01;
