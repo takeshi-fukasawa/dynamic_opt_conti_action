@@ -39,7 +39,10 @@ global alpha0_param lambda_param
 global common_alpha_spec n0 c0
 global geval_total feval_V_total
 global n0
+global relative_spec
+global n_gridk n_grida
 
+relative_spec_original=relative_spec;
 
 D_init=D;
 D_min=D;
@@ -108,7 +111,7 @@ z0 = grid(:,2);                      % Grid points for productivity in the
     
 % 4. Gauss Hermite quadrature
 %----------------------------
-Qn      = 10; %%%        % Number of integration nodes in Gauss Hermite quadrature
+Qn      = 3; %%%        % Number of integration nodes in Gauss Hermite quadrature
 nshocks = 1;         % Number of stochastic shocks is 1
 vcv     = sigma^2;   % Variance covariance matrix
 [n_nodes,epsi_nodes,weight_nodes] = GH_Quadrature(Qn,nshocks,vcv);
@@ -157,7 +160,8 @@ k1   =  k0*(1-delta)+A*z0.*k0.^alpha.*n0.^(1-alpha)-c0;
                      % a constant fraction css/yss of the period output 
                      % goes to consumption and the rest goes to investment,
                      % where css/yss is calculated in the steady state
-      
+
+V00=V;
 %%%%%%%%%%%%%%%%%%
 spec_default.norm_spec=10;%% unit free
 spec_default.TOL=1e-6;
@@ -168,6 +172,7 @@ spec_default.DEBUG=1;%%%%%%%%%%%%%%%%%%%
 
 spec=spec_default;
  
+    relative_spec=0;
     [output_spectral,other_vars,iter_info_V]=...
         spectral_func(@VF_Bellman_L_update_func,spec,{V},...
             X0,n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
@@ -178,12 +183,18 @@ spec=spec_default;
        iter_info_V.FLAG_ERROR=1;
     end
 
-    vf_coef = X0\V;     % Coefficients for value function
+    relative_spec=relative_spec_original;
 
 %%% Initial values %%%
 V_init=V;
-vf_coef_init=vf_coef;
 %%%%%%%%%%
+
+V=V_init;
+if relative_spec>=1
+    V=relative_V_func(V,relative_spec);
+end
+
+vf_coef = X0\V;     % Coefficients for value function
 
 
 % 5. Main iterative cycle: constructing polynomial approximations of degrees 
@@ -307,6 +318,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
 
     if Method==1 | Method==0
         V=output_spectral{1};
+        V_sol=V;
         vf_coef = X0\V;     % Coefficients for value function 
         k1=other_vars.k1;
     elseif Method==2

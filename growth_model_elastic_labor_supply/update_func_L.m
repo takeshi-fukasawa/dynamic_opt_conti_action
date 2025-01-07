@@ -7,6 +7,7 @@ function [out,other_vars]=update_func_L(input_cell,...
 
    global geval_total feval_V_total n0
    global optimistic_PI_param
+   global krylov_spec ECM_spec relative_spec
 
 if Method==1 | Method==0 | Method==4
     V=input_cell;
@@ -19,7 +20,6 @@ if Method==0
 %==================================================================
 % Method 0. Value function iteration (VFI)
 %==================================================================
-    %%%V=V-V(1);%%%%%
      vf_coef=X0\V;
 
       %%% Use global n0 as initial values => hot start
@@ -37,6 +37,7 @@ if Method==0
     [V_new] = VF_Bellman_L(n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D);
                                  % Recompute value function using 
                                  % the Bellman equation
+
 
     V_new=kdamp*V_new+(1-kdamp)*V; % Update V using damping
                            
@@ -119,7 +120,7 @@ elseif Method==4
      
      %%% Use global n0 as initial values => hot start  
 
-     if 1==0%%%%%
+     if ECM_spec==0
          for j=1:n_grid  % Solve for labor using eq. (18) in MM (2013)
               [n0(j,1),exitflag,n_iter,geval]=csolve('FOC_L_VFI',n0(j,1),[],0.000001,5,...
                   k0(j,1),z0(j,1),A,alpha,gam,nu,B,beta,delta,...
@@ -127,7 +128,7 @@ elseif Method==4
               geval_total=geval_total+geval;   
          end
      
-     else%%%%%
+     else%%ECM_spec==1
          Vder0 = X0der*vf_coef;   % Compute the derivative of value function
            
           %%% Use global n0 as initial values => hot start       
@@ -141,35 +142,31 @@ elseif Method==4
      k1=k1_analytical_func(k0,n0,c0,z0,delta,A,alpha);% Compute next-period capital using budget 
                      % constraint (2) in MM(2013)
 
-
-     c0=c0_analytical_func(n0,k0,z0,alpha,nu,gam,A,B);
-     k1=k1_analytical_func(k0,n0,c0,z0,delta,A,alpha);% Compute next-period capital using budget 
-                     % constraint (2) in MM(2013)
-
     %% Solve for value function
-   spec_V_iter=[];
-   spec_V_iter.TOL=1e-6;
-   spec_V_iter.ITER_MAX=optimistic_PI_param; 
-   if spectral_spec==0
-      spec_V_iter.update_spec=0;
-   end
-   spec_V_iter.norm_spec=10;
-
-   if spectral_spec==3
-        spec_V_iter.Anderson_acceleration=1;
-   elseif spectral_spec==2
-       spec_V_iter.SQUAREM_spec=1;
-   end
    
-   if 1==0
+    if 1==0 % Not precompute X1_array
+       spec_V_iter=[];
+       spec_V_iter.TOL=1e-6;
+       spec_V_iter.ITER_MAX=optimistic_PI_param; 
+       if spectral_spec==0
+          spec_V_iter.update_spec=0;
+       end
+       spec_V_iter.norm_spec=10;
+    
+       if spectral_spec==3
+            spec_V_iter.Anderson_acceleration=1;
+       elseif spectral_spec==2
+           spec_V_iter.SQUAREM_spec=1;
+       end
+
        %%% Without precomputing X1_array
-       [out,other_vars,iter_info_V_iter]=spectral_func(@VF_Bellman_L_update_func,spec_V_iter,{V},...
+       [out,other_vars,iter_info_V_iter]=spectral_func(@VF_Bellman_L_update_func,...
+           spec_V_iter,{V},...
         X0,n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
 
-
         V_new=out{1};
-   else
 
+    else%precompute X1_array
         X1_array=[];
         for j = 1:n_nodes                         % For each integration node...
             X1_array = cat(3,X1_array,Polynomial_2d([k1 z1(:,j)],D));   % Construct polynomial
@@ -184,22 +181,40 @@ elseif Method==4
         profit=uc0+B*un0;
     
         V0=V;
-        spec_V_iter.Anderson_acceleration=1;
-        [out,other_vars,iter_info_V_iter]=spectral_func(@VF_Bellman_L_given_X1_array,spec_V_iter,{V},...
-            profit,X1_array,X0,beta,weight_nodes);
-        feval_V_total=feval_V_total+iter_info_V_iter.feval*n_grid;
-    
-        V_new=out{1};
-        func_for_krylov_anonymous= @(V)func_for_krylov(V,X1_array,X0,beta,weight_nodes);
-        
-        ITER_MAX_gmres=100;
-        TOL_gmres=1e-6;
-        %[V_new,flag_vec,relres,iter_gmres,resvec] = gmres(func_for_krylov_anonymous, profit,[],...
-        %    TOL_gmres,ITER_MAX_gmres,[],[],V0); % solve for Krylov vector
-        %feval_V_total=feval_V_total+prod(iter_gmres)*n_grid;
-    
+
+        if krylov_spec==0
+            spec_V_iter=[];
+            spec_V_iter.TOL=1e-6;
+            spec_V_iter.ITER_MAX=optimistic_PI_param; 
             
-       
+            if spectral_spec==0
+                spec_V_iter.update_spec=0;
+            end
+            
+            spec_V_iter.norm_spec=10;
+    
+            if spectral_spec==3
+                spec_V_iter.Anderson_acceleration=1;
+            elseif spectral_spec==2
+                spec_V_iter.SQUAREM_spec=1;
+            end
+
+            spec_V_iter.Anderson_acceleration=1;
+            [out,other_vars,iter_info_V_iter]=spectral_func(@VF_Bellman_L_given_X1_array,spec_V_iter,{V0},...
+                profit,X1_array,X0,beta,weight_nodes);
+            feval_V_total=feval_V_total+iter_info_V_iter.feval*n_grid;
+            V_new=out{1};
+        
+        else%krylov_spec==1
+            func_for_krylov_anonymous= @(V)func_for_krylov(V,X1_array,X0,beta,weight_nodes);
+            
+            ITER_MAX_gmres=100;
+            TOL_gmres=1e-6;
+            [V_new,flag_vec,relres,iter_gmres,resvec] = gmres(func_for_krylov_anonymous, profit,[],...
+                TOL_gmres,ITER_MAX_gmres,[],[],V0); % solve for Krylov vector
+            feval_V_total=feval_V_total+prod(iter_gmres)*n_grid;
+        end
+            
        other_vars.c0=c0;
        other_vars.n0=n0;
        other_vars.k1=k1;

@@ -1,6 +1,8 @@
 
 function [out,other_vars] = VF_Bellman_L_given_X1_array(V,profit,X1_array,X0,beta,weight_nodes)
 
+global relative_spec
+
 [n_grid,n_coef,n_nodes]=size(X1_array);
 %V=V-V(1);%%% Relative PI
 vf_coef=X0\V;
@@ -12,6 +14,10 @@ EV=reshape(...
     n_grid,n_nodes);
 
 V_new = profit+beta*EV*weight_nodes; % Bellman equation        
+
+if relative_spec>=1
+    V_new=relative_V_func(V_new,relative_spec);
+end
 
 out={V_new};
 other_vars=[];

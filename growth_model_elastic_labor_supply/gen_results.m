@@ -3,6 +3,9 @@ clear all
 global V k1 iter_info alpha0_param lambda_param
 global n0 c0
 global optimistic_PI_param
+global krylov_spec ECM_spec relative_spec
+global analytical_EE_spec
+
 
 %%% Path of Spectral function
 addpath('C:/Users/fukas/Dropbox/git/spectral')
@@ -14,10 +17,14 @@ D=4;
 
 %% Main results
 optimistic_PI_param=1000;%sufficiently large values
+krylov_spec=1;
+ECM_spec=1;
+relative_spec=2;
+analytical_EE_spec=0;
 
 for spectral_spec=1:1
     results=[];
-    for i = 4:4
+    for i = 0:0
             [out_i,other_output]=Main_function(i,spectral_spec,D);
             results=[results;...
                 [i*ones(size(out_i,1),1),out_i]];

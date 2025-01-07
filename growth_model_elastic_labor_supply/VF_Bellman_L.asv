@@ -22,7 +22,7 @@
 % Output:    "V_new" is value function on the left side of the Bellman
 %            equation
 % -------------------------------------------------------------------------
-% Copyright © 2011-2016 by Lilia Maliar and Serguei Maliar. All rights 
+% Copyright ï½© 2011-2016 by Lilia Maliar and Serguei Maliar. All rights 
 % reserved. The code may be used, modified and redistributed under the 
 % terms provided in the file "License_Agreement.txt".
 % -------------------------------------------------------------------------
@@ -44,5 +44,5 @@ if nu==1; un0=log(1-n0); else un0=((1-n0).^(1-nu)-1)/(1-nu); end
 V_new = uc0+B*un0+beta*EV*weight_nodes; % Bellman equation        
 
 if relative_spec>=1
-    V_new=relative_V_func(V_new,relative_spec);
+    V_new=relative_V_func(V_,relative_spec);
 end
