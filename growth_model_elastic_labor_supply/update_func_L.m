@@ -234,17 +234,22 @@ elseif Method==4
             spec_V_iter.TOL=(1e-6)*max(abs(profit));
             spec_V_iter.ITER_MAX=optimistic_PI_param; 
             
-            if acceleration_spec==0
-                spec_V_iter.update_spec=0;
-            end
-            
-            if acceleration_spec==3
+            spec_V_iter.update_spec=0;
+            if 1==0
+                if acceleration_spec==0
+                    spec_V_iter.update_spec=0;
+                end
+                
+                if acceleration_spec==3
+                    spec_V_iter.Anderson_acceleration=1;
+                elseif acceleration_spec==2
+                    spec_V_iter.SQUAREM_spec=1;
+                end
+                
                 spec_V_iter.Anderson_acceleration=1;
-            elseif acceleration_spec==2
-                spec_V_iter.SQUAREM_spec=1;
+
             end
 
-            spec_V_iter.Anderson_acceleration=1;
             [out,other_vars,iter_info_V_iter]=spectral_func(@VF_Bellman_L_given_X1_array,spec_V_iter,{V0},...
                 profit,X1_array,X0,beta,weight_nodes);
             feval_V_total=feval_V_total+iter_info_V_iter.feval*n_grid;
@@ -253,7 +258,7 @@ elseif Method==4
         else%krylov_spec==1
             func_for_krylov_anonymous= @(V)func_for_krylov(V,X1_array,X0,beta,weight_nodes);
             
-            ITER_MAX_gmres=100;
+            ITER_MAX_gmres=optimistic_PI_param;
             TOL_gmres=1e-6;
             [V_new,flag_vec,relres,iter_gmres,resvec] = gmres(func_for_krylov_anonymous, profit,[],...
                 TOL_gmres,ITER_MAX_gmres,[],[],V0); % solve for Krylov vector

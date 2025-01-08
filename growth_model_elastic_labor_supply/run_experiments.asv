@@ -1,0 +1,30 @@
+%% VF-PGI,VF-PGI-Star,VFI,ECM,EGM,EE,PI 
+krylov_spec=0;
+ECM_spec=0;
+for i = -2:4
+    [out_i,other_output]=Main_function(i,acceleration_spec,D);
+    results=[results;...
+                [i*ones(size(out_i,1),1),out_i]];
+end%i
+
+%% PI-Krylov
+krylov_spec=1;
+i=4;
+[out_i,other_output]=Main_function(i,acceleration_spec,D);
+results=[results;...
+            [i*ones(size(out_i,1),1),out_i]];
+
+%% OPI (m=5)
+krylov_spec=0;
+optimistic_PI_param=5;
+[out_i,other_output]=Main_function(i,acceleration_spec,D);
+results=[results;...
+            [i*ones(size(out_i,1),1),out_i]];
+
+%% OPI-Krylov (m=5)
+krylov_spec=1;
+optimistic_PI_param=5;
+[out_i,other_output]=Main_function(i,acceleration_spec,D);
+results=[results;...
+            [i*ones(size(out_i,1),1),out_i]];
+

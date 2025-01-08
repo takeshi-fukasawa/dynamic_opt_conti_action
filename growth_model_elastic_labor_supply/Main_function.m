@@ -55,7 +55,7 @@ nu      = 5;                         % Utility-function parameter on leisure
 alpha   = 1/3;                        % Capital share in production
 lss     = 2/3;                        % Steady-state share of leisure in 
                                       % total time endowment 
-pkss    = 10;                         % Capital to output ratio
+pkss    = 10;%50;                         % Capital to output ratio
 pcss    = 3/4;                        % Consumption to output ratio
 delta   = (1-pcss)/pkss;              % Depreciation rate           
 beta    = 1/(1-delta+alpha/pkss);     % Discount factor
@@ -68,7 +68,7 @@ rho     = 0.95;                       % Persistence of the log of the
                                       % productivity level
 sigma   = 0.01;                       % Standard deviation of shocks to the 
                                       % log of the productivity level
-                                     
+
 % 2. Steady state
 % ---------------
 kss = ((1/beta-1+delta)/alpha/A)^(1/(alpha-1))*(1-lss); 

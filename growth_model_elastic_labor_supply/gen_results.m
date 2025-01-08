@@ -46,39 +46,28 @@ addpath('C:/Users/fukas/Dropbox/git/spectral')
 
 common_alpha_spec=0;
 alpha0_param=1;%%% value of alpha0 used in the spectral algorithm
-lambda_param=1e-7;%% Value of lambda
+lambda_param=1e-7;%1e-12;%% Value of lambda
 D=4;
 
 %% Main results
-optimistic_PI_param=1000;%sufficiently large values
-krylov_spec=1;
-ECM_spec=1;
-relative_V_spec=2;
-analytical_EE_spec=0;
+relative_V_spec=0;
+analytical_EE_spec=1;
 
 for acceleration_spec=1:1
-    results=[];
-    for i = 1:1
-            [out_i,other_output]=Main_function(i,acceleration_spec,D);
-            results=[results;...
-                [i*ones(size(out_i,1),1),out_i]];
-    end%i
-    if acceleration_spec==0
-        Method=6;i=6;
-        [out_i,other_output]=Main_function(Method,acceleration_spec,D);
-        results=[results;...
-             [i*ones(size(out_i,1),1),out_i]];
-       results_no_spectral=results;
+
+    run_experiments.m
+
+    results_no_spectral=results;
     
     elseif acceleration_spec==1
        results_spectral=results;
     elseif acceleration_spec==2
        results_Anderson=results;
     end
-end% acceleration_spec
-results=[results_spectral;results_no_spectral];
 
-results_summary=results(find(results(:,2)==D),:)
+end% acceleration_spec
+
+results=[results_spectral;results_no_spectral];
 
 filename=append('results/growth_model_algorithm_comparison_summary_all.csv');
 
