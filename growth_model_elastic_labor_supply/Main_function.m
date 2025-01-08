@@ -270,10 +270,8 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     end 
     %%%%%
 
-    if Method==1 | Method==0 | Method==2 | Method==4
+    if Method==1 | Method==0 | Method==2 | Method==3| Method==4
         fun=@update_func_L;
-    elseif Method==3
-        fun=@update_EE_func_n0;
     elseif Method==5
         fun=@PI_update_func;
     elseif Method==-1

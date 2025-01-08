@@ -24,7 +24,7 @@ analytical_EE_spec=0;
 
 for spectral_spec=1:1
     results=[];
-    for i = 0:0
+    for i = 3:4
             [out_i,other_output]=Main_function(i,spectral_spec,D);
             results=[results;...
                 [i*ones(size(out_i,1),1),out_i]];

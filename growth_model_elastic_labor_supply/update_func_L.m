@@ -7,7 +7,8 @@ function [out,other_vars]=update_func_L(input_cell,...
 
    global geval_total feval_V_total n0
    global optimistic_PI_param
-   global krylov_spec ECM_spec relative_spec
+   global krylov_spec ECM_spec relative_spec analytical_EE_spec
+
 
 if Method==1 | Method==0 | Method==4
     V=input_cell;
@@ -109,6 +110,53 @@ elseif Method==1
 
          vf_coef_new = kdamp*vf_coef_new + (1-kdamp)*vf_coef;   
                 % Update Vvf_coef using damping
+
+elseif Method==3
+%==================================================================
+% Method 3. Euler equation method
+%==================================================================
+
+    n0=input_cell;
+
+    c0=c0_analytical_func(n0,k0,z0,alpha,nu,gam,A,B);
+    k1=k1_analytical_func(k0,n0,c0,z0,delta,A,alpha);
+    
+    n_coef=X0\n0;
+
+    dEV_dk1=0;
+    for j = 1:n_nodes    % Sum up the expected derivative of value
+            % function across the integration nodes
+            X1_j = Polynomial_2d([k1 z1(:,j)],D);  
+            % Construct the derivatives of basis functions 
+            % of polynomial approximating value function at
+            % integration node j
+
+            n1_j=X1_j*n_coef;
+
+            numer=B*(1-n1_j).^(-nu);
+            denom=(1-alpha).*A.*z1(:,j).*(k1.^alpha).*(n1_j.^(-alpha));
+
+            du1_dc1=numer./denom;
+
+            dEV_dk1=dEV_dk1+du1_dc1.*(1-delta+z1(:,j).*A.*alpha.*(k1.^(alpha-1)).*(n1_j.^(1-alpha))).*weight_nodes(j);
+    end
+
+    dk1_dn0=z0.*A.*(k0.^alpha).*(1-alpha).*(n0.^(-alpha));
+    dEV_dn0=dk1_dn0.*dEV_dk1;
+
+    if analytical_EE_spec==1% Analytical sol
+        numer=B;
+        denom=dEV_dn0*beta;
+        n0_new=1-(numer./denom).^(1/nu);
+    else % Numerically solve sol
+        for j=1:n_grid  % Solve for labor using eq. (18) in MM (2013)
+          [n0_new(j,1),exitflag,n_iter,geval]=csolve('EE_resid_func',...
+              n0(j,1),[],0.000001,5,...
+              dEV_dn0(j),B,beta,nu);  
+        end
+    end
+
+       out={n0_new};
 
 elseif Method==4
      
