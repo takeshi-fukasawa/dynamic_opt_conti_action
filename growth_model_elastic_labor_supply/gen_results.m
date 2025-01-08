@@ -3,7 +3,7 @@ clear all
 global V k1 iter_info alpha0_param lambda_param
 global n0 c0
 global optimistic_PI_param
-global krylov_spec ECM_spec relative_spec
+global krylov_spec ECM_spec relative_V_spec
 global analytical_EE_spec
 
 
@@ -19,7 +19,7 @@ D=4;
 optimistic_PI_param=1000;%sufficiently large values
 krylov_spec=1;
 ECM_spec=1;
-relative_spec=2;
+relative_V_spec=2;
 analytical_EE_spec=0;
 
 for spectral_spec=1:1

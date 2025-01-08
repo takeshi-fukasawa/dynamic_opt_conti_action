@@ -39,10 +39,10 @@ global alpha0_param lambda_param
 global common_alpha_spec n0 c0
 global geval_total feval_V_total
 global n0
-global relative_spec
+global relative_V_spec
 global n_gridk n_grida
 
-relative_spec_original=relative_spec;
+relative_V_spec_original=relative_V_spec;
 
 D_init=D;
 D_min=D;
@@ -172,7 +172,7 @@ spec_default.DEBUG=1;%%%%%%%%%%%%%%%%%%%
 
 spec=spec_default;
  
-    relative_spec=0;
+    relative_V_spec=0;
     [output_spectral,other_vars,iter_info_V]=...
         spectral_func(@VF_Bellman_L_update_func,spec,{V},...
             X0,n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
@@ -183,15 +183,15 @@ spec=spec_default;
        iter_info_V.FLAG_ERROR=1;
     end
 
-    relative_spec=relative_spec_original;
+    relative_V_spec=relative_V_spec_original;
 
 %%% Initial values %%%
 V_init=V;
 %%%%%%%%%%
 
 V=V_init;
-if relative_spec>=1
-    V=relative_V_func(V,relative_spec);
+if relative_V_spec>=1
+    V=relative_V_func(V,relative_V_spec);
 end
 
 vf_coef = X0\V;     % Coefficients for value function

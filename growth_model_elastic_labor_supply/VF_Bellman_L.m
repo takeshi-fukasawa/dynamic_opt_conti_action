@@ -22,14 +22,14 @@
 % Output:    "V_new" is value function on the left side of the Bellman
 %            equation
 % -------------------------------------------------------------------------
-% Copyright © 2011-2016 by Lilia Maliar and Serguei Maliar. All rights 
+% Copyright ï¿½ 2011-2016 by Lilia Maliar and Serguei Maliar. All rights 
 % reserved. The code may be used, modified and redistributed under the 
 % terms provided in the file "License_Agreement.txt".
 % -------------------------------------------------------------------------
 
 function [V_new] = VF_Bellman_L(n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D)
 
-global relative_spec
+global relative_V_spec
 
 for j = 1:n_nodes                         % For each integration node...
     X1 = Polynomial_2d([k1 z1(:,j)],D);   % Construct polynomial   
@@ -43,6 +43,6 @@ if nu==1; un0=log(1-n0); else un0=((1-n0).^(1-nu)-1)/(1-nu); end
             % logarithmic; otherwise, it is power
 V_new = uc0+B*un0+beta*EV*weight_nodes; % Bellman equation        
 
-if relative_spec>=1
-    V_new=relative_V_func(V_new,relative_spec);
+if relative_V_spec>=1
+    V_new=relative_V_func(V_new,relative_V_spec);
 end
