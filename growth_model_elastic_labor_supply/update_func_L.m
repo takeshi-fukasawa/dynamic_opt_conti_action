@@ -1,6 +1,6 @@
 function [out,other_vars]=update_func_L(input_cell,...
    Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0_temp,c0,k1,gam,...
-   nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,spectral_spec)
+   nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,acceleration_spec)
   
   % Based on Maliar and Maliar (2013)
   % Modified by Takeshi Fukasawa in June 2024
@@ -196,13 +196,13 @@ elseif Method==4
        spec_V_iter=[];
        spec_V_iter.TOL=(1e-6)*max(abs(profit));
        spec_V_iter.ITER_MAX=optimistic_PI_param; 
-       if spectral_spec==0
+       if acceleration_spec==0
           spec_V_iter.update_spec=0;
        end
     
-       if spectral_spec==3
+       if acceleration_spec==3
             spec_V_iter.Anderson_acceleration=1;
-       elseif spectral_spec==2
+       elseif acceleration_spec==2
            spec_V_iter.SQUAREM_spec=1;
        end
 
@@ -234,13 +234,13 @@ elseif Method==4
             spec_V_iter.TOL=(1e-6)*max(abs(profit));
             spec_V_iter.ITER_MAX=optimistic_PI_param; 
             
-            if spectral_spec==0
+            if acceleration_spec==0
                 spec_V_iter.update_spec=0;
             end
             
-            if spectral_spec==3
+            if acceleration_spec==3
                 spec_V_iter.Anderson_acceleration=1;
-            elseif spectral_spec==2
+            elseif acceleration_spec==2
                 spec_V_iter.SQUAREM_spec=1;
             end
 

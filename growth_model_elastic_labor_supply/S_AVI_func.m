@@ -9,7 +9,7 @@ gamma_SAVI=(1-sqrt(1-beta^2))/beta;
 alpha_SAVI=1/(1+beta);
 lambda_SAVI=(1+beta)/2;
 Method_VFI=0;
-spectral_spec=0;
+acceleration_spec=0;
 ITER_MAX=500;
 safe_spec=0;%%%%
 feval=0;
@@ -22,7 +22,7 @@ end
 
  [out,other_vars]=update_func_L(V_0,...
    Method_VFI,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0_temp,c0,k1,gam,...
-   nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,spectral_spec);
+   nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,acceleration_spec);
 
 V_s=out{1};feval=feval+1;
 V_s_minus_1=V_s;
@@ -34,7 +34,7 @@ for s=1:ITER_MAX
 
     [out,other_vars]=update_func_L(h_s,...
       Method_VFI,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0_temp,c0,k1,gam,...
-      nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,spectral_spec);
+      nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,acceleration_spec);
 
    T_h_s=out{1};feval=feval+1;
    V_s_plus_1_temp=h_s-alpha_SAVI*(h_s-T_h_s);
@@ -42,7 +42,7 @@ for s=1:ITER_MAX
    if safe_spec==1
            [out,other_vars]=update_func_L(V_s_plus_1_temp,...
             Method_VFI,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0_temp,c0,k1,gam,...
-            nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,spectral_spec);
+            nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,acceleration_spec);
     
            T_V_s_plus_1_temp=out{1};feval=feval+1;
 
@@ -54,7 +54,7 @@ for s=1:ITER_MAX
 
              [out,other_vars]=update_func_L(h_s,...
                 Method_VFI,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0_temp,c0,k1,gam,...
-                nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,spectral_spec);
+                nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,acceleration_spec);
 
               T_V_s=out{1};feval=feval+1;
 

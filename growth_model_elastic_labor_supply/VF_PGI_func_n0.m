@@ -1,6 +1,6 @@
 function [out,other_vars]=VF_PGI_func_n0(V,var2,...
    Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0,c0,k1,gam,...
-   nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,spectral_spec)
+   nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,acceleration_spec)
 
    % Written by Takeshi Fukasawa in June 2024, based on the code of Maliar and Maliar (2013)
    

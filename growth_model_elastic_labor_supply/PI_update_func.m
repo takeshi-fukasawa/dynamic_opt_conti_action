@@ -1,6 +1,6 @@
 function [out,other_vars]=PI_update_func(n0,...
    Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0_temp,c0,k1,gam,...
-   nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,spectral_spec)
+   nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,acceleration_spec)
 
     % Written by Takeshi Fukasawa in June 2024, based on the code of Maliar and Maliar (2013)
    
@@ -20,7 +20,7 @@ function [out,other_vars]=PI_update_func(n0,...
    spec_V_iter=[];
    spec_V_iter.TOL=1e-6;
    spec_V_iter.ITER_MAX=optimistic_PI_param; 
-   if spectral_spec==0
+   if acceleration_spec==0
       spec_V_iter.update_spec=0;
    end
 

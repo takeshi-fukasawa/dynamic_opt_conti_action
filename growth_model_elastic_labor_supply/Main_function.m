@@ -1,4 +1,4 @@
-function [out,other_output]=Main_function(Method,spectral_spec,D)
+function [out,other_output]=Main_function(Method,acceleration_spec,D)
 
 % This MATLAB software solves a neoclassical stochastic growth model with
 % elastic labor supply using four alternative solution methods and compares 
@@ -219,16 +219,16 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     spec.TOL=TOL;
     %spec.ITER_MAX=500;%%%
 
-    if spectral_spec==0
+    if acceleration_spec==0
         spec.update_spec=0;
-    elseif spectral_spec==2;% SQAUREM
+    elseif acceleration_spec==2;% SQAUREM
         spec.ITER_MAX=500;
         spec.SQUAREM_spec=1;
-    elseif spectral_spec==3;% Anderson acceleration (Only one variable type)
+    elseif acceleration_spec==3;% Anderson acceleration (Only one variable type)
         spec.Anderson_acceleration=1;%%%%
         spec.common_alpha_spec=1;
         spec.ITER_MAX=500;
-    elseif spectral_spec==4;% Anderson acceleration (Heterogeneous variable type)
+    elseif acceleration_spec==4;% Anderson acceleration (Heterogeneous variable type)
         spec.Anderson_acceleration=1;%%%%
         spec.common_alpha_spec=[];
         spec.ITER_MAX=500;
@@ -299,7 +299,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         [output_spectral,other_vars,iter_info]=...
             spectral_func(fun,spec,input,...
             Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0,c0,k1,gam,...
-            nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,spectral_spec);
+            nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,acceleration_spec);
         %iter_info.feval;
 
    end% Method~=6,7
@@ -364,7 +364,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     if Method==3 % Euler equation method
         spec=spec_default;
         spec.TOL=1e-6;
-        if spectral_spec==0
+        if acceleration_spec==0
             spec.update_spec=0;
         end
 
