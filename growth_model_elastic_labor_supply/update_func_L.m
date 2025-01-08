@@ -146,12 +146,11 @@ elseif Method==4
    
     if 1==0 % Not precompute X1_array
        spec_V_iter=[];
-       spec_V_iter.TOL=1e-6;
+       spec_V_iter.TOL=(1e-6)*max(abs(profit));
        spec_V_iter.ITER_MAX=optimistic_PI_param; 
        if spectral_spec==0
           spec_V_iter.update_spec=0;
        end
-       spec_V_iter.norm_spec=10;
     
        if spectral_spec==3
             spec_V_iter.Anderson_acceleration=1;
@@ -184,15 +183,13 @@ elseif Method==4
 
         if krylov_spec==0
             spec_V_iter=[];
-            spec_V_iter.TOL=1e-6;
+            spec_V_iter.TOL=(1e-6)*max(abs(profit));
             spec_V_iter.ITER_MAX=optimistic_PI_param; 
             
             if spectral_spec==0
                 spec_V_iter.update_spec=0;
             end
             
-            spec_V_iter.norm_spec=10;
-    
             if spectral_spec==3
                 spec_V_iter.Anderson_acceleration=1;
             elseif spectral_spec==2
