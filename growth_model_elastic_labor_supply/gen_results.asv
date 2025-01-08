@@ -40,8 +40,7 @@ addpath('C:/Users/fukas/Dropbox/git/spectral')
 % analytical_EE_spec==0: Not use analytical sol in Euler eq method
 % analytical_EE_spec==1: Use analytical sol in Euler eq method
 
-% ECM_spec==1: Use ECM mapping as the alternative to standard value
-% function mapping
+% ECM_spec==1: Use ECM mapin Euler eq method
 
 
 common_alpha_spec=0;
@@ -58,7 +57,7 @@ analytical_EE_spec=0;
 
 for acceleration_spec=1:1
     results=[];
-    for i = 1:1
+    for i = 3:4
             [out_i,other_output]=Main_function(i,acceleration_spec,D);
             results=[results;...
                 [i*ones(size(out_i,1),1),out_i]];

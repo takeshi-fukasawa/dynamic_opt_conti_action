@@ -7,7 +7,7 @@ function [out,other_vars]=update_func_L(input_cell,...
 
    global geval_total feval_V_total n0
    global optimistic_PI_param
-   global krylov_spec ECM_spec relative_V_spec analytical_EE_spec
+   global krylov_spec ECM_spec analytical_EE_spec
 
 
 if Method==1 | Method==0 | Method==4
