@@ -7,7 +7,7 @@ global n0 c0
 addpath('C:/Users/fukas/Dropbox/git/spectral')
 
 spectral_spec=1;%% If 1, use the spectral algorithm. If 0, use the standard fixed point iteration.
-common_alpha_spec=0;
+common_spectral_coef_spec=0;
 alpha0_param=1;%%% value of alpha0 used in the spectral algorithm
 lambda_param=1e-7;%% Value of lambda
 D=4;
