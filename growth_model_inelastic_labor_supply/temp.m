@@ -8,7 +8,7 @@ addpath('C:/Users/fukas/Dropbox/git/spectral')
 
 
 spectral_spec=1;
-common_alpha_spec=0;
+common_spectral_coef_spec=0;
 alpha0_param=0.001;
 lambda_param=1;
 D=4;

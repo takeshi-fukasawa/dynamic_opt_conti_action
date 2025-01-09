@@ -44,14 +44,13 @@ addpath('C:/Users/fukas/Dropbox/git/spectral')
 % function mapping
 
 
-common_alpha_spec=0;
+common_spectral_coef_spec=0;
 alpha0_param=1;%%% value of alpha0 used in the spectral algorithm
 lambda_param=1e-7;%1e-12;%% Value of lambda
 D=4;
 
 %% Main results
 relative_V_spec=0;
-analytical_EE_spec=1;
 
 for acceleration_spec=1:1
 

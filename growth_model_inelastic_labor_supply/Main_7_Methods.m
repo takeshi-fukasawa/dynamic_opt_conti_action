@@ -61,7 +61,7 @@ fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
 
 global iter_info iter_info0 V k1
 global alpha0_param lambda_param
-global common_alpha_spec
+global common_spectral_coef_spec
 
 D_init=D;
 D_min=D;
@@ -165,7 +165,7 @@ spec_default.norm_spec=10;%% unit free
 spec_default.TOL=1e-6;
 spec_default.ITER_MAX=2000;
 spec_default.alpha_0=alpha0_param;
-spec_default.common_alpha_spec=common_alpha_spec;
+spec_default.common_spectral_coef_spec=common_spectral_coef_spec;
 
 spec=spec_default;
 spec.ITER_MAX=2000;
