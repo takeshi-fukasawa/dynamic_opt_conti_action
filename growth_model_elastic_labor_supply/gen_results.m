@@ -2,7 +2,7 @@ clear all
 
 global V k1 iter_info alpha0_param lambda_param
 global n0 c0
-global optimistic_PI_param
+global OPI_param
 global krylov_spec ECM_spec relative_V_spec
 global analytical_EE_spec
 
@@ -50,14 +50,14 @@ lambda_param=1e-7;%1e-12;%% Value of lambda
 D=4;
 
 %% Main results
-relative_V_spec=0;
+relative_V_spec=2;
 
 for acceleration_spec=1:1
 
-    run_experiments.m
+    run run_experiments.m
 
-    results_no_spectral=results;
-    
+    if acceleration_spec==0
+        results_no_spectral=results;
     elseif acceleration_spec==1
        results_spectral=results;
     elseif acceleration_spec==2
@@ -68,9 +68,15 @@ end% acceleration_spec
 
 results=[results_spectral;results_no_spectral];
 
-filename=append('results/growth_model_algorithm_comparison_summary_all.csv');
+if relative_V_spec==0
+    filename=append('results/growth_model_algorithm_comparison_summary_all.csv');
+elseif relative_V_spec==1
+    filename=append('results/growth_model_algorithm_comparison_summary_all_relative.csv');
+elseif relative_V_spec==2
+    filename=append('results/growth_model_algorithm_comparison_summary_all_endogenous.csv');
+end
 
-%writematrix(round(results_summary,3),filename)
+writematrix(round(results,3),filename)
 
 %%%%%%%%%
 %% Optimistic policy iteration (OPI)
@@ -80,21 +86,21 @@ OPI_param_max=15;
 acceleration_spec=1;
 results_spectral=[];
 for i=4:4
-for optimistic_PI_param=OPI_param_min:OPI_param_max
+for OPI_param=OPI_param_min:OPI_param_max
            [out_i,other_output]=Main_function(i,acceleration_spec,D);
         results_spectral=[results_spectral;...
-            [optimistic_PI_param*ones(size(out_i,1),1),i*ones(size(out_i,1),1),out_i]];
-end%optimistic_PI_param
+            [OPI_param*ones(size(out_i,1),1),i*ones(size(out_i,1),1),out_i]];
+end%OPI_param
 end%i=4:5
 
 acceleration_spec=0;
 results_no_spectral=[];
 for i=4:4
-for optimistic_PI_param=OPI_param_min:OPI_param_max
+for OPI_param=OPI_param_min:OPI_param_max
            [out_i,other_output]=Main_function(i,acceleration_spec,D);
         results_no_spectral=[results_no_spectral;...
-            [optimistic_PI_param*ones(size(out_i,1),1),i*ones(size(out_i,1),1),out_i]];
-end%optimistic_PI_param
+            [OPI_param*ones(size(out_i,1),1),i*ones(size(out_i,1),1),out_i]];
+end%OPI_param
 end%i=4:5
 
 results_OPI=[results_spectral;results_no_spectral];

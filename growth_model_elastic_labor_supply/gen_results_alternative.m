@@ -1,5 +1,5 @@
 %% SQUAREM
-optimistic_PI_param=1000;%sufficiently large values
+OPI_param=1000;%sufficiently large values
 acceleration_spec=2;%SQUAREM
 
 results_SQUAREM=[];
@@ -12,7 +12,7 @@ end%i
 results_SQUAREM_summary=results_SQUAREM(find(results_SQUAREM(:,2)==D),:)
 
 %% Anderson acceleration (One variable type)
-optimistic_PI_param=1000;%sufficiently large values
+OPI_param=1000;%sufficiently large values
 acceleration_spec=1;%Anderson acceleration
 
 results_Anderson=[];
@@ -25,7 +25,7 @@ end%i
 results_Anderson_summary=results_Anderson(find(results_Anderson(:,2)==D),:)
 
 %% Anderson acceleration (Heterogeneous variable type)
-optimistic_PI_param=1000;%sufficiently large values
+OPI_param=1000;%sufficiently large values
 acceleration_spec=4;%Anderson acceleration
 
 results_Anderson_hetero=[];

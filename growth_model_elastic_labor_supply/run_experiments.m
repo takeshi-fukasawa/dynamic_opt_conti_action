@@ -3,11 +3,26 @@ results=[];
 %% VF-PGI,VF-PGI-Star,VFI,ECM,EGM,EE,PI 
 krylov_spec=0;
 ECM_spec=0;
-for i = -2:2
+for i = -2:1
     [out_i,other_output]=Main_function(i,acceleration_spec,D);
     results=[results;...
                 [i*ones(size(out_i,1),1),out_i]];
 end%i
+
+%% EGM
+i=2;
+OPI_param=1;
+krylov_spec=0;
+[out_i,other_output]=Main_function(i,acceleration_spec,D);
+results=[results;...
+            [i*ones(size(out_i,1),1),out_i]];
+
+%% EGM-PI
+krylov_spec=1;
+OPI_param=3000;
+[out_i,other_output]=Main_function(i,acceleration_spec,D);
+results=[results;...
+            [i*ones(size(out_i,1),1),out_i]];
 
 %% EE  (Numerical/Analytical sol for solving eq)
 if relative_V_spec==0
@@ -22,7 +37,7 @@ end
 %% PI, PI-ECM
 
 for ECM_spec=0:1
-    optimistic_PI_param=3000;%sufficiently large values
+    OPI_param=3000;%sufficiently large values
     %% PI 
     krylov_spec=0;
     i=4;
@@ -37,7 +52,7 @@ for ECM_spec=0:1
                 [i*ones(size(out_i,1),1),out_i]];
     
 
-    optimistic_PI_param=5;
+    OPI_param=100;
     %% OPI (m=5)
     krylov_spec=0;
     [out_i,other_output]=Main_function(i,acceleration_spec,D);
@@ -46,7 +61,7 @@ for ECM_spec=0:1
     
     %% OPI-Krylov (m=5)
     krylov_spec=1;
-    optimistic_PI_param=5;
+    OPI_param=5;
     [out_i,other_output]=Main_function(i,acceleration_spec,D);
     results=[results;...
                 [i*ones(size(out_i,1),1),out_i]];

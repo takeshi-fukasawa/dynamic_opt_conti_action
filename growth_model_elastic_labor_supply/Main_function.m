@@ -38,7 +38,6 @@ global iter_info iter_info0 V k1
 global alpha0_param lambda_param
 global common_spectral_coef_spec n0 c0
 global geval_total feval_V_total
-global n0
 global relative_V_spec
 global n_gridk n_grida
 
@@ -264,10 +263,10 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     end
 
    %%%%%%%
-    if Method==4| Method==5 % PI itself is fast=> Use original iteration (w/o spectral)
-       spec.update_spec=0;
-       spec.Anderson_acceleration=0;
-    end 
+    %%if Method==4| Method==5 % PI itself is fast=> Use original iteration (w/o spectral)
+    %%%   spec.update_spec=0;
+    %%%   spec.Anderson_acceleration=0;
+    %%%end %%%%%%
     %%%%%
 
     if Method==1 | Method==0 | Method==2 | Method==3| Method==4
@@ -308,7 +307,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         geval_total=iter_info.feval*n_grid;
     end
 
-    if Method<=2
+    if Method<=1
         feval_V_total=iter_info.feval*n_grid;
     end 
 

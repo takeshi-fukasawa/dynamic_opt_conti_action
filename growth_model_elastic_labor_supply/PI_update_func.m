@@ -5,7 +5,7 @@ function [out,other_vars]=PI_update_func(n0,...
     % Written by Takeshi Fukasawa in June 2024, based on the code of Maliar and Maliar (2013)
    
 
-    global optimistic_PI_param geval_total feval_V_total
+    global OPI_param geval_total feval_V_total
     global V
 
 %==================================================================
@@ -19,7 +19,7 @@ function [out,other_vars]=PI_update_func(n0,...
 
    spec_V_iter=[];
    spec_V_iter.TOL=1e-6;
-   spec_V_iter.ITER_MAX=optimistic_PI_param; 
+   spec_V_iter.ITER_MAX=OPI_param; 
    if acceleration_spec==0
       spec_V_iter.update_spec=0;
    end

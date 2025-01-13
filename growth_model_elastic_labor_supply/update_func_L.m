@@ -6,7 +6,7 @@ function [out,other_vars]=update_func_L(input_cell,...
   % Modified by Takeshi Fukasawa in June 2024
 
    global geval_total feval_V_total n0
-   global optimistic_PI_param
+   global OPI_param
    global krylov_spec ECM_spec analytical_EE_spec
 
 
@@ -97,19 +97,31 @@ elseif Method==1
         k0 = (B*(1-n0).^-nu./(1-alpha)/A./z0/beta./Wder1).^(1/alpha).*n0;
                 % Compute current capital from eq. (4) in
                 % MM (2013)
-                            
-        [V_new] = VF_Bellman_L(n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D);
+         
+        grid(:,1) = k0;        % Grid points for current capital 
+            
+        X0 = Polynomial_2d(grid,D);   % Construct polynomial on 
+                                          % current state variables
+
+        if OPI_param==1          
+            [V_new] = VF_Bellman_L(n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D);
                 % Recompute value function using the Bellman 
                 % equation
-        
-         grid(:,1) = k0;        % Grid points for current capital 
-            
-         X0 = Polynomial_2d(grid,D);   % Construct polynomial on 
-                                          % current state variables
+           feval_V_total=feval_V_total+n_grid;
+
+        else%OPI_param>=2
+
+            V=X0*vf_coef;
+            [V_new,feval_V_total]=policy_eval_func(V,n0,c0,k1,...
+   X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,gam,...
+   nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,acceleration_spec);
+
+        end
+
          vf_coef_new=X0\V_new;
 
          vf_coef_new = kdamp*vf_coef_new + (1-kdamp)*vf_coef;   
-                % Update Vvf_coef using damping
+                % Update vf_coef using damping
 
 elseif Method==3
 %==================================================================
@@ -191,88 +203,100 @@ elseif Method==4
                      % constraint (2) in MM(2013)
 
     %% Solve for value function
-   
-    if 1==0 % Not precompute X1_array
-       spec_V_iter=[];
-       spec_V_iter.TOL=(1e-6)*max(abs(profit));
-       spec_V_iter.ITER_MAX=optimistic_PI_param; 
-       if acceleration_spec==0
-          spec_V_iter.update_spec=0;
-       end
-    
-       if acceleration_spec==3
-            spec_V_iter.Anderson_acceleration=1;
-       elseif acceleration_spec==2
-           spec_V_iter.SQUAREM_spec=1;
-       end
+   [V_new,feval_V_total]=policy_eval_func(V,n0,c0,k1,...
+   X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,gam,...
+   nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,acceleration_spec);
 
-       %%% Without precomputing X1_array
-       [out,other_vars,iter_info_V_iter]=spectral_func(@VF_Bellman_L_update_func,...
-           spec_V_iter,{V},...
-        X0,n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
-
-        V_new=out{1};
-
-    else%precompute X1_array
-        X1_array=[];
-        for j = 1:n_nodes                         % For each integration node...
-            X1_array = cat(3,X1_array,Polynomial_2d([k1 z1(:,j)],D));   % Construct polynomial
-        end
-        if gam==1; uc0=log(c0); else uc0=(c0.^(1-gam)-1)/(1-gam); end
-            % if gam=1, the consumption utility subfunction is
-            % logarithmic; otherwise, it is power
-        if nu==1; un0=log(1-n0); else un0=((1-n0).^(1-nu)-1)/(1-nu); end
-            % if nu=1, the leisure utility subfunction is
-            % logarithmic; otherwise, it is power
-    
-        profit=uc0+B*un0;
-    
-        V0=V;
-
-        if krylov_spec==0
-            spec_V_iter=[];
-            spec_V_iter.TOL=(1e-6)*max(abs(profit));
-            spec_V_iter.ITER_MAX=optimistic_PI_param; 
-            
-            spec_V_iter.update_spec=0;
-            if 1==0
-                if acceleration_spec==0
-                    spec_V_iter.update_spec=0;
-                end
-                
-                if acceleration_spec==3
-                    spec_V_iter.Anderson_acceleration=1;
-                elseif acceleration_spec==2
-                    spec_V_iter.SQUAREM_spec=1;
-                end
-                
-                spec_V_iter.Anderson_acceleration=1;
-
-            end
-
-            [out,other_vars,iter_info_V_iter]=spectral_func(@VF_Bellman_L_given_X1_array,spec_V_iter,{V0},...
-                profit,X1_array,X0,beta,weight_nodes);
-            feval_V_total=feval_V_total+iter_info_V_iter.feval*n_grid;
-            V_new=out{1};
-        
-        else%krylov_spec==1
-            func_for_krylov_anonymous= @(V)func_for_krylov(V,X1_array,X0,beta,weight_nodes);
-            
-            ITER_MAX_gmres=optimistic_PI_param;
-            TOL_gmres=1e-6;
-            [V_new,flag_vec,relres,iter_gmres,resvec] = gmres(func_for_krylov_anonymous, profit,[],...
-                TOL_gmres,ITER_MAX_gmres,[],[],V0); % solve for Krylov vector
-            feval_V_total=feval_V_total+prod(iter_gmres)*n_grid;
-        end
-            
-       other_vars.c0=c0;
-       other_vars.n0=n0;
-       other_vars.k1=k1;
        
-   end
-   
+   elseif Method==8       
+       %==================================================================
+        % Method 8. Envelope condition method iterating on derivative of value 
+        %           function (ECM-DVF)
+        %==================================================================
+              
+            warning('off')           % Some polynomial terms are zero for
+                                     % the derivative, and the system is 
+                                     % underdetermined. The least-squares 
+                                     % problem is still correctly 
+                                     % processed by the truncated QR method
+                                     % but the system produces warning
 
-end
+            vf_coef = X0der\Vder0;
+        
+            for j=1:n_grid           % Solve for labor using eq. (18) in MM (2013)
+                n0(j,1)=csolve('Labor_ECM',n0(j,1),[],0.000001,5,nu,alpha,delta,B,A,k0(j,1),z0(j,1),Vder0(j,1));   
+            end
+         
+           c0=c0_analytical_func(n0,k0,z0,alpha,nu,gam,A,B);
+           k1=k1_analytical_func(k0,n0,c0,z0,delta,A,alpha);% Compute next-period capital using budget 
+                     % constraint (2) in MM(2013)
+                                                           
+            for j = 1:n_nodes           
+                X1der = Polynomial_deriv_2d([k1 z1(:,j)],D);
+                Vder1(:,j) = X1der*vf_coef; 
+                                     % Compute the derivative of value
+                                     % function in the integration nodes
+            end
+             
+            Wder1 = Vder1_EGM*weight_nodes;   
+                                     % Compute expected derivative  of
+                                     % next-period value function
+         
+            Vder0_new = (1-delta+A*alpha*z0.*k0.^(alpha-1).*n0.^(1-alpha)).*(beta*Wder1);
+                                     % Recompute the derivative of value 
+                                     % function in the grid points
+                         
+        elseif Method==9;         
+        %==================================================================
+        %  Method 9. Endogenous grid method iterating on derivative of value 
+        %            function (EGM-DVF)
+        %==================================================================
+            
+            k1 = grid_EGM(:,1);      % Grid points for next-period capital 
+                                     % (fixing endogenous grid)
+            for j = 1:n_nodes              
+                Xder1_EGM = Polynomial_deriv_2d([k1 z1(:,j)],D);
+                Vder1_EGM(:,j) = Xder1_EGM*vf_coef; 
+                                     % Compute the derivative of value function 
+                                     % in the integration nodes    
+            end
+            
+            Wder1 = Vder1_EGM*weight_nodes;   
+                                     % Compute expected derivative  of
+                                     % next-period value function
+            for j=1:n_grid           % Solve for labor using eq. (17) in MM 
+                                     % (2013)
+                n0(j,1)=csolve('Labor_EGM',n0(j,1),[],0.000001,5,nu,gam,alpha,delta,beta,B,A,k1(j,1),z0(j,1),Wder1(j,1));
+            end                                                
+            
+            c0 = (beta*Wder1).^(-1/gam);   
+                                     % Compute consumption from eq. (5) in
+                                     % MM (2013)
+            k0 = (B*(1-n0).^-nu./(1-alpha)/A./z0/beta./Wder1).^(1/alpha).*n0;
+                                     % Compute current capital from eq. (4)
+                                     % in MM (2013)
+                                              
+            Vder0_new = (1-delta+A*alpha*z0.*k0.^(alpha-1).*n0.^(1-alpha)).*(beta*Wder1);
+                                     % Recompute the derivative of value
+                                     % function in grid points
+
+            warning('off')           % Some polynomial terms are zero for
+                                     % the derivative and system is 
+                                     % underdetermined. The least-squares 
+                                     % problem is still correctly 
+                                     % processed by the truncated QR method
+                                     % but the system produces warning
+                   
+            grid(:,1) = k0;          % Grid points for current capital 
+             
+            X0der = Polynomial_deriv_2d(grid,D); 
+                                     % Construct polynomial on the current  
+                                     % state variables
+            vf_coef_new = X0der\Vder0_new;
+                                     % Compute new coefficients for value function       
+            vf_coef = kdamp*vf_coef_new + (1-kdamp)*vf_coef;   
+                                     % Update the coefficients using damping
+     end % Method
         
 %%%%%%%%
 if Method==1 | Method==0 | Method==4
