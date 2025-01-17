@@ -17,12 +17,6 @@ krylov_spec=0;
 results=[results;...
             [i*ones(size(out_i,1),1),out_i]];
 
-%% EGM-PI
-krylov_spec=1;
-OPI_param=3000;
-[out_i,other_output]=Main_function(i,acceleration_spec,D);
-results=[results;...
-            [i*ones(size(out_i,1),1),out_i]];
 
 %% EE  (Numerical/Analytical sol for solving eq)
 if relative_V_spec==0
@@ -72,8 +66,15 @@ for ECM_spec=0:1
         results=[results;...
             [i*ones(size(out_i,1),1),out_i]];
     end
-                 
 end
+
+%% EGM-PI-Krylov
+i=2;
+krylov_spec=1;
+OPI_param=3000;
+[out_i,other_output]=Main_function(i,acceleration_spec,D);
+results=[results;...
+            [i*ones(size(out_i,1),1),out_i]];
 
 
 results=results(find(results(:,2)==D),:)

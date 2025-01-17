@@ -208,7 +208,8 @@ elseif Method==4
    nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,acceleration_spec);
 
        
-   elseif Method==8       
+   elseif Method==8 
+       %%% Not validated
        %==================================================================
         % Method 8. Envelope condition method iterating on derivative of value 
         %           function (ECM-DVF)
@@ -251,7 +252,7 @@ elseif Method==4
         %  Method 9. Endogenous grid method iterating on derivative of value 
         %            function (EGM-DVF)
         %==================================================================
-            
+            %%% Not validated
             k1 = grid_EGM(:,1);      % Grid points for next-period capital 
                                      % (fixing endogenous grid)
             for j = 1:n_nodes              
