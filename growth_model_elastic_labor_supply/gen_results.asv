@@ -50,8 +50,9 @@ lambda_param=1e-7;%1e-12;%% Value of lambda
 D=4;
 
 %% Main results
+relative_V_spec=0;
 
-for relative_V_spec=2:2
+for relative_V_spec=0:2
     for acceleration_spec=0:1
 
         run run_experiments.m
@@ -118,21 +119,7 @@ for relative_V_spec=0:2
     results=readmatrix(filename);
 
     if relative_V_spec==0
-        ids=[1;3;4;5;19;22;23];
-    elseif relative_V_spec>=1
-        ids=[1;3;17;20;21];
-    end
-
-    results_summary=[results_summary;results(ids,:)];
-
-end%for relative_V_spec=0:2
-
-filename=append('results/growth_model_algorithm_comparison_summary_all.csv');
-results=readmatrix(filename);
-ids=[15;33];
-results_summary=[results_summary;results(ids,:)];
-
-filename=append('results/growth_model_algorithm_comparison_summary_concise.csv');
-
-writematrix(results_summary,filename)
+        results_summary=results();
+        en
+end
 

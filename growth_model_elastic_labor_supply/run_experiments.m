@@ -1,6 +1,6 @@
 results=[];
 
-if 1==0%%%%%%%%%%%%%%%
+%if 1==0%%%%%%%%%%%%%%%
 %% VF-PGI,VF-PGI-Star,VFI
 krylov_spec=0;
 ECM_spec=0;
@@ -17,7 +17,7 @@ krylov_spec=0;
 results=[results;...
             [i*ones(size(out_i,1),1),out_i]];
 
-end%%%%%%%%%%%
+%end%%%%%%%%%%%
 
 
 %% PI, PI-ECM
@@ -72,7 +72,7 @@ if acceleration_spec==0
 end%if acceleration_spec==0
 
 %% EE  (Numerical/Analytical sol for solving eq)
-if relative_V_spec==0
+if relative_V_spec==0 || acceleration_spec>=2
     i=3;
     for analytical_EE_spec=0:1
         [out_i,other_output]=Main_function(i,acceleration_spec,D);
