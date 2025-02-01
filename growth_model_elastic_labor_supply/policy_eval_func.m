@@ -17,9 +17,10 @@ function [V_new,feval_V_total]=policy_eval_func(V,n0,c0,k1,...
     
     profit=uc0+B*un0;
 
+    TOL_temp=1e-9;
     if 1==0 % Not precompute X1_array
        spec_V_iter=[];
-       spec_V_iter.TOL=(1e-6)*max(abs(profit));
+       spec_V_iter.TOL=TOL_temp*max(abs(profit));
        spec_V_iter.ITER_MAX=OPI_param; 
        if acceleration_spec==0
           spec_V_iter.update_spec=0;
@@ -46,10 +47,9 @@ function [V_new,feval_V_total]=policy_eval_func(V,n0,c0,k1,...
     
         V0=V;
 
-        TOL_solve_V=1e-6;
         if krylov_spec==0
             spec_V_iter=[];
-            spec_V_iter.TOL=TOL_solve_V*max(abs(profit));
+            spec_V_iter.TOL=TOL_temp*max(abs(profit));
             spec_V_iter.ITER_MAX=OPI_param; 
             
             spec_V_iter.update_spec=0;
@@ -77,7 +77,7 @@ function [V_new,feval_V_total]=policy_eval_func(V,n0,c0,k1,...
             func_for_krylov_anonymous= @(V)func_for_krylov(V,X1_array,X0,beta,weight_nodes);
             
             ITER_MAX_gmres=min(OPI_param,n_grid);
-            TOL_gmres=TOL_solve_V;
+            TOL_gmres=TOL_temp;
             [V_new,flag_vec,relres,iter_gmres,resvec] = gmres(func_for_krylov_anonymous, profit,[],...
                 TOL_gmres,ITER_MAX_gmres,[],[],V0); % solve for Krylov vector
             feval_V_total=feval_V_total+prod(iter_gmres)*n_grid;

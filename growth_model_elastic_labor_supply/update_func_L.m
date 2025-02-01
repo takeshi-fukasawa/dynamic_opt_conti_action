@@ -113,8 +113,8 @@ elseif Method==1
 
             V=X0*vf_coef;
             [V_new,feval_V_total]=policy_eval_func(V,n0,c0,k1,...
-   X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,gam,...
-   nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,acceleration_spec);
+            X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,gam,...
+            nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,acceleration_spec);
 
         end
 

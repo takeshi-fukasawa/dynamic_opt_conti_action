@@ -1,6 +1,5 @@
 results=[];
 
-if 1==0%%%%%%%%%%%%%%%
 %% VF-PGI,VF-PGI-Star,VFI
 krylov_spec=0;
 ECM_spec=0;
@@ -12,12 +11,12 @@ end%i
 
 %% VFI-EGM
 i=2;
+OPI_param=100;
 krylov_spec=0;
 [out_i,other_output]=Main_function(i,acceleration_spec,D);
 results=[results;...
             [i*ones(size(out_i,1),1),out_i]];
 
-end%%%%%%%%%%%
 
 
 %% PI, PI-ECM
@@ -38,7 +37,6 @@ for ECM_spec=0:1
                 [i*ones(size(out_i,1),1),out_i]];
     
 
-    %% OPI
     OPI_param=100;
     krylov_spec=0;
     [out_i,other_output]=Main_function(i,acceleration_spec,D);

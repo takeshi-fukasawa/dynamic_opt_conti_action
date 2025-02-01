@@ -22,7 +22,7 @@ global geval_total feval_V_total
         end
     
 
-        TOL_solve_V=1e-6;
+        TOL_solve_V=1e-8;
         if krylov_spec==0
             spec_V_iter=[];
             spec_V_iter.TOL=TOL_solve_V*max(abs(profit));

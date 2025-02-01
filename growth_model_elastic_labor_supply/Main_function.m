@@ -213,7 +213,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
                                         % grid for checking convergence 
     Vder0 = X0der*vf_coef;              % Compute derivative of value function
 
-    TOL=1e-6;
+    TOL=1e-8;
     spec=spec_default;
     spec.TOL=TOL;
     %spec.ITER_MAX=500;%%%
@@ -362,7 +362,6 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     % value function for the constructed policy rules
     if Method==3 % Euler equation method
         spec=spec_default;
-        spec.TOL=1e-6;
         if acceleration_spec==0
             spec.update_spec=0;
         end
