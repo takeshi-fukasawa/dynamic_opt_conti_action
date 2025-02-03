@@ -12,7 +12,7 @@ function [out,other_vars]=update_func_L(input_cell,...
 
 if Method==1 | Method==0 | Method==4
     V=input_cell;
-elseif Method==2
+elseif Method==2 | Method==8 | Method==9
     vf_coef=input_cell;
 end
 
@@ -209,50 +209,47 @@ elseif Method==4
 
        
    elseif Method==8 
-       %%% Not validated
        %==================================================================
         % Method 8. Envelope condition method iterating on derivative of value 
         %           function (ECM-DVF)
         %==================================================================
               
-            warning('off')           % Some polynomial terms are zero for
-                                     % the derivative, and the system is 
-                                     % underdetermined. The least-squares 
-                                     % problem is still correctly 
-                                     % processed by the truncated QR method
-                                     % but the system produces warning
-
-            vf_coef = X0der\Vder0;
+            Vder0=X0der*vf_coef;
         
             for j=1:n_grid           % Solve for labor using eq. (18) in MM (2013)
-                n0(j,1)=csolve('Labor_ECM',n0(j,1),[],0.000001,5,nu,alpha,delta,B,A,k0(j,1),z0(j,1),Vder0(j,1));   
+                [n0(j,1),exitflag,n_iter,geval]=csolve('Labor_ECM',n0(j,1),[],0.000001,5,nu,alpha,delta,B,A,k0(j,1),z0(j,1),Vder0(j,1));
+                geval_total=geval_total+geval;      
             end
+   
          
            c0=c0_analytical_func(n0,k0,z0,alpha,nu,gam,A,B);
            k1=k1_analytical_func(k0,n0,c0,z0,delta,A,alpha);% Compute next-period capital using budget 
                      % constraint (2) in MM(2013)
-                                                           
+
             for j = 1:n_nodes           
                 X1der = Polynomial_deriv_2d([k1 z1(:,j)],D);
                 Vder1(:,j) = X1der*vf_coef; 
                                      % Compute the derivative of value
                                      % function in the integration nodes
             end
-             
-            Wder1 = Vder1_EGM*weight_nodes;   
+
+            Wder1 = Vder1*weight_nodes;   
                                      % Compute expected derivative  of
                                      % next-period value function
          
             Vder0_new = (1-delta+A*alpha*z0.*k0.^(alpha-1).*n0.^(1-alpha)).*(beta*Wder1);
                                      % Recompute the derivative of value 
                                      % function in the grid points
-                         
+            
+            feval_V_total=feval_V_total+n_grid;
+
+            vf_coef_new = X0der\Vder0_new;
+
         elseif Method==9;         
         %==================================================================
         %  Method 9. Endogenous grid method iterating on derivative of value 
         %            function (EGM-DVF)
         %==================================================================
-            %%% Not validated
             k1 = grid_EGM(:,1);      % Grid points for next-period capital 
                                      % (fixing endogenous grid)
             for j = 1:n_nodes              
@@ -267,7 +264,8 @@ elseif Method==4
                                      % next-period value function
             for j=1:n_grid           % Solve for labor using eq. (17) in MM 
                                      % (2013)
-                n0(j,1)=csolve('Labor_EGM',n0(j,1),[],0.000001,5,nu,gam,alpha,delta,beta,B,A,k1(j,1),z0(j,1),Wder1(j,1));
+                [n0(j,1),exitflag,n_iter,geval]=csolve('Labor_EGM',n0(j,1),[],0.000001,5,nu,gam,alpha,delta,beta,B,A,k1(j,1),z0(j,1),Wder1(j,1));
+                geval_total=geval_total+geval;
             end                                                
             
             c0 = (beta*Wder1).^(-1/gam);   
@@ -281,12 +279,6 @@ elseif Method==4
                                      % Recompute the derivative of value
                                      % function in grid points
 
-            warning('off')           % Some polynomial terms are zero for
-                                     % the derivative and system is 
-                                     % underdetermined. The least-squares 
-                                     % problem is still correctly 
-                                     % processed by the truncated QR method
-                                     % but the system produces warning
                    
             grid(:,1) = k0;          % Grid points for current capital 
              
@@ -294,15 +286,16 @@ elseif Method==4
                                      % Construct polynomial on the current  
                                      % state variables
             vf_coef_new = X0der\Vder0_new;
-                                     % Compute new coefficients for value function       
-            vf_coef = kdamp*vf_coef_new + (1-kdamp)*vf_coef;   
-                                     % Update the coefficients using damping
+                                     % Compute new coefficients for value function  
+            
+            feval_V_total=feval_V_total+n_grid;
+ 
      end % Method
         
 %%%%%%%%
 if Method==1 | Method==0 | Method==4
     out={V_new};
-elseif Method==2
+elseif Method==2 | Method==8 | Method==9
     out={vf_coef_new};
 end
 

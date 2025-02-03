@@ -19,6 +19,13 @@ function [out,other_output]=Main_function(Method,acceleration_spec,D)
 %clc;
 %clear all;
 
+warning('off')           % Some polynomial terms are zero for
+% the derivative, and the system is 
+% underdetermined. The least-squares 
+% problem is still correctly 
+% processed by the truncated QR method
+% but the system produces warning
+
 %% Methods
 % "-3": VF-PGI (update n0 and c0; treat [n0;c0] as one variable)
 % "-2": VF-PGI (Updating n0 and c0)
@@ -236,7 +243,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
 
     if Method==1 | Method==0 | Method==4
         input={V};
-    elseif Method==2
+    elseif Method==2 | Method==8 | Method==9
         input={vf_coef};
     elseif Method==3 | Method==5
         input={n0};
@@ -269,7 +276,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     %%%end %%%%%%
     %%%%%
 
-    if Method==1 | Method==0 | Method==2 | Method==3| Method==4
+    if Method==1 | Method==0 | Method==2 | Method==3| Method==4 | Method==8 | Method==9
         fun=@update_func_L;
     elseif Method==5
         fun=@PI_update_func;
@@ -293,7 +300,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
 
      feval_V_total=iter_info.feval*n_grid;
 
-    else%Method<=5
+    else%Methods except for AVFI
 
         [output_spectral,other_vars,iter_info]=...
             spectral_func(fun,spec,input,...
@@ -318,7 +325,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         V_sol=V;
         vf_coef = X0\V;     % Coefficients for value function 
         k1=other_vars.k1;
-    elseif Method==2
+    elseif Method==2 | Method==8 | Method==9
         vf_coef=output_spectral{1};
         k1=other_vars.k1;
         k0=other_vars.k0;
@@ -330,7 +337,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     elseif Method==3
         n0=output_spectral{1};
         k1=other_vars.k1;
-     elseif Method==5 % PI updating n0
+    elseif Method==5 % PI updating n0
         n0=output_spectral{1};
         k1=other_vars.k1;
         vf_coef=X0\V;
@@ -358,7 +365,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     n0=other_vars.n0;
     k0=other_vars.k0;
 
-        % After the solution is computed by any method, we construct the value 
+    % After the solution is computed by any method, we construct the value 
     % value function for the constructed policy rules
     if Method==3 % Euler equation method
         spec=spec_default;

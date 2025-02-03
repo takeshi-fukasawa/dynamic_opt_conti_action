@@ -45,7 +45,6 @@ global geval_total feval_V_total
             feval_V_total=feval_V_total+prod(iter_gmres)*n_grid;
         end
        
-%%%%%%%%%%
             for j = 1:n_nodes           
                 X1der = Polynomial_deriv_2d([k1 z1(:,j)],D);
                 Vder1(:,j) = X1der*vf_coef; 
