@@ -1,5 +1,5 @@
 function [out,other_vars]=...
-    update_func_VFI(I_t,V_t,...
+    update_func_VF(I_t,V_t,...
     k_t,exo_t,pi_mat,exo_t1,basis_t,inv_multiply_t,basis_exo_t1,...
     x_inv,w_inv,...
     state_min,state_max,Smol_elem,mu_max,d,ind,parameters,I_min,I_max)
@@ -19,6 +19,7 @@ function [out,other_vars]=...
 global beta_param delta_param spec update_spec
 global spec_precompute diff
 global geval_total
+global relative_V_spec
 
 [n_pts,N,n_node_inv]=size(I_t);
 n_node_inv=size(w_inv,1);
@@ -82,12 +83,13 @@ E_inv_cost=reshape(sum(inv_cost.*reshape(w_inv,1,1,n_node_inv),3),n_pts,N);
 
 V_t_updated=pi_mat-E_inv_cost+beta_param*EV;%n_pts*N
 
-if 1==0
+if relative_V_spec==1
     V_t_updated=V_t_updated-V_t_updated(1,:);%%% Relative value function iteration (cf. Bray 2019)
 end
 
 out={I_t_updated,V_t_updated};
 
 other_vars=[];
+other_vars.inv_cost=inv_cost;
 
 return

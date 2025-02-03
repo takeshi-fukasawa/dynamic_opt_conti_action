@@ -1,3 +1,5 @@
+global relative_V_spec
+
 I_min=0.00;
 I_min=[];I_max=[];
 
@@ -11,11 +13,11 @@ if 1==1
     if update_spec=="PM"
         %spec.dampening_param={1.0,1.0};
     elseif update_spec=="gradient"
-        lambda_param=1;
-        TOL_vec=(1e-6)*ones(1,2);
+        lambda_param=0.01;
+        TOL_vec=(1e-8)*ones(1,2);
         TOL_vec(1)=TOL_vec(1)*lambda_param;
         spec.TOL=TOL_vec;
-       spec.alpha_0=0.01;
+        spec.alpha_0=1;
    end
 
 
@@ -34,7 +36,7 @@ spec.DEBUG=1;
 spec.ITER_MAX=500;
 
 if update_spec~="PI"
-    mapping=@update_func_VFI;
+    mapping=@update_func_VF;
 else
     mapping=@policy_iter_func;
 end
@@ -54,6 +56,19 @@ spec.update_spec=0;
 end
 I_sol=output{1};
 V_sol=output{2};
+
+if relative_V_spec==1
+    inv_cost=other_vars.inv_cost;
+    [out,other_vars]=V_update_func(V_sol,I_sol,inv_cost,pi_mat_grid,...
+    k_t_grid,exo_t_grid,exo_t1_mean_grid,basis_t_grid,inv_multiply_t_grid,basis_exo_t1_mean_grid,...
+    x_inv,w_inv,...
+    state_min,state_max,Smol_elem,mu_max,d,ind);
+
+    C=(out{1}(1,:)-V_sol(1,:))./(1-beta_param);
+    
+    V_sol=V_sol-C;
+end
+
 iter_info.geval_total=geval_total;
 if veval_total==0
     iter_info.veval_total=n_grid*N*iter_info.feval;
@@ -78,6 +93,18 @@ spec.update_spec=[];
 
 I_sol_spectral=output{1};
 V_sol_spectral=output{2};
+
+if relative_V_spec==1
+    inv_cost=other_vars.inv_cost;
+    [out,other_vars]=V_update_func(V_sol,I_sol,inv_cost,pi_mat_grid,...
+    k_t_grid,exo_t_grid,exo_t1_mean_grid,basis_t_grid,inv_multiply_t_grid,basis_exo_t1_mean_grid,...
+    x_inv,w_inv,...
+    state_min,state_max,Smol_elem,mu_max,d,ind);
+
+    C=(out{1}(1,:)-V_sol(1,:))./(1-beta_param);
+    V_sol_spectral=V_sol_spectral-C;
+end
+
 iter_info_spectral.geval_total=geval_total;
 if veval_total==0
     iter_info_spectral.veval_total=n_grid*N*iter_info_spectral.feval;
@@ -86,7 +113,7 @@ else
 end
 
 [resid_mat_spectral,k_path_spectral,exo_shock_path_spectral]=...
-precision_check_func(I_sol,V_sol,k_center,exo_center,ind_no_precompute,AR_coef,sd_exo,theta,...
+precision_check_func(I_sol_spectral,V_sol_spectral,k_center,exo_center,ind_no_precompute,AR_coef,sd_exo,theta,...
 w_inv,state_min,state_max,Smol_elem,mu_max,inv_multiply_t_grid);
 
 if update_spec=="analytical"

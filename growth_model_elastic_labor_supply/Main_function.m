@@ -38,6 +38,8 @@ warning('off')           % Some polynomial terms are zero for
  % "5": Policy iteration method (PI) updating n0
 % "6": Accelerated Value Iteration (AVI)
 % "7": Safe-Accelerated Value Iteration (S-AVI)
+% "8": ECM-DVF
+% "9": EGM-DVF
 
 fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
 
@@ -367,7 +369,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
 
     % After the solution is computed by any method, we construct the value 
     % value function for the constructed policy rules
-    if Method==3 % Euler equation method
+    if Method==3 && 1==0 % Euler equation method
         spec=spec_default;
         if acceleration_spec==0
             spec.update_spec=0;
@@ -389,10 +391,6 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
 
     %%%%%%%%%%%%%%%
        
-    vf_coef=X0\V; % Coefficients for value function
-    EVder=EVder_func(k1,z1,n_nodes,weight_nodes,vf_coef,D);
-    FOC_val_C=FOC_C(EVder,n0,c0,k0,z0,A,alpha,gam,nu,B,beta);    
-    %%%%%%%%%%%%%%%
 
     k_coef = X0\k1;
     c_coef = X0\c0;

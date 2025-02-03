@@ -11,7 +11,7 @@ i=-2;
     results_VF_PGI=out_i(end,:);
     iter_info_VF_PGI=iter_info;
 
-i=0;
+i=4;
     [out_i,other_output]=Main_function(i,acceleration_spec,D);
     %results=[results;...
     %            [i*ones(size(out_i,1),1),out_i]];

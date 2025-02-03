@@ -25,6 +25,10 @@ E_inv_cost=reshape(sum(inv_cost.*reshape(w_inv,1,1,n_node_inv),3),n_pts,N);
 
 V_t_updated=pi_mat-E_inv_cost+beta_param*EV;%n_pts*N
 
+if relative_V_spec==1
+    V_t_updated=V_t_updated-V_t_updated(1,:);
+end
+ 
 out={V_t_updated};
 other_vars=[];
 

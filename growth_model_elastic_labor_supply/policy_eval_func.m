@@ -78,6 +78,11 @@ function [V_new,feval_V_total]=policy_eval_func(V,n0,c0,k1,...
             
             ITER_MAX_gmres=min(OPI_param,n_grid);
             TOL_gmres=TOL_temp;
+
+            if relative_V_spec>=1
+                profit=relative_V_func(profit,relative_V_func);
+            end 
+
             [V_new,flag_vec,relres,iter_gmres,resvec] = gmres(func_for_krylov_anonymous, profit,[],...
                 TOL_gmres,ITER_MAX_gmres,[],[],V0); % solve for Krylov vector
             feval_V_total=feval_V_total+prod(iter_gmres)*n_grid;

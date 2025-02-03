@@ -5,6 +5,7 @@ k_t,exo_t,exo_t1,basis_t,inv_multiply_t,basis_exo_t1,...
 
 global beta_param delta_param spec update_spec
 global spec_precompute
+global relative_V_spec
 
 n_pts=size(I_t,1);
 N=size(I_t,2);
@@ -23,10 +24,10 @@ temp=sum(reshape(basis_t1,n_pts,n_coef,n_node_inv,N).*...
     reshape(coef_approx_V,1,n_coef,1,N),2);%n_pts*1*n_node_inv*N
 EV=reshape(sum(temp.*reshape(w_inv,1,1,n_node_inv,1),3),n_pts,N);%n_pts*N
 
-% inv_cost:n_pts*N*n_node_inv
-E_inv_cost=reshape(sum(inv_cost.*reshape(w_inv,1,1,n_node_inv),3),n_pts,N);
+if relative_V_spec==1
+   EV=EV-EV(1,:);
+end
 
-out=V_t(:)-beta_param*EV(:);
-
+   out=V_t(:)-beta_param*EV(:);
 
 end

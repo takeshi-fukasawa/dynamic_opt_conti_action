@@ -26,8 +26,8 @@ exo_shock_mat=NaN(T+1,n_exo);%t=0,...,T
 
 resid_mat=NaN(T,2*N);%t=0,...,T
 
-k_mat(1,:)=k_center*0.99;%%%%
-exo_shock_mat(1,:)=exo_center*1.01;%%%%%
+k_mat(1,:)=k_center;%%%%
+exo_shock_mat(1,:)=exo_center;%%%%%
 
 
 random_val=randn(T,2);

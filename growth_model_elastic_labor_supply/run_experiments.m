@@ -4,6 +4,7 @@ results=[];
 %% VF-PGI,VF-PGI-Star,VFI
 krylov_spec=0;
 ECM_spec=0;
+OPI_param=1;
 for i = -2:1
     [out_i,other_output]=Main_function(i,acceleration_spec,D);
     results=[results;...
@@ -70,6 +71,15 @@ if acceleration_spec==0
             [i*ones(size(out_i,1),1),out_i]];
     end%ECM_spec=0:1
 end%if acceleration_spec==0
+
+%% DVFI-ECM, DVFI-EGM
+if relative_V_spec==0
+   for i=8:9
+              [out_i,other_output]=Main_function(i,acceleration_spec,D);
+        results=[results;...
+                [i*ones(size(out_i,1),1),out_i]];
+    end
+end
 
 %% EE  (Numerical/Analytical sol for solving eq)
 if relative_V_spec==0 || acceleration_spec>=2

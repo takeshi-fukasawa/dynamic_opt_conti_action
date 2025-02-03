@@ -22,6 +22,8 @@ addpath('C:/Users/fukas/Dropbox/git/spectral')
  % "5": Policy iteration method (PI) updating n0
 % "6": Accelerated Value Iteration (AVI)
 % "7": Safe-Accelerated Value Iteration (S-AVI)
+% "8": ECM-DVF
+% "9": EGM-DVF
 
 %% Specification
 % krylov_spec==0: Not apply krylov method to solve linear eq
@@ -117,10 +119,11 @@ for relative_V_spec=0:2
     end
     results=readmatrix(filename);
 
+%%%%% Check IDs!!! %%% 
     if relative_V_spec==0
-        ids=[1;3;4;5;19;22;23];
+        ids=[1;3;4;5;19;22;23];%VFPGI-Spectral,VFI-Spectral,VFI-ECM-Spectral,VFI-EGM-Spectral,PI,PI-Krylov
     elseif relative_V_spec>=1
-        ids=[1;3;17;20;21];
+        ids=[1;3;17;20;21];%VFPGI-Spectral,VFI-Spectral,PI,PI-Krylov
     end
 
     results_summary=[results_summary;results(ids,:)];
@@ -129,7 +132,8 @@ end%for relative_V_spec=0:2
 
 filename=append('results/growth_model_algorithm_comparison_summary_all.csv');
 results=readmatrix(filename);
-ids=[15;33];
+
+ids=[15;33];% EE-Spectral, EE
 results_summary=[results_summary;results(ids,:)];
 
 filename=append('results/growth_model_algorithm_comparison_summary_concise.csv');

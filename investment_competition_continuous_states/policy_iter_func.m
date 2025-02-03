@@ -4,6 +4,7 @@ function [out,other_vars]=...
     x_inv,w_inv,...
     state_min,state_max,Smol_elem,mu_max,d,ind,parameters,I_min,I_max)
 
+    
 % I_t: n_pts*N*n_node_inv
 % V_t: n_pts*N
 % k_t: n_pts*N
@@ -20,6 +21,7 @@ global beta_param delta_param spec update_spec
 global spec_precompute diff
 global geval_total veval_total
 global OPI_param
+global relative_V_spec
 
 [n_pts,N,n_node_inv]=size(I_t);
 n_node_inv=size(w_inv,1);
@@ -84,7 +86,12 @@ else
         
         iter_info=[];
         ITER_MAX_gmres=100;
-        TOL_gmres=1e-6;
+        TOL_gmres=1e-9;
+
+        if relative_V_spec==1
+           pi_mat=pi_mat-pi_mat(1,:);
+        end 
+
         [V_new_vec,flag_vec,relres,iter_gmres,resvec] = gmres(func_for_krylov_anonymous,...
             pi_mat(:)-E_inv_cost(:),[],...
             TOL_gmres,ITER_MAX_gmres,[],[],V_t(:)); % solve for Krylov vector
@@ -108,6 +115,9 @@ coef_approx_V=inv_multiply_t*V_t_updated;
 geval_total=geval_total+geval;
 
 out={I_t_updated,V_t_updated};
+
 other_vars=[];
+
+other_vars.inv_cost=inv_cost;
 
 end
