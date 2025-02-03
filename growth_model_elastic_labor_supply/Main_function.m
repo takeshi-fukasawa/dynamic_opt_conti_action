@@ -250,21 +250,21 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     elseif Method==-1
         input={V,n0};
        TOL_vec=(spec.TOL)*ones(1,2);
-       TOL_vec(2)=TOL_vec(2)*lambda_param;%%% TOL of action should not depend on lambda_param 
+       TOL_vec(2)=TOL_vec(2)*lambda_param.*max(abs(V));%%% TOL of action should not depend on lambda_param 
        spec.TOL=TOL_vec;
        spec.norm_spec=[10,0];% unit free norm for V
         
     elseif Method==-2
         input={V,n0,c0};
         TOL_vec=(spec.TOL)*ones(1,3);
-        TOL_vec(1,2:3)=TOL_vec(1,2:3).*lambda_param;%%% TOL of action should not depend on lambda_param 
+        TOL_vec(1,2:3)=TOL_vec(1,2:3).*lambda_param.*max(abs(V));%%% TOL of action should not depend on lambda_param 
         spec.TOL=TOL_vec;
         spec.norm_spec=[10,0,0];% unit free norm for V
 
     elseif Method==-3
         input={V,[n0;c0]};
         TOL_vec=(spec.TOL)*ones(1,2);
-        TOL_vec(2)=TOL_vec(2)*lambda_param;%%% TOL of action should not depend on lambda_param 
+        TOL_vec(2)=TOL_vec(2)*lambda_param.*max(abs(V));%%% TOL of action should not depend on lambda_param 
         spec.TOL=TOL_vec;
         spec.norm_spec=[10,0];% unit free norm for V
     end

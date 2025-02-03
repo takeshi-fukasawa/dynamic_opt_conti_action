@@ -2,6 +2,7 @@ function [I_t_updated,basis_t1,geval]=Newton_func0(...
     I_t_initial,k_t,exo_t1,basis_exo_t1,stoch_inv_cost,...
     coef_approx_V,state_min,state_max,Smol_elem,mu_max,d,ind,w_inv,theta,I_min,I_max)
 
+    %%% Second derivatives required in the Newton's iterations are computed using numerical derivatives
 global beta_param delta_param spec_precompute
 
 global second_diff

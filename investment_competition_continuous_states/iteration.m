@@ -34,7 +34,7 @@ spec.DEBUG=1;
 spec.ITER_MAX=500;
 
 if update_spec~="PI"
-    mapping=@Bellman_I_func;
+    mapping=@update_func_VFI;
 else
     mapping=@policy_iter_func;
 end
