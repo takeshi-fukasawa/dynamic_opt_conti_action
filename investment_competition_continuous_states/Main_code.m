@@ -45,7 +45,7 @@ exo_center=[4,2];
 table_summary_all=[];
 OPI_param=500;
 
-for N=1:1
+for N=3:3
 
     d=N+2;
     k_center=ones(1,N);

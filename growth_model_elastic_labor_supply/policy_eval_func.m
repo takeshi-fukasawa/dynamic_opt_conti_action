@@ -4,7 +4,7 @@ function [V_new,feval_V_total]=policy_eval_func(V,n0,c0,k1,...
    nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,acceleration_spec)
 
     global feval_V_total
-    global krylov_spec OPI_param
+    global krylov_spec OPI_param relative_V_spec
 
     n_grid=size(V,1);
 
@@ -80,10 +80,13 @@ function [V_new,feval_V_total]=policy_eval_func(V,n0,c0,k1,...
             TOL_gmres=TOL_temp;
 
             if relative_V_spec>=1
-                profit=relative_V_func(profit,relative_V_func);
-            end 
+                profit=relative_V_func(profit,relative_V_spec);
+            end
 
-            [V_new,flag_vec,relres,iter_gmres,resvec] = gmres(func_for_krylov_anonymous, profit,[],...
+            func_for_krylov_anonymous(profit)
+            
+            [V_new,flag_vec,relres,iter_gmres,resvec] = ...
+                gmres(func_for_krylov_anonymous, profit,[],...
                 TOL_gmres,ITER_MAX_gmres,[],[],V0); % solve for Krylov vector
             feval_V_total=feval_V_total+prod(iter_gmres)*n_grid;
         end

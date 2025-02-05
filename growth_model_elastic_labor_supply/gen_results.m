@@ -53,8 +53,8 @@ D=4;
 
 %% Main results
 
-for relative_V_spec=2:2
-    for acceleration_spec=0:1
+for relative_V_spec=0:0
+    for acceleration_spec=1:1
 
         run run_experiments.m
 

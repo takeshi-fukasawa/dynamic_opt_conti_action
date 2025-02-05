@@ -33,7 +33,7 @@ x_min_cell={I_min,[]};
 spec.x_max_cell=x_max_cell;
 spec.x_min_cell=x_min_cell;
 spec.DEBUG=1;
-spec.ITER_MAX=500;
+spec.ITER_MAX=3000;
 
 if update_spec~="PI"
     mapping=@update_func_VF;

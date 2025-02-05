@@ -1,13 +1,13 @@
-function V_out=relative_V_func(V,relative_V_spec)
+function [vals_out]=relative_V_func(vals,relative_V_spec)
 
     global n_gridk n_grida
 
     if relative_V_spec==1
-        V_out=V-V(1);
+        vals_out=vals-vals(1);
     elseif relative_V_spec==2
-        V_out=reshape(V,n_gridk,n_grida);
-        V_out=V_out-mean(V_out,1);
-        V_out=V_out(:);
+        vals_out=reshape(vals,n_gridk,n_grida);
+        vals_out=vals_out-mean(vals_out,1);
+        vals_out=vals_out(:);
     end
 
 end
