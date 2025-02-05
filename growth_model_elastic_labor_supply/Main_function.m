@@ -49,7 +49,8 @@ global common_spectral_coef_spec n0 c0
 global geval_total feval_V_total
 global relative_V_spec
 global n_gridk n_grida
-
+global ECM_spec
+ 
 relative_V_spec_original=relative_V_spec;
 
 D_init=D;
@@ -320,7 +321,6 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         feval_V_total=iter_info.feval*n_grid;
     end 
 
-    geval_Q(D)=geval_total;
 
     if Method==1 | Method==0
         V=output_spectral{1};
@@ -387,7 +387,17 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         end
         feval_V_total=iter_info_V.feval*n_grid;
     end
-    feval_V(D)=feval_V_total;
+
+
+    if ECM_spec==1 || Method>=1 && Method~=4 && Method~=5 % Methods other than VFI,VF-PGI, PI
+        geval_total=NaN;
+    end 
+    if Method==3%% EE
+         feval_V_total=NaN;
+     end 
+
+     geval_Q(D)=geval_total;
+     feval_V(D)=feval_V_total;
 
     %%%%%%%%%%%%%%%
        

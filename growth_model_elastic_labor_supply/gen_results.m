@@ -53,8 +53,8 @@ D=4;
 
 %% Main results
 
-for relative_V_spec=0:0
-    for acceleration_spec=1:1
+for relative_V_spec=0:2
+    for acceleration_spec=0:1
 
         run run_experiments.m
 
@@ -89,7 +89,7 @@ run run_experiments.m
 results_SQUAREM=results;
 
 %%% Anderson acceleration (One variable type)
-acceleration_spec=1;%Anderson acceleration
+acceleration_spec=3;%Anderson acceleration
 
 run run_experiments.m
 results_Anderson=results;
