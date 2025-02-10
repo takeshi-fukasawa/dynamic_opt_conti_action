@@ -76,45 +76,55 @@ function [V_new,feval_V_total]=policy_eval_func(V,n0,c0,k1,...
                 TOL_gmres,ITER_MAX_gmres,[],[],V0); % solve for Krylov vector
             feval_V_total=feval_V_total+prod(iter_gmres)*n_grid;
 
-         elseif PI_linear_eq_sol_method_spec==2 % Exact solution of the linear equation
+         elseif PI_linear_eq_sol_method_spec>=2
+   
                I=eye(n_grid);
+               n_coef=size(X0,2);
                P_tilde=kron(weight_nodes',I);%n_grid*(n_grid*n_nodes)
-               A=I-beta*P_tilde*X1*((X0'*X0)\X0');
-               V_new=A\profit;
+               P_tilde_X1=sum(reshape(weight_nodes,1,n_nodes,1).*reshape(X1,n_grid,n_nodes,[]),2);%n_grid*1*n_coef
+               A=I-beta*reshape(P_tilde_X1,n_grid,n_coef)*((X0'*X0)\X0');
 
+               if PI_linear_eq_sol_method_spec==2
 
-          elseif PI_linear_eq_sol_method_spec==3 % CG-based method proposed by Chen (2025)   
-               I=eye(n_grid);
-               P_tilde=kron(weight_nodes',I);%n_grid*(n_grid*n_nodes)
-               A=I-beta*P_tilde*X1*((X0'*X0)\X0');%I-T
-               A_trans=A';;%I-t(T)
+                    ITER_MAX_gmres=min(OPI_param,n_grid);
+                    TOL_gmres=TOL_temp;
+                    [V_new,flag_vec,relres,iter_gmres,resvec] = ...
+                        gmres(A, profit,[],...
+                        TOL_gmres,ITER_MAX_gmres,[],[],V0); % solve for Krylov vector
+                    feval_V_total=feval_V_total+prod(iter_gmres)*n_grid;
 
-               ITER_MAX_CG=min(OPI_param,n_grid);
-               y_i=zeros(n_grid,1);
-               s_i=profit;
-               r_i=profit;
+               elseif PI_linear_eq_sol_method_spec==3% Exact solution of the linear equation
+                    V_new=A\profit;
 
-              
-               for i=1:ITER_MAX_CG
-                   alpha_i=sum(r_i.^2)/sum((A_trans*s_i).^2);
-                   %%%alpha_i=sum(r_i.^2)/((A*(A_trans*s_i))'*s_i);
-                   y_i_plus_1=y_i+alpha_i*s_i;
-                   r_i_plus_1=profit-A*(A_trans*y_i_plus_1);
-                   DIST=max(abs(r_i_plus_1));
-                   if DIST<TOL_temp*max(abs(profit))
-                         break;
-                   end
-                   beta_i=sum(r_i_plus_1.^2)/sum(r_i.^2);
-                   s_i_plus_1=r_i_plus_1+beta_i*s_i;
-                   
-                   %%% Update variables
-                   r_i=r_i_plus_1;
-                   s_i=s_i_plus_1;
-                   y_i=y_i_plus_1;
+               elseif PI_linear_eq_sol_method_spec==4 % CG-based method proposed by Chen (2025)   
+                    % A corresponds to the mapping T
+                    A_trans=A';%I-t(T)
 
-                end% i=1:ITER_MAX_CG
-                 V_new=A_trans*y_i;
-
-        end% krylv_spec=0,1,...
+                    ITER_MAX_CG=min(OPI_param,n_grid);
+                    y_i=zeros(n_grid,1);
+                    s_i=profit;
+                    r_i=profit;
+               
+                    for i=1:ITER_MAX_CG
+                       alpha_i=sum(r_i.^2)/sum((A_trans*s_i).^2);
+                       %%%alpha_i=sum(r_i.^2)/((A*(A_trans*s_i))'*s_i);
+                       y_i_plus_1=y_i+alpha_i*s_i;
+                       r_i_plus_1=profit-A*(A_trans*y_i_plus_1);
+                       DIST=max(abs(r_i_plus_1));
+                       if DIST<TOL_temp*max(abs(profit))
+                            break;
+                       end
+                       beta_i=sum(r_i_plus_1.^2)/sum(r_i.^2);
+                       s_i_plus_1=r_i_plus_1+beta_i*s_i;
+                       
+                       %%% Update variables
+                       r_i=r_i_plus_1;
+                       s_i=s_i_plus_1;
+                       y_i=y_i_plus_1;
+                    end% i=1:ITER_MAX_CG
+                    V_new=A_trans*y_i;
+                    
+               end%PI_linear_eq_sol_method_spec==4
+        end%%PI_linear_eq_sol_method_spec>=2
     end%%precompute X1 or not
 return

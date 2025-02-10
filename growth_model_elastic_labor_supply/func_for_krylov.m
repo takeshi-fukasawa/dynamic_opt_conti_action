@@ -5,6 +5,7 @@ function [out] =func_for_krylov(V,X1,X0,beta,weight_nodes)
     n_grid=size(V,1);
     n_nodes=size(weight_nodes,1);
     vf_coef=X0\V;
+    %%%vf_coef=(X0'*X0+0*eye(size(X0,2)))\(X0'*V);
     
 
     %%% X1: (n_grid*n_nodes)*n_coef
