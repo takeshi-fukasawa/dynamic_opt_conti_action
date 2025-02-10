@@ -81,27 +81,30 @@ function [V_new,feval_V_total]=policy_eval_func(V,n0,c0,k1,...
                P_tilde=kron(weight_nodes',I);%n_grid*(n_grid*n_nodes)
                A=I-beta*P_tilde*X1*((X0'*X0)\X0');
                V_new=A\profit;
-
-
           elseif PI_linear_eq_sol_method_spec==3 % CG-based method proposed by Chen (2025)   
-               I=eye(n_grid);
+                 I=eye(n_grid);
                P_tilde=kron(weight_nodes',I);%n_grid*(n_grid*n_nodes)
                A=I-beta*P_tilde*X1*((X0'*X0)\X0');%I-T
-               A_trans=A';;%I-t(T)
+               A_trans=I-(beta*P_tilde*X1*((X0'*X0)\X0'))';%I-t(T)
+               mat=P_tilde*X1*((X0'*X0)\X0');
 
                ITER_MAX_CG=min(OPI_param,n_grid);
                y_i=zeros(n_grid,1);
                s_i=profit;
                r_i=profit;
 
-              
+               TOL_temp2=TOL_temp*max(abs(u));
+               
+               ITER_MAX_CG=100;
                for i=1:ITER_MAX_CG
-                   alpha_i=sum(r_i.^2)/sum((A_trans*s_i).^2);
-                   %%%alpha_i=sum(r_i.^2)/((A*(A_trans*s_i))'*s_i);
+                   %alpha_i=sum(r_i.^2)/sum((A*(A_trans*s_i)).^2);% Chen
+                   %2025 mentioned this, but not working?
+                   alpha_i=sum(r_i.^2)/((A*(A_trans*s_i))'*s_i);
+                   %alpha_i=sum(r_i.^2)/(s_i'*(A*A_trans)*s_i);
                    y_i_plus_1=y_i+alpha_i*s_i;
                    r_i_plus_1=profit-A*(A_trans*y_i_plus_1);
-                   DIST=max(abs(r_i_plus_1));
-                   if DIST<TOL_temp*max(abs(profit))
+                   DIST=max(abs(r_i_plus_1))
+                   if DIST<TOL_temp2
                          break;
                    end
                    beta_i=sum(r_i_plus_1.^2)/sum(r_i.^2);
@@ -114,6 +117,8 @@ function [V_new,feval_V_total]=policy_eval_func(V,n0,c0,k1,...
 
                 end% i=1:ITER_MAX_CG
                  V_new=A_trans*y_i;
+
+                 V_new_temp=A\profit;
 
         end% krylv_spec=0,1,...
     end%%precompute X1 or not

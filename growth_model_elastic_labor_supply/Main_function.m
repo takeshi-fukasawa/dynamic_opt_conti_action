@@ -389,7 +389,7 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     end
 
 
-    if ECM_spec==1 || Method>=1 && Method~=4 && Method~=5 % Methods other than VFI,VF-PGI, PI
+    if ECM_spec==1 || Method>=1 && Method~=4 && Method~=5 && Method~=6 && Method~=7 % Methods other than VFI,VF-PGI, PI, AVFI
         geval_total=NaN;
     end 
     if Method==3%% EE

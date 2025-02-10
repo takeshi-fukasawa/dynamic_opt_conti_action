@@ -67,8 +67,8 @@ else %% PM algorithm
   
     geval_total=geval_total+geval;
 
-    [inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t,stoch_inv_cost,theta);
-    %%%[inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t_updated,stoch_inv_cost,theta);
+    %%%[inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t,stoch_inv_cost,theta);
+    [inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t_updated,stoch_inv_cost,theta);
 end
 
 % basis_t1:n_pts*n_coef*n_node_inv*N; depends on firm j !!!

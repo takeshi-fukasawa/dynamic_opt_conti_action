@@ -64,7 +64,7 @@ for N=3:3
     V_t_grid_initial0=V_t_grid_initial+...
         0.00*randn(n_grid,N);
     
-    for relative_V_spec=0:1
+    for relative_V_spec=0:0
         %% Pakes McGuire(1994) algorithm
         update_spec="PM";
         run iteration.m
@@ -123,8 +123,8 @@ for N=3:3
 
     end % for relative_V_spec=0:1
 
-    table_summary_all=[table_summary_not_relative;table_summary_relative];
+    table_summary_all=[table_summary_all;table_summary_not_relative;table_summary_relative];
 end%N=1,2,3
 
-%writematrix(table_summary_all,append("results/results_all.csv"))
+writematrix(table_summary_all,append("results/results_all.csv"))
 

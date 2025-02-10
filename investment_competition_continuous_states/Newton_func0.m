@@ -89,14 +89,11 @@ for j=1:N
         
         DIST_Newton=max(abs(I_t_j_new(:)-I_t_j_old(:)));
         
-        if ITER_Newton_j==1
-            %%% Use basis_t1 based on I_t_initial
-             basis_t1(:,:,:,j)=basis_t1_j;
-        end
         
         if DIST_Newton<1e-10
             %DIST_Newton
             %ITER_Newton_j
+            basis_t1(:,:,:,j)=basis_t1_j;
             break;
         end
     
@@ -104,6 +101,7 @@ for j=1:N
     
         if ITER_Newton_j==ITER_MAX_Newton
             %DIST_Newton
+            basis_t1(:,:,:,j)=basis_t1_j;
             %warning("Upper limit reached")
         end
     end%end of Newton loop

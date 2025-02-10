@@ -1,17 +1,16 @@
-function [out] =func_for_krylov(V,X1_array,X0,beta,weight_nodes)
+function [out] =func_for_krylov(V,X1,X0,beta,weight_nodes)
 
    global relative_V_spec
  
-    [n_grid,n_coef,n_nodes]=size(X1_array);
+    n_grid=size(V,1);
+    n_nodes=size(weight_nodes,1);
     vf_coef=X0\V;
     
-    %%% X1: n_grid*n_coef*n_nodes
+
+    %%% X1: (n_grid*n_nodes)*n_coef
     %%% vf_coef: n_coef*1
-    EV=reshape(...
-        sum(reshape(X1_array,n_grid,n_coef,n_nodes).*...
-        reshape(vf_coef,1,n_coef,1),2),...
-        n_grid,n_nodes);
-    
+    EV=X1*vf_coef;%(n_grid*n_nodes)*1
+    EV=reshape(EV,n_grid,n_nodes);    
 
     if relative_V_spec==0
        out=V-beta*EV*weight_nodes;    

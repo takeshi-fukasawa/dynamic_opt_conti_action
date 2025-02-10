@@ -3,7 +3,7 @@ clear all
 global V k1 iter_info alpha0_param lambda_param
 global n0 c0
 global OPI_param
-global krylov_spec ECM_spec relative_V_spec
+global PI_linear_eq_sol_method_spec ECM_spec relative_V_spec
 global analytical_EE_spec
 
 
@@ -26,8 +26,8 @@ addpath('C:/Users/fukas/Dropbox/git/spectral')
 % "9": EGM-DVF
 
 %% Specification
-% krylov_spec==0: Not apply krylov method to solve linear eq
-% krylov_spec==1: Apply krylov method to solve linear eq
+% PI_linear_eq_sol_method_spec==0: Not apply krylov method to solve linear eq
+% PI_linear_eq_sol_method_spec==1: Apply krylov method to solve linear eq
 
 % relative_V_spec==0: Solve for value function
 % relative_V_spec==1: Solve for relative value function
@@ -119,9 +119,8 @@ for relative_V_spec=0:2
     end
     results=readmatrix(filename);
 
-%%%%% Check IDs!!! %%% 
     if relative_V_spec==0
-        ids=[1;3;4;5;19;22;23];%VFPGI-Spectral,VFI-Spectral,VFI-ECM-Spectral,VFI-EGM-Spectral,PI,PI-Krylov
+        ids=[1;3;4;5;21;24;25];%VFPGI-Spectral,VFI-Spectral,VFI-ECM-Spectral,VFI-EGM-Spectral,PI,PI-Krylov
     elseif relative_V_spec>=1
         ids=[1;3;17;20;21];%VFPGI-Spectral,VFI-Spectral,PI,PI-Krylov
     end
@@ -133,7 +132,7 @@ end%for relative_V_spec=0:2
 filename=append('results/growth_model_algorithm_comparison_summary_all.csv');
 results=readmatrix(filename);
 
-ids=[15;33];% EE-Spectral, EE
+ids=[17;37];% EE-Spectral, EE
 results_summary=[results_summary;results(ids,:)];
 
 filename=append('results/growth_model_algorithm_comparison_summary_concise.csv');
