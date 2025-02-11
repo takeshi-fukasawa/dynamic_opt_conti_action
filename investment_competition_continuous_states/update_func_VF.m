@@ -16,7 +16,7 @@ function [out,other_vars]=...
 
 %% solve optimal I (modified version)
 
-global beta_param delta_param specalgorithm_spec
+global beta_param delta_param spec algorithm_spec
 global spec_precompute diff
 global geval_total
 global relative_V_spec
@@ -35,7 +35,7 @@ stoch_inv_cost=zeros(1,N,n_node_inv);
 
 
 %% --------------- (1) Calculate FOC (investment choice problem) -----------------
-ifalgorithm_spec=="analytical"|update_spec=="gradient"
+if algorithm_spec=="analytical"|algorithm_spec=="gradient"
     % V_t1_diff:n_pts*N*n_node_inv
     if spec_precompute==1
         [basis_t1,V_t1_diff]=...
@@ -49,18 +49,18 @@ ifalgorithm_spec=="analytical"|update_spec=="gradient"
     end
 
     [inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t,stoch_inv_cost,theta);
-    I_t_updated=I_update_func(I_t,k_t,V_t1_diff,stoch_inv_cost,theta,update_spec,I_min,I_max);
+    I_t_updated=I_update_func(I_t,k_t,V_t1_diff,stoch_inv_cost,theta,algorithm_spec,I_min,I_max);
     
     %%% The following is unstable????
     %%%[inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t_updated,stoch_inv_cost,theta);
 
-    ifalgorithm_spec=="analytical"
+    if algorithm_spec=="analytical"
         %diff=-inv_cost_diff+beta_param*V_t1_diff;
     end
 
     geval_total=geval_total+n_pts*N;
 
-else %% PM algorithm
+else %% VFI algorithm
     %%% basis_t1: based on I_t, rather than I_t_updated
     [I_t_updated,basis_t1,geval]=Newton_func0(I_t,k_t,exo_t1,basis_exo_t1,stoch_inv_cost,...
     coef_approx_V,state_min,state_max,Smol_elem,mu_max,d,ind,w_inv,theta,I_min,I_max);

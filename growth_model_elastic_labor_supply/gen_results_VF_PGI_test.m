@@ -1,17 +1,30 @@
 clear
 %%diary METHODSLOG.log
 
-global V k1 iter_info lambda_param alpha0_param
-global common_spectral_coef_spec
+
+global n_gridk n_grida
+global V k1 iter_info alpha0_param lambda_param
+global n0 c0
 global OPI_param
+global PI_linear_eq_sol_method_spec ECM_spec relative_V_spec
+global analytical_EE_spec
+global common_spectral_coef_spec
 
 %%% Path of Spectral function
 addpath('C:/Users/fukas/Dropbox/git/spectral')
+
+common_spectral_coef_spec=0;
+alpha0_param=1;%%% value of alpha0 used in the spectral algorithm
+lambda_param=1e-7;%1e-12;%% Value of lambda
+D=4;
+n_gridk=10;n_grida=10;
 
 OPI_param=500;
 D=4;
 save_spec=1;
 Method=-2;%%% VF-PGI
+ECM_spec=0;
+relative_V_spec=0;
 
 results=[];
 

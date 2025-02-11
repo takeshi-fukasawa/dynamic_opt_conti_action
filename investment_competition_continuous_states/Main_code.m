@@ -3,7 +3,7 @@ clear all
 
 warning('off')
 
-global elas beta_param delta_paramalgorithm_spec tune_param gpu_spec
+global elas beta_param delta_param algorithm_spec tune_param gpu_spec
 global spec_precompute w_exo x_exo sd_exo
 global diff lambda_param
 global geval_total veval_total spec
@@ -45,7 +45,9 @@ exo_center=[4,2];
 table_summary_all=[];
 OPI_param=3000;
 
-for N=3:3
+n_grid_mat=[];
+
+for N=1:5
 
     d=N+2;
     k_center=ones(1,N);
@@ -64,51 +66,58 @@ for N=3:3
     V_t_grid_initial0=V_t_grid_initial+...
         0.00*randn(n_grid,N);
     
-    for relative_V_spec=0:0
+    for relative_V_spec=0:1
 
-        if N<=3 
+        if N<=3 || relative_V_spec==1
+
             %% VFI algorithm
-           algorithm_spec="VFI";
+            algorithm_spec="VFI";
             run iteration.m
-        end            
-        
-        %% VF-PGI algorithm
-       algorithm_spec="gradient";
-        run iteration.m
-        
-        %% Policy iteration
-        OPI_param=3000;
-       algorithm_spec="PI";
-        run iteration.m
-        
-        if N<=3
-            table_summary=round([...
-        iter_results_output_func(iter_info_gradient_spectral,resid_mat_gradient_spectral);...
-        iter_results_output_func(iter_info_PM_spectral,resid_mat_PM_spectral);...
-        iter_results_output_func(iter_info_PM,resid_mat_PM);...
-        iter_results_output_func(iter_info_PI_spectral,resid_mat_PI_spectral);...
-        iter_results_output_func(iter_info_PI,resid_mat_PI);...
-                ],3);
-
-        else %N>=3
-            table_summary=round([...
-        iter_results_output_func(iter_info_gradient_spectral,resid_mat_gradient_spectral);...
-        iter_results_output_func(iter_info_PI,resid_mat_PI);...
-                ],3);
-       end% N>=3?
-
-        table_summary=[N*ones(size(table_summary,1),1),table_summary];
+            
+            %% VF-PGI algorithm
+            algorithm_spec="gradient";
+            run iteration.m
+            
+            %% Policy iteration
+            OPI_param=3000;
+            algorithm_spec="PI";
+            run iteration.m
+            
+            if N<=3
+                table_summary=round([...
+                iter_results_output_func(iter_info_gradient_spectral,resid_mat_gradient_spectral);...
+                iter_results_output_func(iter_info_VFI_spectral,resid_mat_VFI_spectral);...
+                iter_results_output_func(iter_info_VFI,resid_mat_VFI);...
+                iter_results_output_func(iter_info_PI_spectral,resid_mat_PI_spectral);...
+                iter_results_output_func(iter_info_PI,resid_mat_PI);...
+                 ],3);
     
-        if relative_V_spec==0
-            table_summary_not_relative=table_summary;
-        else
-            table_summary_relative=table_summary;
+            else %N>=3
+                table_summary=round([...
+                iter_results_output_func(iter_info_gradient_spectral,resid_mat_gradient_spectral);...
+                iter_results_output_func(iter_info_VFI_spectral,resid_mat_VFI_spectral);...
+                iter_results_output_func(iter_info_PI,resid_mat_PI);...
+                ],3);
+           end% N>=3?
+    
+            table_summary=[N*ones(size(table_summary,1),1),table_summary];
+        
+            if relative_V_spec==0
+                table_summary_not_relative=table_summary;
+            else
+                table_summary_relative=table_summary;
+            end
+
+        else% N>=4 & relative_V_spec==0
+            table_summary_not_relative=[];
         end
 
     end % for relative_V_spec=0:1
 
     table_summary_all=[table_summary_all;table_summary_not_relative;table_summary_relative];
+    n_grid_mat=[n_grid_mat;[N,n_grid]];
 end%N=1,2,3
 
 writematrix(table_summary_all,append("results/results_all.csv"))
+writematrix(n_grid_mat,append("results/n_grid_mat.csv"))
 
