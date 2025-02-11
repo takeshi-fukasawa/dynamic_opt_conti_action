@@ -10,9 +10,9 @@ spec.alpha_0=1;
 
 if 1==1
     %spec=[];
-    if update_spec=="PM"
+    ifalgorithm_spec=="VFI"
         %spec.dampening_param={1.0,1.0};
-    elseif update_spec=="gradient"
+    elseifalgorithm_spec=="gradient"
         lambda_param=0.01;
         TOL_vec=(1e-8)*ones(1,2);
         TOL_vec(1)=TOL_vec(1)*lambda_param;
@@ -35,7 +35,7 @@ spec.x_min_cell=x_min_cell;
 spec.DEBUG=1;
 spec.ITER_MAX=3000;
 
-if update_spec~="PI"
+ifalgorithm_spec~="PI"
     mapping=@update_func_VF;
 else
     mapping=@policy_iter_func;
@@ -44,6 +44,7 @@ end
 pi_mat_grid=pi_func(k_t_grid,exo_t_grid);
 
 %%%%%%%%%% Fixed point iteration %%%%%
+if N<=3 ||algorithm_spec~="VFI"
 geval_total=0;
 veval_total=0;
 spec.update_spec=0;
@@ -79,8 +80,10 @@ end
 [resid_mat,k_path,exo_shock_path]=...
 precision_check_func(I_sol,V_sol,k_center,exo_center,ind_no_precompute,AR_coef,sd_exo,theta,...
 w_inv,state_min,state_max,Smol_elem,mu_max,inv_multiply_t_grid);
-
+end % if N<=3 ||algorithm_spec~="VFI"
+ 
 %%%%%%%%%% Spectral algorithm %%%%%
+if N<=3 ||algorithm_spec~="PI"
 geval_total=0;
 veval_total=0;
 spec.update_spec=[];
@@ -115,8 +118,9 @@ end
 [resid_mat_spectral,k_path_spectral,exo_shock_path_spectral]=...
 precision_check_func(I_sol_spectral,V_sol_spectral,k_center,exo_center,ind_no_precompute,AR_coef,sd_exo,theta,...
 w_inv,state_min,state_max,Smol_elem,mu_max,inv_multiply_t_grid);
+end % N<=3 ||algorithm_spec~="PI"
 
-if update_spec=="analytical"
+ifalgorithm_spec=="analytical"
     iter_info_analytical=iter_info;
     I_t_analytical=I_sol;
     V_t_analytical=V_sol;
@@ -127,7 +131,7 @@ if update_spec=="analytical"
     V_t_analytical_spectral=V_sol_spectral;
     resid_mat_analytical_spectral=resid_mat_spectral;
 
-elseif update_spec=="PM"
+elseifalgorithm_spec=="VFI"
     iter_info_PM=iter_info;
     I_t_PM=I_sol;
     V_t_PM=V_sol;
@@ -138,7 +142,7 @@ elseif update_spec=="PM"
     V_t_PM_spetctral=V_sol_spectral;
     resid_mat_PM_spectral=resid_mat_spectral;
     
-elseif update_spec=="gradient"
+elseifalgorithm_spec=="gradient"
     iter_info_gradient=iter_info;
     I_t_gradient=I_sol;
     V_t_gradient=V_sol;
@@ -149,7 +153,7 @@ elseif update_spec=="gradient"
     V_t_gradient_spectral=V_sol_spectral;
     resid_mat_gradient_spectral=resid_mat_spectral;
 
-elseif update_spec=="PI" & OPI_param>=100
+elseifalgorithm_spec=="PI" & OPI_param>=100
     iter_info_PI=iter_info;
     I_t_PI=I_sol;
     V_t_PI=V_sol;
@@ -160,7 +164,7 @@ elseif update_spec=="PI" & OPI_param>=100
     V_t_PI_spectral=V_sol_spectral;
     resid_mat_PI_spectral=resid_mat_spectral;
 
-elseif update_spec=="PI" & OPI_param<100
+elseifalgorithm_spec=="PI" & OPI_param<100
     iter_info_OPI=iter_info;
     I_t_OPI=I_sol;
     V_t_OPI=V_sol;

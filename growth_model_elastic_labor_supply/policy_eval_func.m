@@ -80,9 +80,18 @@ function [V_new,feval_V_total]=policy_eval_func(V,n0,c0,k1,...
    
                I=eye(n_grid);
                n_coef=size(X0,2);
-               P_tilde=kron(weight_nodes',I);%n_grid*(n_grid*n_nodes)
+               %%%P_tilde=kron(weight_nodes',I);%n_grid*(n_grid*n_nodes); Require more memory??
                P_tilde_X1=sum(reshape(weight_nodes,1,n_nodes,1).*reshape(X1,n_grid,n_nodes,[]),2);%n_grid*1*n_coef
-               A=I-beta*reshape(P_tilde_X1,n_grid,n_coef)*((X0'*X0)\X0');
+
+               %%% Compute (X0'*X0)^(-1)*X0'
+               temp2=((X0'*X0)\X0');%Numerically unstable? (Cond(X0'*X0)=cond(X0)^2...)
+               [Q,R_temp,P]=qr(X0); %QR factorization
+               n=size(P,1);
+               R=R_temp(1:n,:);
+               Q1=Q(:,1:n);
+               temp=P*(R\Q1');
+               
+               A=I-beta*reshape(P_tilde_X1,n_grid,n_coef)*temp;
 
                if PI_linear_eq_sol_method_spec==2
 
@@ -95,7 +104,8 @@ function [V_new,feval_V_total]=policy_eval_func(V,n0,c0,k1,...
 
                elseif PI_linear_eq_sol_method_spec==3% Exact solution of the linear equation
                     V_new=A\profit;
-
+                    feval_V_total=NaN;
+                    
                elseif PI_linear_eq_sol_method_spec==4 % CG-based method proposed by Chen (2025)   
                     % A corresponds to the mapping T
                     A_trans=A';%I-t(T)
@@ -110,12 +120,13 @@ function [V_new,feval_V_total]=policy_eval_func(V,n0,c0,k1,...
                        %%%alpha_i=sum(r_i.^2)/((A*(A_trans*s_i))'*s_i);
                        y_i_plus_1=y_i+alpha_i*s_i;
                        r_i_plus_1=profit-A*(A_trans*y_i_plus_1);
+                       beta_i=sum(r_i_plus_1.^2)/sum(r_i.^2);
+                       s_i_plus_1=r_i_plus_1+beta_i*s_i;
+
                        DIST=max(abs(r_i_plus_1));
                        if DIST<TOL_temp*max(abs(profit))
                             break;
                        end
-                       beta_i=sum(r_i_plus_1.^2)/sum(r_i.^2);
-                       s_i_plus_1=r_i_plus_1+beta_i*s_i;
                        
                        %%% Update variables
                        r_i=r_i_plus_1;
@@ -123,7 +134,7 @@ function [V_new,feval_V_total]=policy_eval_func(V,n0,c0,k1,...
                        y_i=y_i_plus_1;
                     end% i=1:ITER_MAX_CG
                     V_new=A_trans*y_i;
-                    
+                    feval_V_total=feval_V_total+i*n_grid;
                end%PI_linear_eq_sol_method_spec==4
         end%%PI_linear_eq_sol_method_spec>=2
     end%%precompute X1 or not

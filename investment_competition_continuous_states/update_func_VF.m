@@ -16,7 +16,7 @@ function [out,other_vars]=...
 
 %% solve optimal I (modified version)
 
-global beta_param delta_param spec update_spec
+global beta_param delta_param specalgorithm_spec
 global spec_precompute diff
 global geval_total
 global relative_V_spec
@@ -35,7 +35,7 @@ stoch_inv_cost=zeros(1,N,n_node_inv);
 
 
 %% --------------- (1) Calculate FOC (investment choice problem) -----------------
-if update_spec=="analytical"|update_spec=="gradient"
+ifalgorithm_spec=="analytical"|update_spec=="gradient"
     % V_t1_diff:n_pts*N*n_node_inv
     if spec_precompute==1
         [basis_t1,V_t1_diff]=...
@@ -54,7 +54,7 @@ if update_spec=="analytical"|update_spec=="gradient"
     %%% The following is unstable????
     %%%[inv_cost,inv_cost_diff]=inv_cost_func(k_t,I_t_updated,stoch_inv_cost,theta);
 
-    if update_spec=="analytical"
+    ifalgorithm_spec=="analytical"
         %diff=-inv_cost_diff+beta_param*V_t1_diff;
     end
 

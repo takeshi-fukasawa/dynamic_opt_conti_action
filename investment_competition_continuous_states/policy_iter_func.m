@@ -17,7 +17,7 @@ function [out,other_vars]=...
 
 %% solve optimal I (modified version)
 
-global beta_param delta_param spec update_spec
+global beta_param delta_param specalgorithm_spec
 global spec_precompute diff
 global geval_total veval_total
 global OPI_param

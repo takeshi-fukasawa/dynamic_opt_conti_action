@@ -20,7 +20,7 @@ for N=1:3
     
     %% Policy iteration
     OPI_param=10;
-    update_spec="PI";
+   algorithm_spec="PI";
     run iteration.m   
     
     table_spectral=round([...

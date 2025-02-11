@@ -42,7 +42,7 @@ warning('off')           % Some polynomial terms are zero for
 % "9": EGM-DVF
 
 fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
-
+global n_gridk n_grida
 global iter_info iter_info0 V k1
 global alpha0_param lambda_param
 global common_spectral_coef_spec n0 c0
@@ -90,7 +90,7 @@ css = pcss*yss;                       % Steady state consumption
 % Unidimensional grid for capital
 kmin    = 0.9;                        % Minimum capital on the grid
 kmax    = 1.1;                        % Maximum capital on the grid
-n_gridk = 10;                         % Number of grid point for capital 
+%n_gridk = 10;                         % Number of grid point for capital 
 gridk   = linspace(kmin,kmax,n_gridk)'; 
                                       % Unidimensional grid for capital of 
                                       % n_grid points
@@ -98,7 +98,7 @@ gridk   = linspace(kmin,kmax,n_gridk)';
 % Unidimensional grid for productivity                        
 amin    = 0.9;                        % Minimum productivity on the grid
 amax    = 1.1;                        % Maximum productivity on the grid
-n_grida = 10;                         % Number of grid point for productivity 
+%n_grida = 10;                         % Number of grid point for productivity 
 grida   = linspace(amin,amax,n_grida)'; 
                                       % Unidimensional grid for productivity
 % Two-dimensional tensor product grid 

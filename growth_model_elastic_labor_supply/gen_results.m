@@ -1,5 +1,6 @@
 clear all
 
+global n_gridk n_grida
 global V k1 iter_info alpha0_param lambda_param
 global n0 c0
 global OPI_param
@@ -50,6 +51,7 @@ common_spectral_coef_spec=0;
 alpha0_param=1;%%% value of alpha0 used in the spectral algorithm
 lambda_param=1e-7;%1e-12;%% Value of lambda
 D=4;
+n_gridk=10;n_grida=10;
 
 %% Main results
 

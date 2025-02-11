@@ -3,7 +3,7 @@ clear all
 
 warning('off')
 
-global elas beta_param delta_param update_spec tune_param gpu_spec
+global elas beta_param delta_paramalgorithm_spec tune_param gpu_spec
 global spec_precompute w_exo x_exo sd_exo
 global diff lambda_param
 global geval_total veval_total spec
@@ -43,7 +43,7 @@ magnify_rate_exo=1.03;
 
 exo_center=[4,2];
 table_summary_all=[];
-OPI_param=500;
+OPI_param=3000;
 
 for N=3:3
 
@@ -65,54 +65,38 @@ for N=3:3
         0.00*randn(n_grid,N);
     
     for relative_V_spec=0:0
-        %% Pakes McGuire(1994) algorithm
-        update_spec="PM";
-        run iteration.m
-        
-        %% Algorithm based on an analytical formula
-        update_spec="analytical";
-        run iteration.m
-        
+
+        if N<=3 
+            %% VFI algorithm
+           algorithm_spec="VFI";
+            run iteration.m
+        end            
         
         %% VF-PGI algorithm
-        update_spec="gradient";
+       algorithm_spec="gradient";
         run iteration.m
         
         %% Policy iteration
-        OPI_param=500;
-        update_spec="PI";
+        OPI_param=3000;
+       algorithm_spec="PI";
         run iteration.m
-    
-        %% Policy iteration
-        OPI_param=10;
-        update_spec="PI";
-        run iteration.m
-    
         
-        
-        table_spectral=round([...
+        if N<=3
+            table_summary=round([...
         iter_results_output_func(iter_info_gradient_spectral,resid_mat_gradient_spectral);...
         iter_results_output_func(iter_info_PM_spectral,resid_mat_PM_spectral);...
-        iter_results_output_func(iter_info_PI_spectral,resid_mat_PI_spectral);...
-        iter_results_output_func(iter_info_analytical_spectral,resid_mat_analytical_spectral)],3);
-        
-        
-        table=round([...
-        iter_results_output_func(iter_info_gradient,resid_mat_gradient);...
         iter_results_output_func(iter_info_PM,resid_mat_PM);...
+        iter_results_output_func(iter_info_PI_spectral,resid_mat_PI_spectral);...
         iter_results_output_func(iter_info_PI,resid_mat_PI);...
-        iter_results_output_func(iter_info_OPI,resid_mat_OPI);...
-        iter_results_output_func(iter_info_analytical,resid_mat_analytical)],3);
-        
-        table_summary=round([...
+                ],3);
+
+        else %N>=3
+            table_summary=round([...
         iter_results_output_func(iter_info_gradient_spectral,resid_mat_gradient_spectral);...
-        iter_results_output_func(iter_info_PM_spectral,resid_mat_PM_spectral);...
-        iter_results_output_func(iter_info_PM,resid_mat_PM);...
-        iter_results_output_func(iter_info_PI_spectral,resid_mat_PI_spectral);...
-        iter_results_output_func(iter_info_PI,resid_mat_OPI);...
-        iter_results_output_func(iter_info_OPI_spectral,resid_mat_OPI_spectral);...
-        iter_results_output_func(iter_info_OPI,resid_mat_OPI);...
-        ],3);
+        iter_results_output_func(iter_info_PI,resid_mat_PI);...
+                ],3);
+       end% N>=3?
+
         table_summary=[N*ones(size(table_summary,1),1),table_summary];
     
         if relative_V_spec==0

@@ -1,7 +1,7 @@
 function I_updated=I_update_func(I_initial,k_t,V_t1_diff,stoch_inv_cost,theta,update_spec,I_min,I_max)
 global beta_param lambda_param
 
-if update_spec=="analytical"
+ifalgorithm_spec=="analytical"
     I_opt_plus=(beta_param*V_t1_diff-theta(1)-stoch_inv_cost)./(2*theta(2)./k_t);
     I_opt_minus=(beta_param*V_t1_diff-theta(3)-stoch_inv_cost)./(2*theta(4)./k_t);
     plus_dummy=(beta_param*V_t1_diff>theta(1)+stoch_inv_cost);
@@ -10,7 +10,7 @@ if update_spec=="analytical"
     I_updated=I_opt_plus.*plus_dummy+0*zero_dummy+I_opt_minus.*minus_dummy;
     %%%I_updated=I_opt_plus;%%%%%%%%
 
-elseif update_spec=="gradient" % update_spec=="analytical"
+elseifalgorithm_spec=="gradient" %algorithm_spec=="analytical"
     [inv_cost,inv_cost_diff]=...
         inv_cost_func(k_t,I_initial,stoch_inv_cost,theta);
     diff=-inv_cost_diff+beta_param*V_t1_diff;

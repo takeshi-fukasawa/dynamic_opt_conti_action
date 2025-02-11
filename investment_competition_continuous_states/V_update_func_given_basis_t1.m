@@ -3,7 +3,7 @@ k_t,exo_t,exo_t1,basis_t,inv_multiply_t,basis_exo_t1,...
     x_inv,w_inv,...
     state_min,state_max,Smol_elem,mu_max,d,ind)
 
-global beta_param delta_param spec update_spec
+global beta_param delta_param specalgorithm_spec
 global spec_precompute
 
 [n_pts,N]=size(V_t);
