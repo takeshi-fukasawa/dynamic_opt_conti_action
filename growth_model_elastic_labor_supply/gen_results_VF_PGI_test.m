@@ -19,7 +19,7 @@ lambda_param=1e-7;%1e-12;%% Value of lambda
 D=4;
 n_gridk=10;n_grida=10;
 
-OPI_param=500;
+OPI_param=3000;
 D=4;
 save_spec=1;
 Method=-2;%%% VF-PGI
@@ -28,7 +28,7 @@ relative_V_spec=0;
 
 results=[];
 
-%% Fixed point iteration and VF-PGI
+%% VF-PGI (Change lambda)
 alpha0_param0=1;
 lambda_param0=(1e-7)*(1e-3);
 acceleration_spec=0;
@@ -42,7 +42,7 @@ for i = 1:6
             [log10(alpha0_param),log10(lambda_param),out_i]];
 end
 
-%% Spectral algorithm (Change lambda)
+%% VF-PGI-Spectral (Change lambda)
 alpha0_param0=1;
 lambda_param0=(1e-7)*(1e-3);
 acceleration_spec=1;
@@ -58,7 +58,7 @@ for i = 1:6
             [log10(alpha0_param),log10(lambda_param),out_i]];
 end
 
-%% Spectral algorithm (Change alpha0)
+%% VF-PGI-Spectral (Change alpha0)
 alpha0_param0=1e-10;
 lambda_param0=1;
 acceleration_spec=1;
@@ -74,7 +74,7 @@ for i = 1:10
             [log10(alpha0_param),log10(lambda_param),out_i]];
 end
 
-%% Spectral (common vs different alpha)
+%% VF-PGI-Spectral (common vs different alpha)
 acceleration_spec=1;
 alpha0_param=1;
 lambda_param=1e-7;
