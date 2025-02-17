@@ -5,7 +5,7 @@ I_min=[];I_max=[];
 
 %I_min=-0.5;I_max=1.0;
 
-spec.TOL=1e-6;
+spec.TOL=1e-8;
 spec.alpha_0=1;
 
     %spec=[];
@@ -64,7 +64,7 @@ if N<=3 || algorithm_spec=="PI"
         x_inv,w_inv,...
         state_min,state_max,Smol_elem,mu_max,d,ind);
     
-        C=(out{1}(1,:)-V_sol(1,:))./(1-beta_param);
+        C=(out{1}(1,:))./(1-beta_param);
         
         V_sol=V_sol-C;
     end
@@ -106,7 +106,7 @@ if N<=3 || algorithm_spec~="PI"
         x_inv,w_inv,...
         state_min,state_max,Smol_elem,mu_max,d,ind);
     
-        C=(out{1}(1,:)-V_sol_spectral(1,:))./(1-beta_param);
+        C=(out{1}(1,:))./(1-beta_param);
         V_sol_spectral=V_sol_spectral-C;
     end
     
