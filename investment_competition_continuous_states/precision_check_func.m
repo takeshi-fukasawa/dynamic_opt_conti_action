@@ -26,8 +26,8 @@ exo_shock_mat=NaN(T+1,n_exo);%t=0,...,T
 
 resid_mat=NaN(T,2*N);%t=0,...,T
 
-k_mat(1,:)=k_center*0.99;%%%%
-exo_shock_mat(1,:)=exo_center*1.01;%%%%%
+k_mat(1,:)=k_center;%%%%
+exo_shock_mat(1,:)=exo_center;%%%%%
 
 
 random_val=randn(T,2);
@@ -54,7 +54,7 @@ for t=1:T
     %%% Accuracy test
     V_t=sum(reshape(basis_t,n_coef,1).*reshape(coef_approx_V,n_coef,N),1);%1*N
 
-    [V_t1_diff,basis_t1_mean]=V_t1_diff_func(k_t1,exo_t1_mean,coef_approx_V,...
+    [basis_t1_mean,V_t1_diff]=V_t1_func(k_t1,exo_t1_mean,coef_approx_V,...
         state_min,state_max,Smol_elem,mu_max,ind_no_precompute,w_inv);
    
     stoch_inv_cost=zeros(1,N,n_node_inv);

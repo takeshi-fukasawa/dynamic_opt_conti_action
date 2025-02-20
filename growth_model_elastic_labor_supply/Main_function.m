@@ -1,4 +1,4 @@
-function [out,other_output]=Main_function(Method,spectral_spec,D)
+function [out,other_output]=Main_function(Method,acceleration_spec,D)
 
 % This MATLAB software solves a neoclassical stochastic growth model with
 % elastic labor supply using four alternative solution methods and compares 
@@ -19,15 +19,39 @@ function [out,other_output]=Main_function(Method,spectral_spec,D)
 %clc;
 %clear all;
 
+warning('off')           % Some polynomial terms are zero for
+% the derivative, and the system is 
+% underdetermined. The least-squares 
+% problem is still correctly 
+% processed by the truncated QR method
+% but the system produces warning
 
+%% Methods
+% "-3": VF-PGI (update n0 and c0; treat [n0;c0] as one variable)
+% "-2": VF-PGI (Updating n0 and c0)
+% "-1": VF-PGI (Updating n0)
+% "0" - Value function iteration
 % "1" - envelope condition method iterating on value function (ECM-VF)
 % "2" - endogenous grid method iterating on value function (EGM-VF)
+% "3": Euler equation method (EE)
+ % "4": Policy iteration method (PI) updating V
+ % "5": Policy iteration method (PI) updating n0
+% "6": Accelerated Value Iteration (AVI)
+% "7": Safe-Accelerated Value Iteration (S-AVI)
+% "8": ECM-DVF
+% "9": EGM-DVF
 
 fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
-
+global n_gridk n_grida
 global iter_info iter_info0 V k1
 global alpha0_param lambda_param
 global common_spectral_coef_spec n0 c0
+global geval_total feval_V_total
+global relative_V_spec
+global n_gridk n_grida
+global ECM_spec
+ 
+relative_V_spec_original=relative_V_spec;
 
 D_init=D;
 D_min=D;
@@ -40,7 +64,7 @@ nu      = 5;                         % Utility-function parameter on leisure
 alpha   = 1/3;                        % Capital share in production
 lss     = 2/3;                        % Steady-state share of leisure in 
                                       % total time endowment 
-pkss    = 10;                         % Capital to output ratio
+pkss    = 10;%50;                         % Capital to output ratio
 pcss    = 3/4;                        % Consumption to output ratio
 delta   = (1-pcss)/pkss;              % Depreciation rate           
 beta    = 1/(1-delta+alpha/pkss);     % Discount factor
@@ -53,7 +77,7 @@ rho     = 0.95;                       % Persistence of the log of the
                                       % productivity level
 sigma   = 0.01;                       % Standard deviation of shocks to the 
                                       % log of the productivity level
-                                     
+
 % 2. Steady state
 % ---------------
 kss = ((1/beta-1+delta)/alpha/A)^(1/(alpha-1))*(1-lss); 
@@ -66,7 +90,7 @@ css = pcss*yss;                       % Steady state consumption
 % Unidimensional grid for capital
 kmin    = 0.9;                        % Minimum capital on the grid
 kmax    = 1.1;                        % Maximum capital on the grid
-n_gridk = 10;                         % Number of grid point for capital 
+%n_gridk = 10;                         % Number of grid point for capital 
 gridk   = linspace(kmin,kmax,n_gridk)'; 
                                       % Unidimensional grid for capital of 
                                       % n_grid points
@@ -74,7 +98,7 @@ gridk   = linspace(kmin,kmax,n_gridk)';
 % Unidimensional grid for productivity                        
 amin    = 0.9;                        % Minimum productivity on the grid
 amax    = 1.1;                        % Maximum productivity on the grid
-n_grida = 10;                         % Number of grid point for productivity 
+%n_grida = 10;                         % Number of grid point for productivity 
 grida   = linspace(amin,amax,n_grida)'; 
                                       % Unidimensional grid for productivity
 % Two-dimensional tensor product grid 
@@ -96,7 +120,7 @@ z0 = grid(:,2);                      % Grid points for productivity in the
     
 % 4. Gauss Hermite quadrature
 %----------------------------
-Qn      = 5;         % Number of integration nodes in Gauss Hermite quadrature
+Qn      = 3; %%%        % Number of integration nodes in Gauss Hermite quadrature
 nshocks = 1;         % Number of stochastic shocks is 1
 vcv     = sigma^2;   % Variance covariance matrix
 [n_nodes,epsi_nodes,weight_nodes] = GH_Quadrature(Qn,nshocks,vcv);
@@ -145,7 +169,8 @@ k1   =  k0*(1-delta)+A*z0.*k0.^alpha.*n0.^(1-alpha)-c0;
                      % a constant fraction css/yss of the period output 
                      % goes to consumption and the rest goes to investment,
                      % where css/yss is calculated in the steady state
-      
+
+V00=V;
 %%%%%%%%%%%%%%%%%%
 spec_default.norm_spec=10;%% unit free
 spec_default.TOL=1e-6;
@@ -156,6 +181,7 @@ spec_default.DEBUG=1;%%%%%%%%%%%%%%%%%%%
 
 spec=spec_default;
  
+    relative_V_spec=0;
     [output_spectral,other_vars,iter_info_V]=...
         spectral_func(@VF_Bellman_L_update_func,spec,{V},...
             X0,n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
@@ -166,12 +192,19 @@ spec=spec_default;
        iter_info_V.FLAG_ERROR=1;
     end
 
-    vf_coef = X0\V;     % Coefficients for value function
+    relative_V_spec=relative_V_spec_original;
 
 %%% Initial values %%%
 V_init=V;
-vf_coef_init=vf_coef;
 %%%%%%%%%%
+
+V=V_init;
+if relative_V_spec>=1
+    V=relative_V_func(V,relative_V_spec);
+end
+
+vf_coef = X0\V;     % Coefficients for value function
+
 
 % 5. Main iterative cycle: constructing polynomial approximations of degrees 
 % from 2 to 5 for value function 
@@ -190,50 +223,66 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
                                         % grid for checking convergence 
     Vder0 = X0der*vf_coef;              % Compute derivative of value function
 
-
+    TOL=1e-8;
     spec=spec_default;
-    spec.TOL=1e-6;
+    spec.TOL=TOL;
+    %spec.ITER_MAX=500;%%%
 
-    if spectral_spec==0
+    if acceleration_spec==0
         spec.update_spec=0;
-    elseif spectral_spec==2;
+    elseif acceleration_spec==2;% SQAUREM
+        spec.ITER_MAX=500;
         spec.SQUAREM_spec=1;
+    elseif acceleration_spec==3;% Anderson acceleration (Only one variable type)
+        spec.Anderson_acceleration=1;%%%%
+        spec.common_spectral_coef_spec=1;
+        spec.ITER_MAX=500;
+    elseif acceleration_spec==4;% Anderson acceleration (Heterogeneous variable type)
+        spec.Anderson_acceleration=1;%%%%
+        spec.common_spectral_coef_spec=[];
+        spec.ITER_MAX=500;
     end
-    
-    if Method==1 | Method==3 | Method==0
+
+
+    if Method==1 | Method==0 | Method==4
         input={V};
-    elseif Method==2
+    elseif Method==2 | Method==8 | Method==9
         input={vf_coef};
-    elseif Method==4
-         input={V,k0};
-        spec.common_spectral_coef_spec=1; % Important
+    elseif Method==3 | Method==5
+        input={n0};
     elseif Method==-1
         input={V,n0};
        TOL_vec=(spec.TOL)*ones(1,2);
-       TOL_vec(2)=TOL_vec(2)*lambda_param;%%% TOL of action should not depend on lambda_param 
+       TOL_vec(2)=TOL_vec(2)*lambda_param.*max(abs(V));%%% TOL of action should not depend on lambda_param 
        spec.TOL=TOL_vec;
        spec.norm_spec=[10,0];% unit free norm for V
         
     elseif Method==-2
         input={V,n0,c0};
         TOL_vec=(spec.TOL)*ones(1,3);
-        TOL_vec(1,2:3)=TOL_vec(1,2:3).*lambda_param;%%% TOL of action should not depend on lambda_param 
+        TOL_vec(1,2:3)=TOL_vec(1,2:3).*lambda_param.*max(abs(V));%%% TOL of action should not depend on lambda_param 
         spec.TOL=TOL_vec;
         spec.norm_spec=[10,0,0];% unit free norm for V
 
     elseif Method==-3
         input={V,[n0;c0]};
         TOL_vec=(spec.TOL)*ones(1,2);
-        TOL_vec(2)=TOL_vec(2)*lambda_param;%%% TOL of action should not depend on lambda_param 
+        TOL_vec(2)=TOL_vec(2)*lambda_param.*max(abs(V));%%% TOL of action should not depend on lambda_param 
         spec.TOL=TOL_vec;
         spec.norm_spec=[10,0];% unit free norm for V
     end
 
+   %%%%%%%
+    %%if Method==4| Method==5 % PI itself is fast=> Use original iteration (w/o spectral)
+    %%%   spec.update_spec=0;
+    %%%   spec.Anderson_acceleration=0;
+    %%%end %%%%%%
+    %%%%%
 
-    if Method==1 | Method==0
+    if Method==1 | Method==0 | Method==2 | Method==3| Method==4 | Method==8 | Method==9
         fun=@update_func_L;
-    elseif Method==2
-        fun=@update_func_L;
+    elseif Method==5
+        fun=@PI_update_func;
     elseif Method==-1
         fun=@VF_PGI_func_n0;
     elseif Method==-2
@@ -242,19 +291,43 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         fun=@VF_PGI_func_n0_c0_2;
     end
 
+    geval_total=0;% global variable
+    feval_V_total=0;%global variable
 
-    [output_spectral,other_vars,iter_info]=...
-        spectral_func(fun,spec,input,...
-        Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0,c0,k1,gam,...
-        nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,spectral_spec);
-    %iter_info.feval;
-    
+   if Method==6|Method==7 %S-AVI
+     [V,other_vars,iter_info]=S_AVI_func(Method,V_init,TOL,X0der,X0,delta,A,alpha,...
+         grid_EGM,grid,z0,z1,k0,n0,c0,k1,gam,...
+         nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid);
+     vf_coef = X0\V;     % Coefficients for value function 
+     k1=other_vars.k1;
+
+     feval_V_total=iter_info.feval*n_grid;
+
+    else%Methods except for AVFI
+
+        [output_spectral,other_vars,iter_info]=...
+            spectral_func(fun,spec,input,...
+            Method,X0der,X0,delta,A,alpha,grid_EGM,grid,z0,z1,k0,n0,c0,k1,gam,...
+            nu,B,beta,n_nodes,weight_nodes,D,kdamp,n_grid,acceleration_spec);
+        %iter_info.feval;
+
+   end% Method~=6,7
+
+    if Method<0 | Method==3 | Method==5
+        geval_total=iter_info.feval*n_grid;
+    end
+
+    if Method<=1
+        feval_V_total=iter_info.feval*n_grid;
+    end 
+
 
     if Method==1 | Method==0
         V=output_spectral{1};
+        V_sol=V;
         vf_coef = X0\V;     % Coefficients for value function 
         k1=other_vars.k1;
-    elseif Method==2
+    elseif Method==2 | Method==8 | Method==9
         vf_coef=output_spectral{1};
         k1=other_vars.k1;
         k0=other_vars.k0;
@@ -262,6 +335,14 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         grid(:,1) = k0;        % Grid points for current capital  
         X0 = Polynomial_2d(grid,D);   % Construct polynomial on 
                                           % current state variables
+
+    elseif Method==3
+        n0=output_spectral{1};
+        k1=other_vars.k1;
+    elseif Method==5 % PI updating n0
+        n0=output_spectral{1};
+        k1=other_vars.k1;
+        vf_coef=X0\V;
     elseif Method==-1
         V=output_spectral{1};
         n0=output_spectral{2};
@@ -286,26 +367,14 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
     n0=other_vars.n0;
     k0=other_vars.k0;
 
-    %%%%%%%%%%%%%%%
-       
-    vf_coef=X0\V; % Coefficients for value function
-    EVder=EVder_func(k1,z1,n_nodes,weight_nodes,vf_coef,D);
-    FOC_val_C=FOC_C(EVder,n0,c0,k0,z0,A,alpha,gam,nu,B,beta);    
-    %%%%%%%%%%%%%%%
-
-    k_coef = X0\k1;
-    c_coef = X0\c0;
-    n_coef = X0\n0;
-
-    if max(abs(k1))>10^10 || iter_info.feval==iter_info.ITER_MAX
-       iter_info.FLAG_ERROR=1;
-    end
-    
     % After the solution is computed by any method, we construct the value 
     % value function for the constructed policy rules
-    if 1==0
+    if Method==3 && 1==0 % Euler equation method
         spec=spec_default;
-        spec.TOL=1e-9;
+        if acceleration_spec==0
+            spec.update_spec=0;
+        end
+
         [output_spectral,other_vars,iter_info_V]=...
             spectral_func(@VF_Bellman_L_update_func,spec,{V},...
             X0,n0,c0,k1,z1,gam,nu,B,beta,n_nodes,weight_nodes,vf_coef,D,kdamp);
@@ -316,19 +385,39 @@ for D = D_min:D_max;                            % For polynomial degrees from 2 
         if max(abs(V))>10^10
             iter_info_V.FLAG_ERROR=1;
         end
-        feval_V(D)=iter_info_V.feval;
-    else
-        feval_V(D)=0;
+        feval_V_total=iter_info_V.feval*n_grid;
     end
+
+
+    if ECM_spec==1 || Method>=1 && Method~=4 && Method~=5 && Method~=6 && Method~=7 % Methods other than VFI,VF-PGI, PI, AVFI
+        geval_total=NaN;
+    end 
+    if Method==3%% EE
+         feval_V_total=NaN;
+     end 
+
+     geval_Q(D)=geval_total;
+     feval_V(D)=feval_V_total;
+
+    %%%%%%%%%%%%%%%
+       
+
+    k_coef = X0\k1;
+    c_coef = X0\c0;
+    n_coef = X0\n0;
+
+    if max(abs(k1))>10^10 || iter_info.feval==iter_info.ITER_MAX
+       iter_info.FLAG_ERROR=1;
+    end
+    
 
     CPU(D) = toc(tStart);                      % Store running time
     V_coef(1:1+D+D*(D+1)/2,D) = vf_coef;   % Store the solution coefficients (V)
     K_coef(1:1+D+D*(D+1)/2,D) = k_coef;   % Store the solution coefficients (V)
     C_coef(1:1+D+D*(D+1)/2,D) = c_coef;   % Store the solution coefficients (V)
     N_coef(1:1+D+D*(D+1)/2,D) = n_coef;   % Store the solution coefficients (V)
+    n_iter(D)=iter_info.feval;
 
-    feval(D)=iter_info.feval;
-    
     
 end
 
@@ -352,7 +441,8 @@ for D = D_min:D_max % For polynomial degrees from 2 to 5...
             % Display the results
     
     out(D-1,:)=[D,Degree(D),CPU(D),Mean_Residuals(D),Max_Residuals(D),...
-        feval(D),feval_V(D),1-iter_info.FLAG_ERROR,CPU(D)/feval(D)];
+        1-iter_info.FLAG_ERROR,n_iter(D),CPU(D)/n_iter(D),...
+        feval_V(D),geval_Q(D)];
 
     other_output.iter_info=iter_info;
     other_output.iter_info_V=iter_info_V;
