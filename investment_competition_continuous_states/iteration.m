@@ -6,7 +6,7 @@ I_min=[];I_max=[];
 %I_min=-0.5;I_max=1.0;
 
 spec.TOL=1e-8;
-spec.alpha_0=1;
+spec.spectral_coef_0=1;
 
     %spec=[];
     if algorithm_spec=="VFI"
@@ -16,7 +16,7 @@ spec.alpha_0=1;
         TOL_vec=(1e-8)*ones(1,2);
         TOL_vec(1)=TOL_vec(1)*lambda_param;
         spec.TOL=TOL_vec;
-        spec.alpha_0=1;
+        spec.spectral_coef_0=1;
    end
 
 

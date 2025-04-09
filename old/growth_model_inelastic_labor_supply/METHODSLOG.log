@@ -8909,10 +8909,10 @@ gen_results
 
 
 Beginning execution with method 7
-{関数または変数 'alpha_0' が認識されません。
+{関数または変数 'spectral_coef_0' が認識されません。
 
 エラー: <a href="matlab:matlab.internal.language.introspective.errorDocCallback('spectral_func', 'C:\Users\fukas\Dropbox\git\spectral\spectral_func.m', 64)" style="font-weight:bold">spectral_func</a> (<a href="matlab: opentoline('C:\Users\fukas\Dropbox\git\spectral\spectral_func.m',64,0)">行 64</a>)
-      alpha_table(1,i)=alpha_0{1,i};
+      alpha_table(1,i)=spectral_coef_0{1,i};
 
 エラー: <a href="matlab:matlab.internal.language.introspective.errorDocCallback('Main_7_Methods', 'C:\Users\fukas\Dropbox\git\egm\simulation_code\CLMMJuliaPythonMatlab-master\Growth\MATLABCode\Main_7_Methods.m', 217)" style="font-weight:bold">Main_7_Methods</a> (<a href="matlab: opentoline('C:\Users\fukas\Dropbox\git\egm\simulation_code\CLMMJuliaPythonMatlab-master\Growth\MATLABCode\Main_7_Methods.m',217,0)">行 217</a>)
         spectral_func(fun,spec,input,...
@@ -8928,10 +8928,10 @@ gen_results
 
 
 Beginning execution with method 7
-{関数または変数 'alpha_0' が認識されません。
+{関数または変数 'spectral_coef_0' が認識されません。
 
 エラー: <a href="matlab:matlab.internal.language.introspective.errorDocCallback('spectral_func', 'C:\Users\fukas\Dropbox\git\spectral\spectral_func.m', 63)" style="font-weight:bold">spectral_func</a> (<a href="matlab: opentoline('C:\Users\fukas\Dropbox\git\spectral\spectral_func.m',63,0)">行 63</a>)
-      alpha_table(1,i)=alpha_0{1,i};
+      alpha_table(1,i)=spectral_coef_0{1,i};
 
 エラー: <a href="matlab:matlab.internal.language.introspective.errorDocCallback('Main_7_Methods', 'C:\Users\fukas\Dropbox\git\egm\simulation_code\CLMMJuliaPythonMatlab-master\Growth\MATLABCode\Main_7_Methods.m', 217)" style="font-weight:bold">Main_7_Methods</a> (<a href="matlab: opentoline('C:\Users\fukas\Dropbox\git\egm\simulation_code\CLMMJuliaPythonMatlab-master\Growth\MATLABCode\Main_7_Methods.m',217,0)">行 217</a>)
         spectral_func(fun,spec,input,...
@@ -9233,10 +9233,10 @@ Running time = 0.00, Mean residuals = -1.65, Max residuals = -1.50
 
 
 Beginning execution with method 8
-{フィールド名 "alpha0_spec" が認識されません。
+{フィールド名 "spectral_coef0_spec" が認識されません。
 
 エラー: <a href="matlab:matlab.internal.language.introspective.errorDocCallback('spectral_func', 'C:\Users\fukas\Dropbox\git\spectral\spectral_func.m', 54)" style="font-weight:bold">spectral_func</a> (<a href="matlab: opentoline('C:\Users\fukas\Dropbox\git\spectral\spectral_func.m',54,0)">行 54</a>)
-          if spec.alpha0_spec==2
+          if spec.spectral_coef0_spec==2
 
 エラー: <a href="matlab:matlab.internal.language.introspective.errorDocCallback('Main_7_Methods', 'C:\Users\fukas\Dropbox\git\egm\simulation_code\CLMMJuliaPythonMatlab-master\Growth\MATLABCode\Main_7_Methods.m', 216)" style="font-weight:bold">Main_7_Methods</a> (<a href="matlab: opentoline('C:\Users\fukas\Dropbox\git\egm\simulation_code\CLMMJuliaPythonMatlab-master\Growth\MATLABCode\Main_7_Methods.m',216,0)">行 216</a>)
         spectral_func(fun,spec,input,...
@@ -15113,10 +15113,10 @@ Running time = 0.008, Mean residuals = -7.00, Max residuals = -4.70
 
 
 Beginning execution with method 1
-{関数または変数 'alpha_0' が認識されません。
+{関数または変数 'spectral_coef_0' が認識されません。
 
 エラー: <a href="matlab:matlab.internal.language.introspective.errorDocCallback('spectral_func', 'C:\Users\fukas\Dropbox\git\spectral\spectral_func.m', 69)" style="font-weight:bold">spectral_func</a> (<a href="matlab: opentoline('C:\Users\fukas\Dropbox\git\spectral\spectral_func.m',69,0)">行 69</a>)
-      alpha_table(1,i)=alpha_0{1,i};
+      alpha_table(1,i)=spectral_coef_0{1,i};
 
 エラー: <a href="matlab:matlab.internal.language.introspective.errorDocCallback('Main_7_Methods', 'C:\Users\fukas\Dropbox\git\egm\simulation_code\CLMMJuliaPythonMatlab-master\Growth\MATLABCode\Main_7_Methods.m', 227)" style="font-weight:bold">Main_7_Methods</a> (<a href="matlab: opentoline('C:\Users\fukas\Dropbox\git\egm\simulation_code\CLMMJuliaPythonMatlab-master\Growth\MATLABCode\Main_7_Methods.m',227,0)">行 227</a>)
         spectral_func(fun,spec,input,...
@@ -15132,10 +15132,10 @@ gen_results
 
 
 Beginning execution with method 1
-{関数または変数 'alpha_0' が認識されません。
+{関数または変数 'spectral_coef_0' が認識されません。
 
 エラー: <a href="matlab:matlab.internal.language.introspective.errorDocCallback('spectral_func', 'C:\Users\fukas\Dropbox\git\spectral\spectral_func.m', 106)" style="font-weight:bold">spectral_func</a> (<a href="matlab: opentoline('C:\Users\fukas\Dropbox\git\spectral\spectral_func.m',106,0)">行 106</a>)
-       alpha_k{1,i}=alpha_0{1,i};
+       alpha_k{1,i}=spectral_coef_0{1,i};
 
 エラー: <a href="matlab:matlab.internal.language.introspective.errorDocCallback('Main_7_Methods', 'C:\Users\fukas\Dropbox\git\egm\simulation_code\CLMMJuliaPythonMatlab-master\Growth\MATLABCode\Main_7_Methods.m', 227)" style="font-weight:bold">Main_7_Methods</a> (<a href="matlab: opentoline('C:\Users\fukas\Dropbox\git\egm\simulation_code\CLMMJuliaPythonMatlab-master\Growth\MATLABCode\Main_7_Methods.m',227,0)">行 227</a>)
         spectral_func(fun,spec,input,...
@@ -15150,10 +15150,10 @@ gen_results
 
 
 Beginning execution with method 1
-{関数または変数 'alpha_0' が認識されません。
+{関数または変数 'spectral_coef_0' が認識されません。
 
 エラー: <a href="matlab:matlab.internal.language.introspective.errorDocCallback('spectral_func', 'C:\Users\fukas\Dropbox\git\spectral\spectral_func.m', 68)" style="font-weight:bold">spectral_func</a> (<a href="matlab: opentoline('C:\Users\fukas\Dropbox\git\spectral\spectral_func.m',68,0)">行 68</a>)
-      alpha_table(1,i)=alpha_0{1,i};
+      alpha_table(1,i)=spectral_coef_0{1,i};
 
 エラー: <a href="matlab:matlab.internal.language.introspective.errorDocCallback('Main_7_Methods', 'C:\Users\fukas\Dropbox\git\egm\simulation_code\CLMMJuliaPythonMatlab-master\Growth\MATLABCode\Main_7_Methods.m', 227)" style="font-weight:bold">Main_7_Methods</a> (<a href="matlab: opentoline('C:\Users\fukas\Dropbox\git\egm\simulation_code\CLMMJuliaPythonMatlab-master\Growth\MATLABCode\Main_7_Methods.m',227,0)">行 227</a>)
         spectral_func(fun,spec,input,...
@@ -15168,10 +15168,10 @@ gen_results
 
 
 Beginning execution with method 1
-{関数または変数 'alpha_0' が認識されません。
+{関数または変数 'spectral_coef_0' が認識されません。
 
 エラー: <a href="matlab:matlab.internal.language.introspective.errorDocCallback('spectral_func', 'C:\Users\fukas\Dropbox\git\spectral\spectral_func.m', 69)" style="font-weight:bold">spectral_func</a> (<a href="matlab: opentoline('C:\Users\fukas\Dropbox\git\spectral\spectral_func.m',69,0)">行 69</a>)
-      alpha_table(1,i)=alpha_0{1,i};
+      alpha_table(1,i)=spectral_coef_0{1,i};
 
 エラー: <a href="matlab:matlab.internal.language.introspective.errorDocCallback('Main_7_Methods', 'C:\Users\fukas\Dropbox\git\egm\simulation_code\CLMMJuliaPythonMatlab-master\Growth\MATLABCode\Main_7_Methods.m', 227)" style="font-weight:bold">Main_7_Methods</a> (<a href="matlab: opentoline('C:\Users\fukas\Dropbox\git\egm\simulation_code\CLMMJuliaPythonMatlab-master\Growth\MATLABCode\Main_7_Methods.m',227,0)">行 227</a>)
         spectral_func(fun,spec,input,...
@@ -15186,10 +15186,10 @@ gen_results
 
 
 Beginning execution with method 1
-{関数または変数 'alpha_0' が認識されません。
+{関数または変数 'spectral_coef_0' が認識されません。
 
 エラー: <a href="matlab:matlab.internal.language.introspective.errorDocCallback('spectral_func', 'C:\Users\fukas\Dropbox\git\spectral\spectral_func.m', 72)" style="font-weight:bold">spectral_func</a> (<a href="matlab: opentoline('C:\Users\fukas\Dropbox\git\spectral\spectral_func.m',72,0)">行 72</a>)
-      alpha_table(1,i)=alpha_0{1,i};
+      alpha_table(1,i)=spectral_coef_0{1,i};
 
 エラー: <a href="matlab:matlab.internal.language.introspective.errorDocCallback('Main_7_Methods', 'C:\Users\fukas\Dropbox\git\egm\simulation_code\CLMMJuliaPythonMatlab-master\Growth\MATLABCode\Main_7_Methods.m', 227)" style="font-weight:bold">Main_7_Methods</a> (<a href="matlab: opentoline('C:\Users\fukas\Dropbox\git\egm\simulation_code\CLMMJuliaPythonMatlab-master\Growth\MATLABCode\Main_7_Methods.m',227,0)">行 227</a>)
         spectral_func(fun,spec,input,...

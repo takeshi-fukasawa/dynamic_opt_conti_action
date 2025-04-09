@@ -73,7 +73,7 @@ for N=2:2
     
     %% VF-PGI-Spectral
     method="gradient";
-    spec.alpha_0=1;
+    spec.spectral_coef_0=1;
     lambda_param=0.01;
     TOL_vec=TOL*ones(1,2);
     TOL_vec(2)=TOL_vec(2)*lambda_param;
@@ -88,7 +88,7 @@ for N=2:2
     if 1==0
         %% VF-PGI
         method="gradient";
-        spec.alpha_0=1;
+        spec.spectral_coef_0=1;
         lambda_param=0.01;
         TOL_vec=TOL*ones(1,2);
         TOL_vec(2)=TOL_vec(2)*lambda_param;
@@ -105,7 +105,7 @@ for N=2:2
     %% PM-Spectral (VFI-star-Spectral)
     method="PM";
     spec.TOL=TOL;
-    spec.alpha_0=1;
+    spec.spectral_coef_0=1;
     [newvalue_PM_spectral,newx_PM_spectral,iter_info_PM_spectral,other_vars]=...
             eql_ma(method,profit,no_entry_exit_spec,spec,c);
    
@@ -116,7 +116,7 @@ for N=2:2
         %% PM (VFI)
         method="PM";
         spec.TOL=TOL;
-        spec.alpha_0=1;
+        spec.spectral_coef_0=1;
         spec.update_spec=0; %% Use standard fixed point iteration
         [newvalue_PM,newx_PM,iter_info_PM,other_vars]=...
                 eql_ma(method,profit,no_entry_exit_spec,spec,c);

@@ -29,9 +29,9 @@ function [out,other_vars]=PI_update_func(n0,...
    vf_coef=[];%%%%
    
    %spec_V_iter.update_spec=0;
-   spec_V_iter.alpha_0=1e-7;
+   spec_V_iter.spectral_coef_0=1e-7;
    spec_V_iter.norm_spec=10;%% unit free
-   %spec_V_iter.alpha_0=alpha0_param;
+   %spec_V_iter.spectral_coef_0=spectral_coef0_param;
 
    [out,other_vars,iter_info_V_iter]=spectral_func(...
        @VF_Bellman_L_update_func,spec_V_iter,{V},...

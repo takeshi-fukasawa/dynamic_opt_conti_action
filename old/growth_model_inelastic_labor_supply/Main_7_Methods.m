@@ -60,7 +60,7 @@ fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
 % "7" - conventional Euler equation method (EE)
 
 global iter_info iter_info0 V k1
-global alpha0_param lambda_param
+global spectral_coef0_param lambda_param
 global common_spectral_coef_spec
 
 D_init=D;
@@ -164,7 +164,7 @@ k1   =  k0*(1-delta)+A*z0.*k0.^alpha-c0;  % Initial guess for capital
 spec_default.norm_spec=10;%% unit free
 spec_default.TOL=1e-6;
 spec_default.ITER_MAX=2000;
-spec_default.alpha_0=alpha0_param;
+spec_default.spectral_coef_0=spectral_coef0_param;
 spec_default.common_spectral_coef_spec=common_spectral_coef_spec;
 
 spec=spec_default;

@@ -1,7 +1,7 @@
 clear
 %%diary METHODSLOG.log
 
-global V k1 iter_info alpha0_param lambda_param
+global V k1 iter_info spectral_coef0_param lambda_param
 
 %%% Path of Spectral function
 addpath('C:/Users/fukas/Dropbox/git/spectral')
@@ -9,7 +9,7 @@ addpath('C:/Users/fukas/Dropbox/git/spectral')
 
 spectral_spec=1;
 common_spectral_coef_spec=0;
-alpha0_param=0.001;
+spectral_coef0_param=0.001;
 lambda_param=1;
 D=4;
 

@@ -44,7 +44,7 @@ warning('off')           % Some polynomial terms are zero for
 fprintf('\n\n\n\n\nBeginning execution with method %i\n', Method)
 global n_gridk n_grida
 global iter_info iter_info0 V k1
-global alpha0_param lambda_param
+global spectral_coef0_param lambda_param
 global common_spectral_coef_spec n0 c0
 global geval_total feval_V_total
 global relative_V_spec
@@ -175,7 +175,7 @@ V00=V;
 spec_default.norm_spec=10;%% unit free
 spec_default.TOL=1e-6;
 spec_default.ITER_MAX=3000;
-spec_default.alpha_0=alpha0_param;
+spec_default.spectral_coef_0=spectral_coef0_param;
 spec_default.common_spectral_coef_spec=common_spectral_coef_spec;
 spec_default.DEBUG=1;%%%%%%%%%%%%%%%%%%%
 
